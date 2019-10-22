@@ -5,8 +5,8 @@
 
 namespace io_submodule
 {
-    //!< Color description
-    //!< Default is white
+    //! RGB цвет
+    //! Белый по умолчанию
     struct TColorRGB
     {
         unsigned int r = 0xFF;
@@ -15,22 +15,24 @@ namespace io_submodule
         unsigned int alpha = 0xFF;
     };
 
+    //! Описание произвольной прямоугольной области
     struct TRectangleDescription
     {
-        size_t xStart = 0;
-        size_t yStart = 0;
-        size_t width = 0;
-        size_t height = 0;
-        TColorRGB color;
-        bool isFilled = false;
+        size_t xStart = 0;       //!< Смещение области по x
+        size_t yStart = 0;       //!< Смещение области по y
+        size_t width = 0;        //!< Ширина области
+        size_t height = 0;       //!< Высота области
+        TColorRGB color;         //!< Структура, описывающая цвет
+        bool isFilled = false;   //!< Флаг заливки области
     };
 
+    //! Описание игрового поля
     struct TCellsFieldParams
     {
-        size_t xCellsCount = 0;
-        size_t yCellsCount = 0;
-        size_t cellWidth = 0;
-        size_t cellHeight = 0;
+        size_t xCellsCount = 0;   //!< Количество ячеек по оси x
+        size_t yCellsCount = 0;   //!< Количество ячеек по оси y
+        size_t cellWidth = 0;     //!< Ширина ячейки
+        size_t cellHeight = 0;    //!< Высота ячейки
     };
 };
 

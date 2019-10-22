@@ -13,8 +13,12 @@
 #include "TParams.h"
 #include "TCellRectangles.h"
 
-using namespace io_submodule;
+#include "TCell.h"
+#include "TGameField.h"
+#include "TSnake.h"
 
+using namespace io_submodule;
+using namespace game_backend;
 
 int main()
 {
@@ -108,15 +112,14 @@ int main()
 
     drawer.updateScreen();
 
-    TSurface keyUpBmp( "./resources/up.bmp" );
-    TSurface keyDownBmp( "./resources/down.bmp" );
-    TSurface keyRightBmp( "./resources/right.bmp" );
-    TSurface keyLeftBmp( "./resources/left.bmp" );
+    //! Game backend
 
-    TTexture keyUp( renderer, keyUpBmp );
-    TTexture keyDown( renderer, keyDownBmp );
-    TTexture keyRight( renderer, keyRightBmp );
-    TTexture keyLeft( renderer, keyLeftBmp );
+    TGameField gameField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount );
+    TSnake snake( gameField );
+    pair<size_t, size_t> start = { 1, 1 };
+    snake.initSnake( start, 8 );
+
+    gameField.debugPrint();
 
     // Main loop
     bool quit = false;
@@ -136,31 +139,30 @@ int main()
                 if ( keyValue == SDLK_UP || keyValue == SDLK_w )
                 {
                     std::cout << "Key UP" << std::endl;
-                    drawer.draw( keyUp );
                 }
                     
                 if ( keyValue == SDLK_DOWN || keyValue == SDLK_s )
                 {
                     std::cout << "Key DOWN" << std::endl;
-                    drawer.draw( keyDown );
                 }
 
                 if ( keyValue == SDLK_LEFT || keyValue == SDLK_a )
                 {
                     std::cout << "Key LEFT" << std::endl;
-                    drawer.draw( keyLeft );
                 }
 
                 if ( keyValue == SDLK_RIGHT || keyValue == SDLK_d )
                 {
                     std::cout << "Key RIGHT" << std::endl;
-                    drawer.draw( keyRight );
                 }
             }
         }
 
-        SDL_Delay( 100 );
+        SDL_Delay( 500 );
+        std::cout << "." << endl;
     }
+
+    std::cout << std::endl;
 
     TSdlWrapper::deteteInstance();
 };
