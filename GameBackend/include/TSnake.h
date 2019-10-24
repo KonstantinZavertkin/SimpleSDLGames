@@ -25,6 +25,9 @@ namespace game_backend
             //!< snakeCells.front() - head
             //!< snakeCells.back() - tail
             deque<pair<size_t, size_t>> snakeCells;
+
+        private:
+            void updateSnakeHeadAndTail();
     };
 }
 

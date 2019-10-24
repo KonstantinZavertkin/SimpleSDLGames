@@ -22,6 +22,8 @@ namespace game_backend
                 cell.thisCoordinates = { i, j };
             }
         }
+
+        fieldSize = make_pair( linesCount, columnsCount );
     };
 
     TGameField::~TGameField()

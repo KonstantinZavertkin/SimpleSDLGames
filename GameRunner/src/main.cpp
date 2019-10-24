@@ -17,6 +17,8 @@
 #include "TGameField.h"
 #include "TSnake.h"
 
+#include "TFieldDrawer.h"
+
 using namespace io_submodule;
 using namespace game_backend;
 
@@ -59,8 +61,8 @@ int main()
 
     //! Cells params
     TCellsFieldParams cellsFieldParams;
-    cellsFieldParams.xCellsCount = 40;
-    cellsFieldParams.yCellsCount = 30;
+    cellsFieldParams.xCellsCount = 30;
+    cellsFieldParams.yCellsCount = 20;
     cellsFieldParams.cellHeight = 20;
     cellsFieldParams.cellWidth = 20;
     
@@ -78,18 +80,18 @@ int main()
     //! Mapping (xCell, yCell) to (xWindow, yWindow)
     //! where [x|y]Cell - cells coordinate in 2d array of cells
     //! [x|y]Window - cells coordinate in pixels for corresponding window
-    TCellRectangles gameFieldDrawer;
-    gameFieldDrawer.setCellsFieldParams( activeGameField, cellsFieldParams );
-    gameFieldDrawer.calcGrid();
+    TCellRectangles cellRectangles;
+    cellRectangles.setCellsFieldParams( activeGameField, cellsFieldParams );
+    cellRectangles.calcGrid();
 
-    TColorRGB red = { 0xFF, 0x00, 0x00, 0xFF };
-    TColorRGB green = { 0x00, 0xFF, 0x00, 0xFF };
+    //TColorRGB red = { 0xFF, 0x00, 0x00, 0xFF };
+    //TColorRGB green = { 0x00, 0xFF, 0x00, 0xFF };
     //TColorRGB blue = { 0x00, 0x00, 0xFF, 0xFF };
     //TColorRGB black = { 0x00, 0x00, 0x00, 0xFF };
-    TColorRGB white = { 0xFF, 0xFF, 0xFF, 0xFF };
+    //TColorRGB white = { 0xFF, 0xFF, 0xFF, 0xFF };
     
 
-    TRectangleDescription tempRect;
+    /*TRectangleDescription tempRect;
 
     for ( size_t i = 2; i < 12; ++i )
     {
@@ -103,6 +105,10 @@ int main()
     }
 
     tempRect = gameFieldDrawer.getCellRectangle( 1, 20 );
+    cout << "x " << tempRect.xStart << endl;
+    cout << "y " << tempRect.yStart << endl;
+    cout << "h " << tempRect.height << endl;
+    cout << "w " << tempRect.width << endl;
     tempRect.isFilled = true;
     tempRect.color = green;
     drawer.draw( tempRect );
@@ -110,16 +116,32 @@ int main()
     tempRect.color = white;
     drawer.draw( tempRect );
 
-    drawer.updateScreen();
+    drawer.updateScreen();*/
 
     //! Game backend
 
     TGameField gameField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount );
     TSnake snake( gameField );
     pair<size_t, size_t> start = { 1, 1 };
-    snake.initSnake( start, 8 );
+    snake.initSnake( start, 12 );
 
-    gameField.debugPrint();
+    TFieldDrawer fDrawer( gameField, drawer, cellRectangles );
+
+    //gameField.debugPrint();
+
+    //snake.step();
+    //gameField.debugPrint();
+
+    //snake.step();
+    //gameField.debugPrint();
+
+    //snake.turn( { 1, 0 } );
+
+    //snake.step();
+    //gameField.debugPrint();
+
+    //snake.step();
+    //gameField.debugPrint();
 
     // Main loop
     bool quit = false;
@@ -139,30 +161,37 @@ int main()
                 if ( keyValue == SDLK_UP || keyValue == SDLK_w )
                 {
                     std::cout << "Key UP" << std::endl;
+                    snake.turn( { -1, 0 } );
                 }
                     
                 if ( keyValue == SDLK_DOWN || keyValue == SDLK_s )
                 {
                     std::cout << "Key DOWN" << std::endl;
+                    snake.turn( { 1, 0 } );
                 }
 
                 if ( keyValue == SDLK_LEFT || keyValue == SDLK_a )
                 {
                     std::cout << "Key LEFT" << std::endl;
+                    snake.turn( { 0, -1 } );
                 }
 
                 if ( keyValue == SDLK_RIGHT || keyValue == SDLK_d )
                 {
                     std::cout << "Key RIGHT" << std::endl;
+                    snake.turn( { 0, 1 } );
                 }
             }
         }
 
-        SDL_Delay( 500 );
-        std::cout << "." << endl;
+        snake.step();
+        fDrawer.draw();
+        drawer.updateScreen();
+        SDL_Delay( 350 );
+        //std::cout << "." << endl;
     }
 
-    std::cout << std::endl;
+    //std::cout << std::endl;
 
     TSdlWrapper::deteteInstance();
 };

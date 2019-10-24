@@ -18,10 +18,10 @@ namespace io_submodule
 
     void TCellRectangles::calcGrid()
     {
-        cellsMap = vector<vector<TRectangleDescription>>( gameCellsParams.xCellsCount );
+        cellsMap = vector<vector<TRectangleDescription>>( gameCellsParams.yCellsCount );
 
         for ( auto& cellLine : cellsMap )
-            cellLine = vector<TRectangleDescription>( gameCellsParams.yCellsCount );
+            cellLine = vector<TRectangleDescription>( gameCellsParams.xCellsCount );
 
         TRectangleDescription cell;
         cell.height = gameCellsParams.cellHeight;

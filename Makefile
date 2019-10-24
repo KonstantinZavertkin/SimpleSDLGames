@@ -3,7 +3,7 @@ GameBackend=./GameBackend/
 GameRunner=./GameRunner/
 
 CC=g++
-CFLAGS=-Wall -Werror -g
+CFLAGS=-std=c++17 -Wall -Werror -g
 
 INCUDE := include
 SRC := src
@@ -37,7 +37,7 @@ $(GameBackend)$(OBJ)/%.o: $(GameBackend)$(SRC)/%.cpp
 
 # Create object files for GameRunner submodule
 $(GameRunner)$(OBJ)/%.o: $(GameRunner)$(SRC)/%.cpp
-	$(CC) $(CFLAGS) -I$(GUI)$(INCUDE)/ -I$(GameBackend)$(INCUDE)/ -c $< -o $@    # include GUI is not mistake
+	$(CC) $(CFLAGS) -I$(GUI)$(INCUDE)/ -I$(GameBackend)$(INCUDE)/ -I$(GameRunner)$(INCUDE) -c $< -o $@
 
 .PHONY: create_dirs
 
