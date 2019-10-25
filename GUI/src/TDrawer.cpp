@@ -33,7 +33,7 @@ namespace io_submodule
 
     void TDrawer::updateScreen()
     {
-        SDL_Delay( 100 );
+        SDL_Delay( 10 );
         SDL_RenderPresent( rendererRef.getRenderer() );
     };
 };

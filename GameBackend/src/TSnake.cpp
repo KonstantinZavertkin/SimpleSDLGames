@@ -1,8 +1,11 @@
 #include "TSnake.h"
 #include <tuple>
+#include <iostream>
 
 namespace game_backend
 {
+    using namespace std;
+
     TSnake::TSnake( TGameField& gameField ) : gameField( gameField )
     {};
 
@@ -34,7 +37,7 @@ namespace game_backend
 
     void TSnake::step()
     {
-        //auto fieldSize = gameField.fieldSize;
+        auto fieldSize = gameField.fieldSize;
 
         for ( size_t i = 0; i < snakeCells.size(); ++i )
         {
@@ -43,11 +46,26 @@ namespace game_backend
             auto moveVector = gameField.field[x][y].moveDirection;
             auto moveVectorDelta = gameField.field[x][y].moveDirectionDelta;
 
-            if ( moveVectorDelta.first || moveVectorDelta.second )
-                moveVector = moveVectorDelta;
+            if ( moveVectorDelta.first != 0 || moveVectorDelta.second != 0 )
+            {
+                auto condition0 = moveVector.first != moveVectorDelta.first * -1;
+                auto condition1 = moveVector.second != moveVectorDelta.second * -1;
+
+                if ( condition0 && condition1 )
+                    moveVector = moveVectorDelta;
+            }
+
+            //cout << "i: " << i << ", mv: <" << moveVector.first << "," << moveVector.second << ">";
+            //cout << ", mvd: <" << moveVectorDelta.first << "," << moveVectorDelta.second << ">" << endl; 
 
             gameField.field[x][y].currentState = TCellStates::backgroundStateKey;
             gameField.field[x][y].moveDirection = make_pair( 0, 0 );
+
+            if ( ( x == 0 && moveVector.first < 0 ) || ( y == 0 && moveVector.second < 0 ) )
+            {
+                gameOverFlag = true;
+                continue;
+            }
             
             snakeCells[i].first += moveVector.first;
             snakeCells[i].second += moveVector.second;
@@ -55,11 +73,30 @@ namespace game_backend
             x = snakeCells[i].first;
             y = snakeCells[i].second;
 
+            if ( x >= fieldSize.first || y >= fieldSize.second )
+            {
+                gameOverFlag = true;
+                continue;
+            }
+
+            auto state = gameField.field[x][y].currentState;
+
+            if ( state == TCellStates::snakeBodyStateKey || state == TCellStates::snakeTailStateKey )
+            {
+                gameOverFlag = true;
+                continue;
+            }
+
             gameField.field[x][y].currentState = TCellStates::snakeBodyStateKey;
             gameField.field[x][y].moveDirection = moveVector;
         }
 
         updateSnakeHeadAndTail();
+    };
+
+    bool TSnake::isGameOver()
+    {
+        return gameOverFlag;
     };
 
     void TSnake::updateSnakeHeadAndTail()
@@ -73,7 +110,19 @@ namespace game_backend
         auto xTail = tailCellCoords.first;
         auto yTail = tailCellCoords.second;
         gameField.field[xTail][yTail].currentState = TCellStates::snakeTailStateKey;
-        //gameField.field[xTail][yTail].moveDirection = { 0, 0 };
+
+        auto moveVector = gameField.field[xTail][yTail].moveDirection;
+        auto moveVectorDelta = gameField.field[xTail][yTail].moveDirectionDelta;
+
+        if ( moveVectorDelta.first != 0 || moveVectorDelta.second != 0 )
+        {
+            auto condition0 = moveVector.first != moveVectorDelta.first * -1;
+            auto condition1 = moveVector.second != moveVectorDelta.second * -1;
+
+            if ( condition0 && condition1 )
+                gameField.field[xTail][yTail].moveDirection = moveVectorDelta;
+        }
+
         gameField.field[xTail][yTail].moveDirectionDelta = { 0, 0 };
     };
 } 

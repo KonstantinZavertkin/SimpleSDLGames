@@ -19,6 +19,8 @@ namespace game_backend
             void turn( pair<int, int> rotateVector );
 
             void step();
+
+            bool isGameOver();
             
             TGameField& gameField;
             //!< { x, y } -> { lineIndex, columnIndex }
@@ -28,6 +30,7 @@ namespace game_backend
 
         private:
             void updateSnakeHeadAndTail();
+            bool gameOverFlag = false;
     };
 }
 

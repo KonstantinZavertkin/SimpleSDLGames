@@ -54,6 +54,13 @@ class TFieldDrawer
                         cr.color = { 0xFF, 0xFF, 0xFF, 0xFF };
                         drawer.draw( cr );
                     }
+                    /*else
+                    {
+                        cr.isFilled = false;
+                        cr.color = { 0xFF, 0xFF, 0xFF, 0xFF };
+                        drawer.draw( cr );
+                    }*/
+                    
                 }
             }
 

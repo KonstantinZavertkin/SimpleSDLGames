@@ -30,7 +30,7 @@ int main()
     size_t wholeWidth = 640;
     size_t wholeHeight = 480;
     size_t xStartBias = 10;
-    size_t yStartBias = 40;
+    size_t yStartBias = 50;
     size_t activeGameFieldWidth = wholeWidth - xStartBias * 2;
     size_t activeGameFieldHeight = wholeHeight - yStartBias - 10;
     
@@ -54,15 +54,15 @@ int main()
     TRectangleDescription gameFieldBound = activeGameField;
     gameFieldBound.xStart -= 1;
     gameFieldBound.yStart -= 1;
-    gameFieldBound.width += 1;
-    gameFieldBound.height += 1;
+    gameFieldBound.width += 2;
+    gameFieldBound.height += 2;
     gameFieldBound.isFilled = false;
     gameFieldBound.color = { 0xFF, 0xFF, 0xFF, 0xFF };
 
     //! Cells params
     TCellsFieldParams cellsFieldParams;
-    cellsFieldParams.xCellsCount = 30;
-    cellsFieldParams.yCellsCount = 20;
+    cellsFieldParams.xCellsCount = 31;
+    cellsFieldParams.yCellsCount = 21;
     cellsFieldParams.cellHeight = 20;
     cellsFieldParams.cellWidth = 20;
     
@@ -88,13 +88,18 @@ int main()
     TGameField gameField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount );
     TSnake snake( gameField );
     pair<size_t, size_t> start = { 1, 1 };
-    snake.initSnake( start, 12 );
+    snake.initSnake( start, 5 );
 
     TFieldDrawer fDrawer( gameField, drawer, cellRectangles );
+    fDrawer.draw();
+    drawer.updateScreen();
 
+    bool gameOver = false;
+    
     // Main loop
     bool quit = false;
     SDL_Event exitEvent;
+
 
     while ( !quit )
     {
@@ -133,14 +138,19 @@ int main()
             }
         }
 
-        snake.step();
+        if ( !gameOver )
+        {
+            cout << "Start logic" << endl;
+            snake.step();
+            gameOver = snake.isGameOver();
+            cout << "Is game over: " << gameOver << endl;
+        }
+        
         fDrawer.draw();
         drawer.updateScreen();
-        SDL_Delay( 350 );
-        //std::cout << "." << endl;
+        
+        SDL_Delay( 500 );
     }
-
-    //std::cout << std::endl;
 
     TSdlWrapper::deteteInstance();
 };
