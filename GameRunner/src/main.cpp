@@ -132,7 +132,7 @@ int main()
             gameOver = snake.isGameOver();
 
             if ( gameOver )
-            cout << "Game over" << endl;
+                cout << "Game over, score: " << snake.snakeCells.size() << endl;
         }
         
         fDrawer.draw();

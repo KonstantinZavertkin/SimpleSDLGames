@@ -103,7 +103,8 @@ namespace game_backend
             snakeCells.push_back( make_pair( x, y ) );
         }
 
-        updateSnakeHeadAndTail();
+        if ( !gameOverFlag )
+            updateSnakeHeadAndTail();
     };
 
     bool TSnake::isGameOver()
