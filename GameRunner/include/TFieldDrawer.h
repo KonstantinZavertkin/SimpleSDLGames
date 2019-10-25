@@ -46,6 +46,9 @@ class TFieldDrawer
                     if ( field[i][j].currentState == TCellStates::snakeTailStateKey )
                         cr.color = { 0xFF, 0x00, 0x00, 0xFF };
 
+                    if ( field[i][j].currentState == TCellStates::eatStateKey )
+                        cr.color = { 0x00, 0xFF, 0x00, 0xFF };
+
                     drawer.draw( cr );
 
                     if ( field[i][j].currentState != TCellStates::backgroundStateKey )

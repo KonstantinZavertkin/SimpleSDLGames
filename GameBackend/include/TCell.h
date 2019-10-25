@@ -15,6 +15,7 @@ namespace game_backend
             static const string snakeTailStateKey;
             static const string backgroundStateKey;
             static const string eatStateKey;
+            static const string newSectionStateKey;
     };
 
     class TCell

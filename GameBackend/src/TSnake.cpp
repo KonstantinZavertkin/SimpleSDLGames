@@ -38,7 +38,10 @@ namespace game_backend
     void TSnake::step()
     {
         auto fieldSize = gameField.fieldSize;
-
+        bool isFoodFound = false;
+        TCell lastCellBuffer;
+        
+        // Handle body
         for ( size_t i = 0; i < snakeCells.size(); ++i )
         {
             auto x = snakeCells[i].first;
@@ -55,9 +58,7 @@ namespace game_backend
                     moveVector = moveVectorDelta;
             }
 
-            //cout << "i: " << i << ", mv: <" << moveVector.first << "," << moveVector.second << ">";
-            //cout << ", mvd: <" << moveVectorDelta.first << "," << moveVectorDelta.second << ">" << endl; 
-
+            lastCellBuffer = gameField.field[x][y];
             gameField.field[x][y].currentState = TCellStates::backgroundStateKey;
             gameField.field[x][y].moveDirection = make_pair( 0, 0 );
 
@@ -87,8 +88,19 @@ namespace game_backend
                 continue;
             }
 
+            if ( state == TCellStates::eatStateKey )
+                isFoodFound = true;
+
             gameField.field[x][y].currentState = TCellStates::snakeBodyStateKey;
             gameField.field[x][y].moveDirection = moveVector;
+        }
+
+        if ( isFoodFound )
+        {
+            auto x = lastCellBuffer.thisCoordinates.first;
+            auto y = lastCellBuffer.thisCoordinates.second;
+            gameField.field[x][y] = lastCellBuffer;
+            snakeCells.push_back( make_pair( x, y ) );
         }
 
         updateSnakeHeadAndTail();

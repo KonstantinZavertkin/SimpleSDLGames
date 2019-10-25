@@ -29,6 +29,28 @@ namespace game_backend
     TGameField::~TGameField()
     {};
 
+    void TGameField::checkFood()
+    {
+        // Is required?
+        bool isRequiredFood = true;
+
+        for ( auto line : field )
+        {
+            for ( auto cell : line )
+                if ( cell.currentState == TCellStates::eatStateKey )
+                    isRequiredFood = false;
+        }
+
+        if ( isRequiredFood )
+        {
+            auto x = rand() % field.size();
+            auto y = rand() % field[0].size();
+            cout << "x = " << x << "y = " << y << endl;
+            field[x][y].currentState = TCellStates::eatStateKey;
+        }
+        //field[1][12].currentState = TCellStates::eatStateKey;
+    }
+
     void TGameField::debugPrint()
     {
         cout << "   ";

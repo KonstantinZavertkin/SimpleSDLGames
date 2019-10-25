@@ -12,7 +12,6 @@
 #include "TDrawer.h"
 #include "TParams.h"
 #include "TCellRectangles.h"
-
 #include "TCell.h"
 #include "TGameField.h"
 #include "TSnake.h"
@@ -89,6 +88,7 @@ int main()
     TSnake snake( gameField );
     pair<size_t, size_t> start = { 1, 1 };
     snake.initSnake( start, 5 );
+    gameField.checkFood();
 
     TFieldDrawer fDrawer( gameField, drawer, cellRectangles );
     fDrawer.draw();
@@ -99,7 +99,6 @@ int main()
     // Main loop
     bool quit = false;
     SDL_Event exitEvent;
-
 
     while ( !quit )
     {
@@ -113,43 +112,33 @@ int main()
                 auto keyValue = exitEvent.key.keysym.sym;
 
                 if ( keyValue == SDLK_UP || keyValue == SDLK_w )
-                {
-                    std::cout << "Key UP" << std::endl;
                     snake.turn( { -1, 0 } );
-                }
                     
                 if ( keyValue == SDLK_DOWN || keyValue == SDLK_s )
-                {
-                    std::cout << "Key DOWN" << std::endl;
                     snake.turn( { 1, 0 } );
-                }
 
                 if ( keyValue == SDLK_LEFT || keyValue == SDLK_a )
-                {
-                    std::cout << "Key LEFT" << std::endl;
                     snake.turn( { 0, -1 } );
-                }
 
                 if ( keyValue == SDLK_RIGHT || keyValue == SDLK_d )
-                {
-                    std::cout << "Key RIGHT" << std::endl;
                     snake.turn( { 0, 1 } );
-                }
             }
         }
 
         if ( !gameOver )
         {
-            cout << "Start logic" << endl;
             snake.step();
+            gameField.checkFood();
             gameOver = snake.isGameOver();
-            cout << "Is game over: " << gameOver << endl;
+
+            if ( gameOver )
+            cout << "Game over" << endl;
         }
         
         fDrawer.draw();
         drawer.updateScreen();
         
-        SDL_Delay( 500 );
+        SDL_Delay( 100 );
     }
 
     TSdlWrapper::deteteInstance();
