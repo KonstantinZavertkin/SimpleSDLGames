@@ -84,64 +84,13 @@ int main()
     cellRectangles.setCellsFieldParams( activeGameField, cellsFieldParams );
     cellRectangles.calcGrid();
 
-    //TColorRGB red = { 0xFF, 0x00, 0x00, 0xFF };
-    //TColorRGB green = { 0x00, 0xFF, 0x00, 0xFF };
-    //TColorRGB blue = { 0x00, 0x00, 0xFF, 0xFF };
-    //TColorRGB black = { 0x00, 0x00, 0x00, 0xFF };
-    //TColorRGB white = { 0xFF, 0xFF, 0xFF, 0xFF };
-    
-
-    /*TRectangleDescription tempRect;
-
-    for ( size_t i = 2; i < 12; ++i )
-    {
-        tempRect = gameFieldDrawer.getCellRectangle( 1, i );
-        tempRect.isFilled = true;
-        tempRect.color = red;
-        drawer.draw( tempRect );
-        tempRect.isFilled = false;
-        tempRect.color = white;
-        drawer.draw( tempRect );
-    }
-
-    tempRect = gameFieldDrawer.getCellRectangle( 1, 20 );
-    cout << "x " << tempRect.xStart << endl;
-    cout << "y " << tempRect.yStart << endl;
-    cout << "h " << tempRect.height << endl;
-    cout << "w " << tempRect.width << endl;
-    tempRect.isFilled = true;
-    tempRect.color = green;
-    drawer.draw( tempRect );
-    tempRect.isFilled = false;
-    tempRect.color = white;
-    drawer.draw( tempRect );
-
-    drawer.updateScreen();*/
-
     //! Game backend
-
     TGameField gameField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount );
     TSnake snake( gameField );
     pair<size_t, size_t> start = { 1, 1 };
     snake.initSnake( start, 12 );
 
     TFieldDrawer fDrawer( gameField, drawer, cellRectangles );
-
-    //gameField.debugPrint();
-
-    //snake.step();
-    //gameField.debugPrint();
-
-    //snake.step();
-    //gameField.debugPrint();
-
-    //snake.turn( { 1, 0 } );
-
-    //snake.step();
-    //gameField.debugPrint();
-
-    //snake.step();
-    //gameField.debugPrint();
 
     // Main loop
     bool quit = false;
