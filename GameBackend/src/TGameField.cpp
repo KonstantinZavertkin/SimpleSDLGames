@@ -45,10 +45,8 @@ namespace game_backend
         {
             auto x = rand() % field.size();
             auto y = rand() % field[0].size();
-            cout << "x = " << x << "y = " << y << endl;
             field[x][y].currentState = TCellStates::eatStateKey;
         }
-        //field[1][12].currentState = TCellStates::eatStateKey;
     }
 
     void TGameField::debugPrint()

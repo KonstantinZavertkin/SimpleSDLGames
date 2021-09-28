@@ -86,8 +86,7 @@ int main()
     //! Game backend
     TGameField gameField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount );
     TSnake snake( gameField );
-    pair<size_t, size_t> start = { 1, 1 };
-    snake.initSnake( start, 5 );
+    snake.initSnake( { 1, 1 }, 5 );
     gameField.checkFood();
 
     TFieldDrawer fDrawer( gameField, drawer, cellRectangles );
@@ -136,7 +135,6 @@ int main()
         }
         
         fDrawer.draw();
-        drawer.updateScreen();
         
         SDL_Delay( 100 );
     }
