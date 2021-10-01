@@ -21,7 +21,7 @@
 using namespace io_submodule;
 using namespace game_backend;
 
-int main()
+int main( int argc, char **argv )
 {
     TSdlWrapper::getInstance();
 
@@ -140,4 +140,6 @@ int main()
     }
 
     TSdlWrapper::deteteInstance();
+
+   return 0;
 };
