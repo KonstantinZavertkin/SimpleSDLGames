@@ -1,16 +1,16 @@
 SnakeGame
 ==================================
 ## Installation instructions
-Requirements:
+Requirements:  
         - SDL2
 
-Building the executable file can be done using the following commands:
-        mkdir build
-        cd build
-        cmake ..
-        make all
+Building the executable file can be done using the following commands:  
+        mkdir build  
+        cd build  
+        cmake ..  
+        make all  
+  
+Run:  
+        ./GameRunner  
 
-Run:
-        ./GameRunner
-
-Tested on Debian 10.
+Tested on Debian 10 and Windows 10.  
