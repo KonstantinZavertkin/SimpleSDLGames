@@ -2,7 +2,7 @@
 #define _TRENDERER_H_
 
 #include <iostream>
-#include <SDL2/SDL.h>
+#include "sdl2_include.h"
 #include "TWindow.h"
 //#include "TTexture.h"
 //#include "TSurface.h"

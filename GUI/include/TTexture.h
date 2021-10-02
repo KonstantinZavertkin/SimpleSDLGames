@@ -1,7 +1,7 @@
 #ifndef _TTEXTURE_H_
 #define _TTEXTURE_H_
 
-#include <SDL2/SDL.h>
+#include "sdl2_include.h"
 #include "TSurface.h"
 #include "TRenderer.h"
 

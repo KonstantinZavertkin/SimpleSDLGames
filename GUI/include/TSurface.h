@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <string>
-#include <SDL2/SDL.h>
+#include "sdl2_include.h"
 
 namespace io_submodule
 {

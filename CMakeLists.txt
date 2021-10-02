@@ -42,7 +42,13 @@ file(GLOB SRCS_GameRunner ./GameRunner/src/*.cpp)
 file(GLOB HEADERS_GameRunner ./GameRunner/include/*.h)
 
 add_executable(GameRunner ${SRCS_GameRunner} ${HEADERS_GameRunner})
-add_definitions(-std=c++17)
+
+if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
+  add_definitions(-D WINDOWS)
+else()
+  add_definitions(-std=c++17)
+endif()
+
 target_link_libraries(GameRunner ${SDL2_LIBRARIES})
 target_link_libraries(GameRunner GameBackend)
 target_link_libraries(GameRunner GUI)

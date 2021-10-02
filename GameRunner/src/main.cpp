@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <iostream>
 #include <string>
-#include <SDL2/SDL.h>
 #include <functional>
+#include "sdl2_include.h"
 
 #include "TWindow.h"
 #include "TSdlWrapper.h"
