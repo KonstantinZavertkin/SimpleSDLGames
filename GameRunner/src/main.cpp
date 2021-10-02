@@ -15,7 +15,7 @@
 #include "TCell.h"
 #include "TGameField.h"
 #include "TCellsChain.h"
-#include "TSnakeFunctions.h"
+#include "TSnakeGame.h"
 #include "TFieldDrawer.h"
 
 using namespace io_submodule;
@@ -84,12 +84,9 @@ int main( int argc, char **argv )
     cellRectangles.calcGrid();
 
     //! Game backend
-    TGameField gameField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount );
-    TCellsChain snake( gameField );
-    snake.initCellsChain( { 1, 1 }, 5 );
-    checkFood( gameField );
+    TSnakeGame snakeGame( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount }, 5 );
 
-    TFieldDrawer fDrawer( gameField, drawer, cellRectangles );
+    TFieldDrawer fDrawer( snakeGame.gameField, drawer, cellRectangles );
     fDrawer.draw();
     drawer.updateScreen();
 
@@ -111,27 +108,25 @@ int main( int argc, char **argv )
                 auto keyValue = exitEvent.key.keysym.sym;
 
                 if ( keyValue == SDLK_UP || keyValue == SDLK_w )
-                    snake.turn( { -1, 0 } );
+                    snakeGame.turn( { -1, 0 } );
                     
                 if ( keyValue == SDLK_DOWN || keyValue == SDLK_s )
-                    snake.turn( { 1, 0 } );
+                    snakeGame.turn( { 1, 0 } );
 
                 if ( keyValue == SDLK_LEFT || keyValue == SDLK_a )
-                    snake.turn( { 0, -1 } );
+                    snakeGame.turn( { 0, -1 } );
 
                 if ( keyValue == SDLK_RIGHT || keyValue == SDLK_d )
-                    snake.turn( { 0, 1 } );
+                    snakeGame.turn( { 0, 1 } );
             }
         }
 
         if ( !gameOver )
         {
-            snake.step();
-            checkFood( gameField );
-            gameOver = snake.isGameOver();
+            gameOver = snakeGame.step();
 
             if ( gameOver )
-                cout << "Game over, score: " << snake.snakeCells.size() << endl;
+                cout << "Game over, score: " << snakeGame.snake.snakeCells.size() << endl;
         }
         
         fDrawer.draw();
