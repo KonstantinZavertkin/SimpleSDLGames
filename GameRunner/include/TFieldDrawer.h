@@ -2,7 +2,6 @@
 #define _TFIELDDRAWER_H
 
 #include "TGameField.h"
-#include "TSnake.h"
 #include "TDrawer.h"
 #include "TCellRectangles.h"
 

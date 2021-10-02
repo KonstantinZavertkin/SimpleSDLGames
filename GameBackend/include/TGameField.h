@@ -15,7 +15,7 @@ namespace game_backend
             TGameField( size_t linesCount, size_t rowsCount );
             ~TGameField();
 
-            void checkFood();
+            //void checkFood();
 
             void debugPrint();
 

@@ -1,4 +1,4 @@
-#include "TSnake.h"
+#include "TCellsChain.h"
 #include <tuple>
 #include <iostream>
 
@@ -6,13 +6,13 @@ namespace game_backend
 {
     using namespace std;
 
-    TSnake::TSnake( TGameField& gameField ) : gameField( gameField )
+    TCellsChain::TCellsChain( TGameField& gameField ) : gameField( gameField )
     {};
 
-    TSnake::~TSnake()
+    TCellsChain::~TCellsChain()
     {};
 
-    void TSnake::initSnake( pair<size_t, size_t> startPosition, size_t snakeLength )
+    void TCellsChain::initCellsChain( pair<size_t, size_t> startPosition, size_t snakeLength )
     {
         for ( size_t i = 0; i < snakeLength; ++i )
         {
@@ -26,7 +26,7 @@ namespace game_backend
         updateSnakeHeadAndTail();
     };
 
-    void TSnake::turn( pair<int, int> rotateVector )
+    void TCellsChain::turn( pair<int, int> rotateVector )
     {
         auto headCellCoords = snakeCells.front();
         auto x = headCellCoords.first;
@@ -35,7 +35,7 @@ namespace game_backend
         gameField.field[x][y].moveDirectionDelta = rotateVector;
     };
 
-    void TSnake::step()
+    void TCellsChain::step()
     {
         auto fieldSize = gameField.fieldSize;
         bool isFoodFound = false;
@@ -107,12 +107,12 @@ namespace game_backend
             updateSnakeHeadAndTail();
     };
 
-    bool TSnake::isGameOver()
+    bool TCellsChain::isGameOver()
     {
         return gameOverFlag;
     };
 
-    void TSnake::updateSnakeHeadAndTail()
+    void TCellsChain::updateSnakeHeadAndTail()
     {
         auto headCellCoords = snakeCells.front();
         auto xHead = headCellCoords.first;

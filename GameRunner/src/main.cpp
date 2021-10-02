@@ -14,8 +14,8 @@
 #include "TCellRectangles.h"
 #include "TCell.h"
 #include "TGameField.h"
-#include "TSnake.h"
-
+#include "TCellsChain.h"
+#include "TSnakeFunctions.h"
 #include "TFieldDrawer.h"
 
 using namespace io_submodule;
@@ -85,9 +85,9 @@ int main( int argc, char **argv )
 
     //! Game backend
     TGameField gameField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount );
-    TSnake snake( gameField );
-    snake.initSnake( { 1, 1 }, 5 );
-    gameField.checkFood();
+    TCellsChain snake( gameField );
+    snake.initCellsChain( { 1, 1 }, 5 );
+    checkFood( gameField );
 
     TFieldDrawer fDrawer( gameField, drawer, cellRectangles );
     fDrawer.draw();
@@ -127,7 +127,7 @@ int main( int argc, char **argv )
         if ( !gameOver )
         {
             snake.step();
-            gameField.checkFood();
+            checkFood( gameField );
             gameOver = snake.isGameOver();
 
             if ( gameOver )

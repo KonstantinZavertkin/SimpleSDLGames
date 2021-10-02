@@ -1,5 +1,7 @@
-#ifndef _TSNAKE_H_
-#define _TSNAKE_H_
+#ifndef _TCellsChain_H_
+
+#define _TCellsChain_H_
+
 
 #include "TGameField.h"
 
@@ -7,14 +9,14 @@ namespace game_backend
 {
     using namespace std;
 
-    class TSnake
+    class TCellsChain
     {
         public:
-            TSnake( TGameField& gameField );
+            TCellsChain( TGameField& gameField );
 
-            ~TSnake();
+            ~TCellsChain();
 
-            void initSnake( pair<size_t, size_t> startPosition, size_t snakeLength );
+            void initCellsChain( pair<size_t, size_t> startPosition, size_t snakeLength );
 
             void turn( pair<int, int> rotateVector );
 
