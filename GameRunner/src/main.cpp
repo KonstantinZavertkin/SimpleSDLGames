@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <iostream>
 #include <string>
-#include <SDL2/SDL.h>
 #include <functional>
+#include "sdl2_include.h"
 
 #include "TWindow.h"
 #include "TSdlWrapper.h"
@@ -21,7 +21,7 @@
 using namespace io_submodule;
 using namespace game_backend;
 
-int main()
+int main( int argc, char **argv )
 {
     TSdlWrapper::getInstance();
 
@@ -86,8 +86,7 @@ int main()
     //! Game backend
     TGameField gameField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount );
     TSnake snake( gameField );
-    pair<size_t, size_t> start = { 1, 1 };
-    snake.initSnake( start, 5 );
+    snake.initSnake( { 1, 1 }, 5 );
     gameField.checkFood();
 
     TFieldDrawer fDrawer( gameField, drawer, cellRectangles );
@@ -136,10 +135,11 @@ int main()
         }
         
         fDrawer.draw();
-        drawer.updateScreen();
         
         SDL_Delay( 100 );
     }
 
     TSdlWrapper::deteteInstance();
+
+   return 0;
 };

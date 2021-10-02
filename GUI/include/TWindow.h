@@ -4,7 +4,7 @@
 #include <string>
 #include <exception>
 #include <iostream>
-#include <SDL2/SDL.h>
+#include "sdl2_include.h"
 #include "TParams.h"
 
 namespace io_submodule

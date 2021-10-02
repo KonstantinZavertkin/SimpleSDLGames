@@ -1,7 +1,7 @@
 #ifndef _TDRAWER_H_
 #define _TDRAWER_H_
 
-#include <SDL2/SDL.h>
+#include "sdl2_include.h"
 #include "TTexture.h"
 #include "TRenderer.h"
 #include "TParams.h"
