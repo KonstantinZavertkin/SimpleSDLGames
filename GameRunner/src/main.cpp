@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <functional>
+#include <thread>
 #include "sdl2_include.h"
 
 #include "TWindow.h"
@@ -90,49 +91,13 @@ int main( int argc, char **argv )
     fDrawer.draw();
     drawer.updateScreen();
 
-    bool gameOver = false;
-    
-    // Main loop
-    bool quit = false;
-    SDL_Event exitEvent;
+    snakeGame.fDrawer = &fDrawer;
 
-    while ( !quit )
-    {
-        while ( SDL_PollEvent( &exitEvent ) != 0 )
-        {
-            if ( exitEvent.type == SDL_QUIT )
-                quit = true;
+    thread mainThr( &TSnakeGame::gameThread, &snakeGame );
+    thread ioThr( &TSnakeGame::ioThread, &snakeGame );
 
-            if ( exitEvent.type == SDL_KEYDOWN )
-            {
-                auto keyValue = exitEvent.key.keysym.sym;
-
-                if ( keyValue == SDLK_UP || keyValue == SDLK_w )
-                    snakeGame.turn( { -1, 0 } );
-                    
-                if ( keyValue == SDLK_DOWN || keyValue == SDLK_s )
-                    snakeGame.turn( { 1, 0 } );
-
-                if ( keyValue == SDLK_LEFT || keyValue == SDLK_a )
-                    snakeGame.turn( { 0, -1 } );
-
-                if ( keyValue == SDLK_RIGHT || keyValue == SDLK_d )
-                    snakeGame.turn( { 0, 1 } );
-            }
-        }
-
-        if ( !gameOver )
-        {
-            gameOver = snakeGame.step();
-
-            if ( gameOver )
-                cout << "Game over, score: " << snakeGame.snake.snakeCells.size() << endl;
-        }
-        
-        fDrawer.draw();
-        
-        SDL_Delay( 100 );
-    }
+    mainThr.join();
+    ioThr.join();
 
     TSdlWrapper::deteteInstance();
 

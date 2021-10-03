@@ -1,7 +1,5 @@
 #ifndef _TCellsChain_H_
-
 #define _TCellsChain_H_
-
 
 #include "TGameField.h"
 
