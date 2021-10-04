@@ -94,10 +94,10 @@ int main( int argc, char **argv )
     snakeGame.fDrawer = &fDrawer;
 
     thread mainThr( &TSnakeGame::gameThread, &snakeGame );
-    thread ioThr( &TSnakeGame::ioThread, &snakeGame );
+
+    snakeGame.ioThread();
 
     mainThr.join();
-    ioThr.join();
 
     TSdlWrapper::deteteInstance();
 

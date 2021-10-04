@@ -89,7 +89,7 @@ void TSnakeGame::ioThread()
                     turn( { 0, 1 } );
             }
         }
-
+        
         SDL_Delay( 1 );
     }
 };
