@@ -26,6 +26,9 @@ class TSnakeGame
         game_backend::TCellsChain snake;
 
         TFieldDrawer* fDrawer;
+
+        size_t clockCounter = 0;
+        bool performStep = true;
         
 };
 

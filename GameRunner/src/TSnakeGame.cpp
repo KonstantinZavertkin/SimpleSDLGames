@@ -47,16 +47,27 @@ void TSnakeGame::checkFood()
 void TSnakeGame::gameThread()
 {
     bool quit = false;
+    performStep = true;
 
     while ( !quit )
     {
-        quit = step();
+        if ( ( clockCounter % 4 ) == 0 )
+            performStep = true;
+
+        if ( performStep )
+        {
+            quit = step();
+            performStep = false;
+        }
+        
 
         if ( quit )
             cout << "Game over, score: " << snake.snakeCells.size() << endl;
 
         fDrawer->draw();
-        SDL_Delay( 100 );
+        SDL_Delay( 50 );
+
+        clockCounter++;
     }
 };
 
@@ -64,6 +75,13 @@ void TSnakeGame::ioThread()
 {
     SDL_Event exitEvent;
     bool quit = false;
+
+    pair<int, int> vectorUp = { -1, 0 };
+    pair<int, int> vectorDown = { 1, 0 };
+    pair<int, int> vectorLeft = { 0, -1 };
+    pair<int, int> vectorRight = { 0, 1 };
+    pair<int, int> vectorLast = { 0, 0 };
+    pair<int, int> vectorNext = { 0, 0 };
 
     while ( !quit )
     {
@@ -77,16 +95,34 @@ void TSnakeGame::ioThread()
                 auto keyValue = exitEvent.key.keysym.sym;
 
                 if ( keyValue == SDLK_UP || keyValue == SDLK_w )
-                    turn( { -1, 0 } );
-                    
+                {
+                    vectorNext = vectorUp;
+                }
+    
                 if ( keyValue == SDLK_DOWN || keyValue == SDLK_s )
-                    turn( { 1, 0 } );
+                {
+                    vectorNext = vectorDown;
+                }
 
                 if ( keyValue == SDLK_LEFT || keyValue == SDLK_a )
-                    turn( { 0, -1 } );
+                {
+                    vectorNext = vectorLeft;
+                }
 
                 if ( keyValue == SDLK_RIGHT || keyValue == SDLK_d )
-                    turn( { 0, 1 } );
+                {
+                    vectorNext = vectorRight;
+                }
+
+                if ( vectorNext == vectorLast )
+                {
+                    performStep = true;
+                }
+                else
+                {
+                    turn( { vectorNext } );
+                    vectorLast = vectorNext;
+                }
             }
         }
         

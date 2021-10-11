@@ -4,12 +4,10 @@ namespace io_submodule
 {
     TWindow::TWindow( const std::string name, const TRectangleDescription rectStruct  )
     {
-        auto x = rectStruct.xStart;
-        auto y = rectStruct.yStart;
         auto w = rectStruct.width;
         auto h = rectStruct.height;
 
-        windowPtr = SDL_CreateWindow( "Main window", x, y, w, h, SDL_WINDOW_SHOWN );
+        windowPtr = SDL_CreateWindow( "Main window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_SHOWN );
 
         if ( windowPtr == nullptr )
         {
