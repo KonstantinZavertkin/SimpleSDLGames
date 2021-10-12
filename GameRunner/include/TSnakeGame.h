@@ -1,6 +1,9 @@
 #ifndef _TSNAKEGAME_H_
 #define _TSNAKEGAME_H_
 
+#include <deque>
+#include <mutex>
+
 #include "TGameField.h"
 #include "TCellsChain.h"
 #include "TFieldDrawer.h"
@@ -29,6 +32,10 @@ class TSnakeGame
 
         size_t clockCounter = 0;
         bool performStep = true;
+
+        deque<pair<int, int>> rotationsQueue;
+
+        mutex syncPoint;
         
 };
 

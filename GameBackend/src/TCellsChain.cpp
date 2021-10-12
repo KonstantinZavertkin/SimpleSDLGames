@@ -101,6 +101,7 @@ namespace game_backend
             auto y = lastCellBuffer.thisCoordinates.second;
             gameField.field[x][y] = lastCellBuffer;
             snakeCells.push_back( make_pair( x, y ) );
+            cout << snakeCells.size() << endl;
         }
 
         if ( !gameOverFlag )

@@ -1,5 +1,7 @@
 #include "sdl2_include.h"
 #include "TSnakeGame.h"
+
+#include <algorithm>
 #include <iostream>
 
 TSnakeGame::TSnakeGame( pair<size_t, size_t> fieldSize, size_t snakeLength ) 
@@ -51,21 +53,34 @@ void TSnakeGame::gameThread()
 
     while ( !quit )
     {
+        syncPoint.lock();
+
         if ( ( clockCounter % 4 ) == 0 )
             performStep = true;
 
         if ( performStep )
         {
+            if ( !rotationsQueue.empty() )
+            {
+                turn( rotationsQueue.front() );
+                rotationsQueue.pop_front();
+            }
+
             quit = step();
             performStep = false;
         }
-        
+
+        syncPoint.unlock();
 
         if ( quit )
             cout << "Game over, score: " << snake.snakeCells.size() << endl;
 
         fDrawer->draw();
-        SDL_Delay( 50 );
+
+        if ( 50 - static_cast<int>( snake.snakeCells.size() ) < 0 )
+            SDL_Delay( 0 );
+        else
+            SDL_Delay( 50 - snake.snakeCells.size() );
 
         clockCounter++;
     }
@@ -114,15 +129,23 @@ void TSnakeGame::ioThread()
                     vectorNext = vectorRight;
                 }
 
+                syncPoint.lock();
+
                 if ( vectorNext == vectorLast )
                 {
                     performStep = true;
                 }
                 else
                 {
-                    turn( { vectorNext } );
+                    rotationsQueue.push_back( vectorNext );
+
+                    while ( rotationsQueue.size() > 2 )
+                        rotationsQueue.pop_front();
+
                     vectorLast = vectorNext;
                 }
+
+                syncPoint.unlock();
             }
         }
         
