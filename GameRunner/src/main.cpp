@@ -88,8 +88,7 @@ int main( int argc, char **argv )
     TSnakeGame snakeGame( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount }, 5 );
 
     TFieldDrawer fDrawer( snakeGame.gameField, drawer, cellRectangles );
-    fDrawer.draw();
-    drawer.updateScreen();
+    fDrawer.addStaticPrimitive( gameFieldBound );
 
     snakeGame.fDrawer = &fDrawer;
 

@@ -17,12 +17,18 @@ class TFieldDrawer
         {};
 
         ~TFieldDrawer(){};
+
+        //! Draw main game field 
         void draw();
+
+        void addStaticPrimitive( TRectangleDescription );
 
     private:
         TGameField& gameField;
         TDrawer& drawer;
         TCellRectangles& cellRectangles;
+
+        vector<TRectangleDescription> staticPrimitives;
 };
 
 #endif

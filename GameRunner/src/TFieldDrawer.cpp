@@ -37,5 +37,13 @@ void TFieldDrawer::draw()
         }
     }
 
+    for ( const auto& val : staticPrimitives )
+        drawer.draw( val );
+    
     drawer.updateScreen();
-}
+};
+
+void TFieldDrawer::addStaticPrimitive( TRectangleDescription figureDescription )
+{
+    staticPrimitives.push_back( figureDescription );
+};

@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <cmath>
 
 TSnakeGame::TSnakeGame( pair<size_t, size_t> fieldSize, size_t snakeLength ) 
     : gameField( fieldSize.first, fieldSize.second ), snake( gameField )
@@ -77,10 +78,7 @@ void TSnakeGame::gameThread()
 
         fDrawer->draw();
 
-        if ( 50 - static_cast<int>( snake.snakeCells.size() ) < 0 )
-            SDL_Delay( 0 );
-        else
-            SDL_Delay( 50 - snake.snakeCells.size() );
+        SDL_Delay( max( 0, 50 - static_cast<int>( snake.snakeCells.size() * 2 ) ) );
 
         clockCounter++;
     }
