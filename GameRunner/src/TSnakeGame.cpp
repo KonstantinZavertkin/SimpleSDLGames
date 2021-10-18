@@ -49,10 +49,10 @@ void TSnakeGame::checkFood()
 
 void TSnakeGame::gameThread()
 {
-    bool quit = false;
+    bool quitLocal = false;
     performStep = true;
 
-    while ( !quit )
+    while ( !quitLocal )
     {
         syncPoint.lock();
 
@@ -67,9 +67,17 @@ void TSnakeGame::gameThread()
                 rotationsQueue.pop_front();
             }
 
-            quit = step();
+            if ( !pauseGame )
+                quitLocal = step();
+
             performStep = false;
         }
+
+        if ( quitLocal )
+            quit = quitLocal;
+        
+        if ( quit )
+            quitLocal = quit;
 
         syncPoint.unlock();
 
@@ -87,7 +95,8 @@ void TSnakeGame::gameThread()
 void TSnakeGame::ioThread()
 {
     SDL_Event exitEvent;
-    bool quit = false;
+    bool pauseLocal = false;
+    bool quitLocal = false;
 
     pair<int, int> vectorUp = { -1, 0 };
     pair<int, int> vectorDown = { 1, 0 };
@@ -96,51 +105,59 @@ void TSnakeGame::ioThread()
     pair<int, int> vectorLast = { 0, 0 };
     pair<int, int> vectorNext = { 0, 0 };
 
-    while ( !quit )
+    while ( !quitLocal )
     {
         while ( SDL_PollEvent( &exitEvent ) != 0 )
         {
             if ( exitEvent.type == SDL_QUIT )
-                quit = true;
+            {
+                quitLocal = true;
+                syncPoint.lock();
+                quit = quitLocal;
+                syncPoint.unlock();
+            }
 
             if ( exitEvent.type == SDL_KEYDOWN )
             {
                 auto keyValue = exitEvent.key.keysym.sym;
 
-                if ( keyValue == SDLK_UP || keyValue == SDLK_w )
+                if ( keyValue != SDLK_SPACE )
                 {
+                    if ( keyValue == SDLK_UP || keyValue == SDLK_w )
                     vectorNext = vectorUp;
-                }
     
-                if ( keyValue == SDLK_DOWN || keyValue == SDLK_s )
-                {
-                    vectorNext = vectorDown;
-                }
+                    if ( keyValue == SDLK_DOWN || keyValue == SDLK_s )
+                        vectorNext = vectorDown;
 
-                if ( keyValue == SDLK_LEFT || keyValue == SDLK_a )
-                {
-                    vectorNext = vectorLeft;
-                }
+                    if ( keyValue == SDLK_LEFT || keyValue == SDLK_a )
+                        vectorNext = vectorLeft;
 
-                if ( keyValue == SDLK_RIGHT || keyValue == SDLK_d )
-                {
-                    vectorNext = vectorRight;
+                    if ( keyValue == SDLK_RIGHT || keyValue == SDLK_d )
+                        vectorNext = vectorRight;
                 }
+                else
+                    pauseLocal = !pauseLocal;
 
                 syncPoint.lock();
 
-                if ( vectorNext == vectorLast )
-                {
-                    performStep = true;
-                }
-                else
-                {
-                    rotationsQueue.push_back( vectorNext );
+                if ( quit )
+                    quitLocal = quit;
 
-                    while ( rotationsQueue.size() > 2 )
-                        rotationsQueue.pop_front();
+                pauseGame = pauseLocal;
 
-                    vectorLast = vectorNext;
+                if ( !pauseLocal )
+                {
+                    if ( vectorNext == vectorLast )
+                        performStep = true;
+                    else
+                    {
+                        rotationsQueue.push_back( vectorNext );
+
+                        while ( rotationsQueue.size() > 2 )
+                            rotationsQueue.pop_front();
+
+                        vectorLast = vectorNext;
+                    }
                 }
 
                 syncPoint.unlock();
