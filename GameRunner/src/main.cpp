@@ -41,6 +41,13 @@ int main( int argc, char **argv )
     mainWindowParams.isFilled = true;
     mainWindowParams.color = { 0, 0, 0, 0xFF };
 
+    //! Cells params
+    TCellsFieldParams cellsFieldParams;
+    cellsFieldParams.xCellsCount = 15;
+    cellsFieldParams.yCellsCount = 15;
+    cellsFieldParams.cellHeight = 20;
+    cellsFieldParams.cellWidth = 20;
+
     //! Area for cells
     TRectangleDescription activeGameField;
     activeGameField.xStart = xStartBias;
@@ -51,20 +58,15 @@ int main( int argc, char **argv )
     activeGameField.isFilled = true;
 
     //! Border around area for cells
-    TRectangleDescription gameFieldBound = activeGameField;
-    gameFieldBound.xStart -= 1;
-    gameFieldBound.yStart -= 1;
-    gameFieldBound.width += 2;
-    gameFieldBound.height += 2;
+    TRectangleDescription gameFieldBound;
+    gameFieldBound.xStart = activeGameField.xStart - 1;
+    gameFieldBound.yStart = activeGameField.yStart - 1;
+    gameFieldBound.width = cellsFieldParams.xCellsCount * cellsFieldParams.cellWidth + 2;
+    gameFieldBound.height = cellsFieldParams.yCellsCount * cellsFieldParams.cellHeight + 2;
     gameFieldBound.isFilled = false;
     gameFieldBound.color = { 0xFF, 0xFF, 0xFF, 0xFF };
 
-    //! Cells params
-    TCellsFieldParams cellsFieldParams;
-    cellsFieldParams.xCellsCount = 31;
-    cellsFieldParams.yCellsCount = 21;
-    cellsFieldParams.cellHeight = 20;
-    cellsFieldParams.cellWidth = 20;
+    
     
     //! Create window, renderer and drawer
     TWindow wnd( "Main", mainWindowParams );
