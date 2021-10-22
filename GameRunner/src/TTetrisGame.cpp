@@ -1,102 +1,38 @@
-#include "sdl2_include.h"
-#include "TSnakeGame.h"
-
-#include <algorithm>
 #include <iostream>
-#include <cmath>
+#include "TTetrisGame.h"
 
-TSnakeGame::TSnakeGame( pair<size_t, size_t> fieldSize, size_t snakeLength ) 
-    : gameField( fieldSize.first, fieldSize.second ), snake( gameField )
+TTetrisGame::TTetrisGame( pair<size_t, size_t> fieldSize )
+    : gameField( fieldSize.first, fieldSize.second ), someBlock( gameField )
 {
-    snake.initCellsChain( { 1, 1 }, snakeLength );
+    vector<pair<size_t, size_t>> v { {0, 0}, {0, 1}, {0, 2}, {1, 1} };
+    someBlock.initFigure( {0, 5}, v, TCellStates::blueColorStateKey );
 };
 
-TSnakeGame::~TSnakeGame()
+TTetrisGame::~TTetrisGame()
 {
+
 };
 
-bool TSnakeGame::step()
-{
-    snake.step();
-    checkFood();
-    return snake.isGameOver();
-};
-
-void TSnakeGame::turn( pair<int, int> rotateVector )
-{
-    snake.turn( rotateVector );
-};
-
-void TSnakeGame::checkFood()
-{
-    // Is required?
-    bool isRequiredFood = true;
-
-    for ( auto line : gameField.field )
-    {
-        for ( auto cell : line )
-            if ( cell.currentState == game_backend::TCellStates::eatStateKey )
-                isRequiredFood = false;
-    }
-
-    if ( isRequiredFood )
-    {
-        auto x = rand() % gameField.field.size();
-        auto y = rand() % gameField.field[0].size();
-        gameField.field[x][y].currentState = game_backend::TCellStates::eatStateKey;
-    }
-};
-
-void TSnakeGame::gameThread()
+void TTetrisGame::gameThread()
 {
     bool quitLocal = false;
-    performStep = true;
 
-    while ( !quitLocal )
+    while ( !quit )
     {
         syncPoint.lock();
-
-        if ( ( clockCounter % 4 ) == 0 )
-            performStep = true;
-
-        if ( performStep )
-        {
-            if ( !rotationsQueue.empty() )
-            {
-                turn( rotationsQueue.front() );
-                rotationsQueue.pop_front();
-            }
-
-            if ( !pauseGame )
-                quitLocal = step();
-
-            performStep = false;
-        }
-
-        if ( quitLocal )
-            quit = quitLocal;
-        
-        if ( quit )
-        {
-            quitLocal = quit;
-            cout << "Game over, score: " << snake.snakeCells.size() << endl;
-        }
-
+        someBlock.step();
         syncPoint.unlock();
 
-        fDrawer->draw();
-
-        SDL_Delay( max( 0, 50 - static_cast<int>( snake.snakeCells.size() * 2 ) ) );
-
-        clockCounter++;
+        SDL_Delay( 250 );
     }
-
-    cout << "gameThread done" << endl;
+    
+    cout << "Tetris game thread done" << endl;
 };
 
-void TSnakeGame::ioThread()
+void TTetrisGame::ioThread()
 {
     SDL_Event exitEvent;
+    SDL_Delay( 125 );
     bool pauseLocal = false;
     bool quitLocal = false;
 
@@ -127,7 +63,7 @@ void TSnakeGame::ioThread()
                 {
                     if ( keyValue == SDLK_UP || keyValue == SDLK_w )
                         vectorNext = vectorUp;
-    
+
                     if ( keyValue == SDLK_DOWN || keyValue == SDLK_s )
                         vectorNext = vectorDown;
 
@@ -164,17 +100,11 @@ void TSnakeGame::ioThread()
         }
 
         syncPoint.lock();
-
-        if ( quit )
-        {
-            quitLocal = quit;
-            cout << "global quit received" << endl;
-        }
-
+        fDrawer->draw();
         syncPoint.unlock();
-        
-        SDL_Delay( 1 );
+
+        SDL_Delay( 250 );
     }
 
-    cout << "ioThread done" << endl;
+    cout << "Tetris io thread done" << endl;
 };

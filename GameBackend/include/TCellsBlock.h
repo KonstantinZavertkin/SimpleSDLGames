@@ -29,7 +29,12 @@ namespace game_backend
         
         private:
         
+            vector<pair<size_t, size_t>> blockCells;
             bool checkOverlappingAtNextStep();
+
+            bool gameOverFlag = false;
+            pair<size_t, size_t> moveDirection = { 1, 0 };
+            pair<size_t, size_t> moveDirectionDefault = { 1, 0 };
     };
 };
 

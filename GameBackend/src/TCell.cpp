@@ -10,6 +10,10 @@ namespace game_backend
     const std::string TCellStates::snakeTailStateKey = "snakeTail";
     const std::string TCellStates::newSectionStateKey = "snakeNewSection";
 
+    const std::string TCellStates::redColorStateKey = "redColor";
+    const std::string TCellStates::greenColorStateKey = "greenColor";
+    const std::string TCellStates::blueColorStateKey = "blueColor";
+
     TCell::TCell() : currentState( TCellStates::backgroundStateKey ){};
 
     TCell::~TCell(){};

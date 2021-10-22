@@ -19,6 +19,8 @@
 #include "TSnakeGame.h"
 #include "TFieldDrawer.h"
 
+#include "TTetrisGame.h"
+
 using namespace io_submodule;
 using namespace game_backend;
 
@@ -44,7 +46,7 @@ int main( int argc, char **argv )
     //! Cells params
     TCellsFieldParams cellsFieldParams;
     cellsFieldParams.xCellsCount = 15;
-    cellsFieldParams.yCellsCount = 15;
+    cellsFieldParams.yCellsCount = 20;
     cellsFieldParams.cellHeight = 20;
     cellsFieldParams.cellWidth = 20;
 
@@ -66,8 +68,6 @@ int main( int argc, char **argv )
     gameFieldBound.isFilled = false;
     gameFieldBound.color = { 0xFF, 0xFF, 0xFF, 0xFF };
 
-    
-    
     //! Create window, renderer and drawer
     TWindow wnd( "Main", mainWindowParams );
     TRenderer renderer( wnd );
@@ -87,18 +87,32 @@ int main( int argc, char **argv )
     cellRectangles.calcGrid();
 
     //! Game backend
-    TSnakeGame snakeGame( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount }, 5 );
+    /*TSnakeGame snakeGame( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount }, 5 );
 
-    TFieldDrawer fDrawer( snakeGame.gameField, drawer, cellRectangles );
-    fDrawer.addStaticPrimitive( gameFieldBound );
+    TFieldDrawer snakeDrawer( snakeGame.gameField, drawer, cellRectangles );
+    snakeDrawer.addStaticPrimitive( gameFieldBound );
 
-    snakeGame.fDrawer = &fDrawer;
+    snakeGame.fDrawer = &snakeDrawer;
 
     thread mainThr( &TSnakeGame::gameThread, &snakeGame );
 
     snakeGame.ioThread();
 
-    mainThr.join();
+    mainThr.join();*/
+
+    TTetrisGame tetris( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount } );
+
+    TFieldDrawer tetrisDrawer( tetris.gameField, drawer, cellRectangles );
+    tetrisDrawer.addStaticPrimitive( gameFieldBound );
+
+    tetris.fDrawer = &tetrisDrawer;
+    tetris.fDrawer->draw();
+
+    thread mainThr2( &TTetrisGame::gameThread, &tetris );
+
+    tetris.ioThread();
+
+    mainThr2.join();
 
     TSdlWrapper::deteteInstance();
 

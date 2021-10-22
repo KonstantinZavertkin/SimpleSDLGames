@@ -25,6 +25,16 @@ void TFieldDrawer::draw()
 
             if ( field[i][j].currentState == TCellStates::eatStateKey )
                 cr.color = { 0x00, 0xFF, 0x00, 0xFF };
+            
+
+            if ( field[i][j].currentState == TCellStates::redColorStateKey )
+                cr.color = { 0xFF, 0x00, 0x00, 0xFF };
+            
+            if ( field[i][j].currentState == TCellStates::greenColorStateKey )
+                cr.color = { 0x00, 0xFF, 0x00, 0xFF };
+            
+            if ( field[i][j].currentState == TCellStates::blueColorStateKey )
+                cr.color = { 0x00, 0x00, 0xFF, 0xFF };
 
             drawer.draw( cr );
 

@@ -16,6 +16,10 @@ namespace game_backend
             static const string backgroundStateKey;
             static const string eatStateKey;
             static const string newSectionStateKey;
+
+            static const string redColorStateKey;
+            static const string greenColorStateKey;
+            static const string blueColorStateKey;
     };
 
     class TCell
