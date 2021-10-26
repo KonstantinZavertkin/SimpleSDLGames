@@ -25,11 +25,9 @@ class TTetrisGame
         void gameThread();
         void ioThread();
 
-        TCellsBlock createFigure( size_t id );
+        TCellsBlock createFigure( const size_t id );
 
         TGameField gameField;
-        //TCellsBlock someBlock0;
-        //TCellsBlock someBlock1;
 
         deque<TCellsBlock> allBlocks;
 

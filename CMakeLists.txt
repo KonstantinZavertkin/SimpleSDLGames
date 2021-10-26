@@ -47,6 +47,7 @@ add_executable(GameRunner ${SRCS_GameRunner} ${HEADERS_GameRunner})
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     add_definitions(-D WINDOWS)
+    add_definitions(/std:c++17)
 else()
     add_definitions(-std=c++17)
 endif()

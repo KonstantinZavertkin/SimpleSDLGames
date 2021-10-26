@@ -9,9 +9,11 @@ namespace game_backend
     TCellsBlock::~TCellsBlock()
     {};
 
-    void TCellsBlock::initFigure( pair<size_t, size_t> startPosition, vector<vector<pair<size_t, size_t>>> cells, const string color )
+    void TCellsBlock::initFigure( pair<size_t, size_t> startPosition, vector<vector<pair<size_t, size_t>>> cells, const string color, const size_t blocksIdArg )
     {
         cellState = color;
+        blocksId = blocksIdArg;
+
         for ( auto& cellsLine : cells )
         {
             vector<pair<size_t, size_t>> blockCellsLine;
@@ -29,6 +31,11 @@ namespace game_backend
 
         canMove = true;
         updateBordersCells();
+    }
+
+    void TCellsBlock::setRotatePoint( pair<int, int> rotatePointArg )
+    {
+        rotatePoint = rotatePointArg;
     };
 
     void TCellsBlock::updateBordersCells()
@@ -64,7 +71,7 @@ namespace game_backend
 
     void TCellsBlock::turn( pair<int, int> rotateVector )
     {
-
+        
     };
 
     void TCellsBlock::step()
@@ -109,17 +116,21 @@ namespace game_backend
                 }
             }
 
+        auto [dx, dy] = moveDirection;
+
         for ( auto& cellsLine : blockCells )
             for ( auto& cell : cellsLine )
             {
                 auto& [x, y] = cell;
-                auto [dx, dy] = moveDirection;
 
                 x += dx;
                 y += dy;
 
                 gameField.field[x][y].currentState = cellState;
             }
+
+        rotatePoint.first += dx;
+        rotatePoint.second += dy;
 
         moveDirection = moveDirectionDefault;
     };

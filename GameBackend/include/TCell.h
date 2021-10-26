@@ -20,6 +20,10 @@ namespace game_backend
             static const string redColorStateKey;
             static const string greenColorStateKey;
             static const string blueColorStateKey;
+            static const string cyanColorStateKey;
+            static const string magentaColorStateKey;
+            static const string yellowColorStateKey;
+            static const string orangeColorStateKey;
     };
 
     class TCell
@@ -29,6 +33,7 @@ namespace game_backend
             ~TCell();
 
             string currentState;
+            size_t ownersBlocksId = 0;
             pair<int, int> moveDirection;          //!< 2-D vector of speed
             pair<int, int> moveDirectionDelta;     //!< dx, dy for next step
             pair<size_t, size_t> thisCoordinates;  //!< { lineIndex; columnIndex }
