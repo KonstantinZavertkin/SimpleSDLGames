@@ -47,12 +47,6 @@ namespace game_backend
 
         for ( size_t i = 0; i < blockCells.size(); ++i )
         {
-            if ( !blockCells[i].empty() )
-            {
-                leftBorders[i] = blockCells[i][0];
-                rightBorders[i] = blockCells[i][blockCells[i].size() - 1];
-            }
-
             for ( size_t j = 0; j < blockCells[i].size(); ++j )
             {
                 auto [lineCoord, columnCoord] = blockCells[i][j];
@@ -64,6 +58,22 @@ namespace game_backend
                 }
                 else
                     lowerBorders[columnCoord] = { lineCoord, columnCoord };
+
+                if ( leftBorders.find( lineCoord ) != leftBorders.end() )
+                {
+                    if ( columnCoord < leftBorders[lineCoord].second )
+                        leftBorders[lineCoord] = { lineCoord, columnCoord };
+                }
+                else
+                    leftBorders[lineCoord] = { lineCoord, columnCoord };
+
+                if ( rightBorders.find( lineCoord ) != rightBorders.end() )
+                {
+                    if ( columnCoord > rightBorders[lineCoord].second )
+                        rightBorders[lineCoord] = { lineCoord, columnCoord };
+                }
+                else
+                    rightBorders[lineCoord] = { lineCoord, columnCoord };
                 
             }
         }
