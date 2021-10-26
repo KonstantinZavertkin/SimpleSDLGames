@@ -18,7 +18,7 @@ namespace game_backend
 
             ~TCellsBlock();
 
-            void initFigure( pair<size_t, size_t> startPosition, vector<vector<pair<size_t, size_t>>> cells, const string color, const size_t blocksId );
+            void initFigure( pair<size_t, size_t> startPosition, vector<pair<size_t, size_t>> cells, const string color, const size_t blocksId );
 
             void setRotatePoint( pair<int, int> rotatePoint );
 
@@ -43,19 +43,13 @@ namespace game_backend
         
         private:
 
-            vector<vector<pair<size_t, size_t>>> blockCells;   //!< Matrix of cell's coordinates
-            map<size_t, pair<size_t, size_t>> leftBorders;
-            map<size_t, pair<size_t, size_t>> rightBorders;
-            map<size_t, pair<size_t, size_t>> lowerBorders;
-            map<size_t, pair<size_t, size_t>> upperBorders;
+            vector<pair<size_t, size_t>> blockCells;   //!< Matrix of cell's coordinates
             string cellState;                                  //! Cell's state
 
             pair<int, int> rotatePoint;
             size_t blocksId = 0;
 
             bool checkOverlappingAtNextStep();
-
-            void updateBordersCells();
     };
 };
 

@@ -123,13 +123,13 @@ void TTetrisGame::ioThread()
 
 TCellsBlock TTetrisGame::createFigure( const size_t id )
 {
-    vector<vector<pair<size_t, size_t>>> v0 { { {0, 0}, {0, 1}, {0, 2} }, { {1, 1} } };
-    vector<vector<pair<size_t, size_t>>> v1 { { {0, 0}, {0, 1}, {0, 2}, {0, 3} } };
-    vector<vector<pair<size_t, size_t>>> v2 { { {0, 0}, {0, 1}, {0, 2} }, { {1, 0} } };
-    vector<vector<pair<size_t, size_t>>> v3 { { {0, 0} }, { {1, 0}, {1, 1}, {1, 2} } };
-    vector<vector<pair<size_t, size_t>>> v4 { { {0, 0}, {0, 1} }, { {1, 0}, {1, 1} } };
-    vector<vector<pair<size_t, size_t>>> v5 { { {0, 0}, {0, 1} }, { {1, 1}, {1, 2} } };
-    vector<vector<pair<size_t, size_t>>> v6 { { {0, 1}, {0, 2} }, { {1, 0}, {1, 1} } };
+    vector<pair<size_t, size_t>> v0 { {0, 0}, {0, 1}, {0, 2}, {1, 1} };
+    vector<pair<size_t, size_t>> v1 { {0, 0}, {0, 1}, {0, 2}, {0, 3} };
+    vector<pair<size_t, size_t>> v2 { {0, 0}, {0, 1}, {0, 2}, {1, 0} };
+    vector<pair<size_t, size_t>> v3 { {0, 0}, {1, 0}, {1, 1}, {1, 2} };
+    vector<pair<size_t, size_t>> v4 { {0, 0}, {0, 1}, {1, 0}, {1, 1} };
+    vector<pair<size_t, size_t>> v5 { {0, 0}, {0, 1}, {1, 1}, {1, 2} };
+    vector<pair<size_t, size_t>> v6 { {0, 1}, {0, 2}, {1, 0}, {1, 1} };
 
     TCellsBlock block( gameField );
 
@@ -137,37 +137,37 @@ TCellsBlock TTetrisGame::createFigure( const size_t id )
 
     if ( idLocal == 0 )
     {
-        block.initFigure( {0, 5}, v0, TCellStates::blueColorStateKey, id );
+        block.initFigure( {0, 5}, v0, TCellStates::blueColorStateKey, id + 1 );
     }
         
     if ( idLocal == 1 )
     {
-        block.initFigure( {0, 5}, v1, TCellStates::greenColorStateKey, id );
+        block.initFigure( {0, 5}, v1, TCellStates::greenColorStateKey, id + 1 );
     }
 
     if ( idLocal == 2 )
     {
-        block.initFigure( {0, 5}, v2, TCellStates::redColorStateKey, id );
+        block.initFigure( {0, 5}, v2, TCellStates::redColorStateKey, id + 1 );
     }
 
     if ( idLocal == 3 )
     {
-        block.initFigure( {0, 5}, v3, TCellStates::cyanColorStateKey, id );
+        block.initFigure( {0, 5}, v3, TCellStates::cyanColorStateKey, id + 1 );
     }
 
     if ( idLocal == 4 )
     {
-        block.initFigure( {0, 5}, v4, TCellStates::magentaColorStateKey, id );
+        block.initFigure( {0, 5}, v4, TCellStates::magentaColorStateKey, id + 1 );
     }
 
     if ( idLocal == 5 )
     {
-        block.initFigure( {0, 5}, v5, TCellStates::yellowColorStateKey, id );
+        block.initFigure( {0, 5}, v5, TCellStates::yellowColorStateKey, id + 1 );
     }
 
     if ( idLocal == 6 )
     {
-        block.initFigure( {0, 5}, v6, TCellStates::orangeColorStateKey, id );
+        block.initFigure( {0, 5}, v6, TCellStates::orangeColorStateKey, id + 1 );
     }
 
     return block;
