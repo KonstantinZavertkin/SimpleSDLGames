@@ -2,10 +2,8 @@
 #include "TTetrisGame.h"
 
 TTetrisGame::TTetrisGame( pair<size_t, size_t> fieldSize )
-    : gameField( fieldSize.first, fieldSize.second ), someBlock( gameField )
+    : gameField( fieldSize.first, fieldSize.second )
 {
-    vector<pair<size_t, size_t>> v { {0, 0}, {0, 1}, {0, 2}, {1, 1} };
-    someBlock.initFigure( {0, 5}, v, TCellStates::blueColorStateKey );
 };
 
 TTetrisGame::~TTetrisGame()
@@ -20,10 +18,25 @@ void TTetrisGame::gameThread()
     while ( !quit )
     {
         syncPoint.lock();
-        someBlock.step();
+
+        if ( !pauseGame )
+        {
+            if ( allBlocks.empty() )
+                allBlocks.push_back( createFigure( 0 ) );
+            
+            if ( !allBlocks.empty() )
+                if ( !allBlocks.back().canMove )
+                    allBlocks.push_back( createFigure( 0 ) );
+
+            if ( !allBlocks.empty() )
+            {
+                allBlocks.back().step();
+            }
+        }
+        
         syncPoint.unlock();
 
-        SDL_Delay( 250 );
+        SDL_Delay( 500 );
     }
     
     cout << "Tetris game thread done" << endl;
@@ -42,6 +55,7 @@ void TTetrisGame::ioThread()
     pair<int, int> vectorRight = { 0, 1 };
     pair<int, int> vectorLast = { 0, 0 };
     pair<int, int> vectorNext = { 0, 0 };
+    pair<int, int> vectorDefault = { 0, 0 };
 
     while ( !quitLocal )
     {
@@ -82,16 +96,13 @@ void TTetrisGame::ioThread()
 
                 if ( !pauseLocal )
                 {
-                    if ( vectorNext == vectorLast )
-                        performStep = true;
-                    else
+                    if ( vectorNext != vectorDefault )
                     {
-                        rotationsQueue.push_back( vectorNext );
-
-                        while ( rotationsQueue.size() > 2 )
-                            rotationsQueue.pop_front();
-
-                        vectorLast = vectorNext;
+                        if ( !allBlocks.empty() )
+                        {
+                            allBlocks.back().moveDirection = vectorNext;
+                            allBlocks.back().step();
+                        }
                     }
                 }
 
@@ -103,8 +114,28 @@ void TTetrisGame::ioThread()
         fDrawer->draw();
         syncPoint.unlock();
 
-        SDL_Delay( 250 );
+        SDL_Delay( 1 );
     }
 
     cout << "Tetris io thread done" << endl;
+};
+
+TCellsBlock TTetrisGame::createFigure( size_t id )
+{
+    vector<vector<pair<size_t, size_t>>> v0 { { {0, 0}, {0, 1}, {0, 2} }, { {1, 1} } };
+    vector<vector<pair<size_t, size_t>>> v1 { { {0, 0}, {0, 1}, {0, 2}, {0, 3}, {0, 4} } };
+
+    TCellsBlock block( gameField );
+
+    if ( id == 0 )
+    {
+        block.initFigure( {0, 5}, v0, TCellStates::blueColorStateKey );
+    }
+        
+    if ( id == 1 )
+    {
+        block.initFigure( {0, 5}, v1, TCellStates::greenColorStateKey );
+    }
+
+    return block;
 };

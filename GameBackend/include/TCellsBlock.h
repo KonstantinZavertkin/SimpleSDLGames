@@ -2,6 +2,7 @@
 #define _TCELLSBLOCK_H_
 
 #include <vector>
+#include <map>
 #include <string>
 
 #include "TGameField.h"
@@ -17,8 +18,10 @@ namespace game_backend
 
             ~TCellsBlock();
 
-            void initFigure( pair<size_t, size_t> startPosition, vector<pair<size_t, size_t>> cells, const string color );
+            void initFigure( pair<size_t, size_t> startPosition, vector<vector<pair<size_t, size_t>>> cells, const string color );
 
+            void updateBordersCells();
+            
             void turn( pair<int, int> rotateVector );
 
             void step();
@@ -26,15 +29,27 @@ namespace game_backend
             bool isGameOver();
             
             TGameField& gameField;
+
+            bool canMove = true;
+            bool gameOverFlag = false;
+            pair<int, int> moveDirection = { 1, 0 };
+            const pair<int, int> moveDirectionDefault = { 1, 0 };
+
+            const pair<int, int> vectorUp = { -1, 0 };
+            const pair<int, int> vectorDown = { 1, 0 };
+            const pair<int, int> vectorLeft = { 0, -1 };
+            const pair<int, int> vectorRight = { 0, 1 };
         
         private:
         
-            vector<pair<size_t, size_t>> blockCells;
-            bool checkOverlappingAtNextStep();
+            vector<vector<pair<size_t, size_t>>> blockCells;
+            map<size_t, pair<size_t, size_t>> leftBorders;
+            map<size_t, pair<size_t, size_t>> rightBorders;
+            map<size_t, pair<size_t, size_t>> lowerBorders;
+            map<size_t, pair<size_t, size_t>> upperBorders;
 
-            bool gameOverFlag = false;
-            pair<size_t, size_t> moveDirection = { 1, 0 };
-            pair<size_t, size_t> moveDirectionDefault = { 1, 0 };
+
+            bool checkOverlappingAtNextStep();
     };
 };
 

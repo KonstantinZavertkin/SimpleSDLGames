@@ -11,6 +11,7 @@
 #include "TFieldDrawer.h"
 
 using namespace std;
+using namespace game_backend;
 
 class TTetrisGame
 {
@@ -24,8 +25,13 @@ class TTetrisGame
         void gameThread();
         void ioThread();
 
-        game_backend::TGameField gameField;
-        game_backend::TCellsBlock someBlock;
+        TCellsBlock createFigure( size_t id );
+
+        TGameField gameField;
+        //TCellsBlock someBlock0;
+        //TCellsBlock someBlock1;
+
+        deque<TCellsBlock> allBlocks;
 
         TFieldDrawer* fDrawer;
 
