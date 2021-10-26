@@ -11,6 +11,7 @@ namespace game_backend
 
     void TCellsBlock::initFigure( pair<size_t, size_t> startPosition, vector<vector<pair<size_t, size_t>>> cells, const string color )
     {
+        cellState = color;
         for ( auto& cellsLine : cells )
         {
             vector<pair<size_t, size_t>> blockCellsLine;
@@ -68,11 +69,9 @@ namespace game_backend
 
     void TCellsBlock::step()
     {
-        bool skip = false;
-        string state;
-        vector<vector<pair<size_t, size_t>>> blockCellsCopy = vector<vector<pair<size_t, size_t>>>( blockCells );
+        skip = false;
 
-        for ( auto& cellsLine : blockCellsCopy )
+        for ( auto& cellsLine : blockCells )
             for ( auto& cell : cellsLine )
             {
                 auto [x, y] = cell;
@@ -89,46 +88,7 @@ namespace game_backend
         if ( canMove && !skip )
         {
             updateBordersCells();
-
-            if ( moveDirection == vectorDown )
-                for ( auto& cell : lowerBorders )
-                {
-                    auto [x, y] = cell.second;
-                    auto [dx, dy] = moveDirection;
-
-                    if ( gameField.field[x + dx][y + dy].currentState != TCellStates::backgroundStateKey )
-                    {
-                        canMove = false;
-                    }
-                }
-
-            if ( ( moveDirection == vectorLeft ) )
-            {
-                for ( auto& cell : leftBorders )
-                {
-                    auto [x, y] = cell.second;
-                    auto [dx, dy] = moveDirection;
-
-                    if ( gameField.field[x + dx][y + dy].currentState != TCellStates::backgroundStateKey )
-                    {
-                        skip = true;
-                    }
-                }
-            }
-
-            if ( moveDirection == vectorRight )
-            {
-                for ( auto& cell : rightBorders )
-                {
-                    auto [x, y] = cell.second;
-                    auto [dx, dy] = moveDirection;
-
-                    if ( gameField.field[x + dx][y + dy].currentState != TCellStates::backgroundStateKey )
-                    {
-                        skip = true;
-                    }
-                }
-            }
+            checkOverlappingAtNextStep();
         }
 
         if ( !canMove || skip )
@@ -142,9 +102,9 @@ namespace game_backend
             {
                 auto [x, y] = cell;
                 
-                if ( x < gameField.field.size() && (!gameOverFlag) )
+                if ( x < gameField.field.size() && ( !gameOverFlag ) )
                 {
-                    state = gameField.field[x][y].currentState;
+                    cellState = gameField.field[x][y].currentState;
                     gameField.field[x][y].currentState = TCellStates::backgroundStateKey;
                 }
             }
@@ -152,14 +112,13 @@ namespace game_backend
         for ( auto& cellsLine : blockCells )
             for ( auto& cell : cellsLine )
             {
-                auto [x, y] = cell;
+                auto& [x, y] = cell;
                 auto [dx, dy] = moveDirection;
 
-                cell.first += dx;
-                cell.second += dy;
-                x = cell.first;
-                y = cell.second;
-                gameField.field[x][y].currentState = state;
+                x += dx;
+                y += dy;
+
+                gameField.field[x][y].currentState = cellState;
             }
 
         moveDirection = moveDirectionDefault;
@@ -172,6 +131,26 @@ namespace game_backend
 
     bool TCellsBlock::checkOverlappingAtNextStep()
     {
-        return true;
+        map<size_t, pair<size_t, size_t>>& borders = lowerBorders;
+
+        if ( moveDirection == vectorLeft )
+            borders = leftBorders;
+
+        if ( moveDirection == vectorRight )
+            borders = rightBorders;
+
+        for ( auto& cell : borders )
+        {
+            auto [x, y] = cell.second;
+            auto [dx, dy] = moveDirection;
+
+            if ( gameField.field[x + dx][y + dy].currentState != TCellStates::backgroundStateKey )
+                skip = true;
+        }
+
+        if ( skip && ( moveDirection == vectorDown ) )
+            canMove = false;
+
+        return skip;
     };
 };

@@ -20,8 +20,6 @@ namespace game_backend
 
             void initFigure( pair<size_t, size_t> startPosition, vector<vector<pair<size_t, size_t>>> cells, const string color );
 
-            void updateBordersCells();
-            
             void turn( pair<int, int> rotateVector );
 
             void step();
@@ -31,6 +29,7 @@ namespace game_backend
             TGameField& gameField;
 
             bool canMove = true;
+            bool skip = false;
             bool gameOverFlag = false;
             pair<int, int> moveDirection = { 1, 0 };
             const pair<int, int> moveDirectionDefault = { 1, 0 };
@@ -41,15 +40,18 @@ namespace game_backend
             const pair<int, int> vectorRight = { 0, 1 };
         
         private:
-        
-            vector<vector<pair<size_t, size_t>>> blockCells;
+
+            vector<vector<pair<size_t, size_t>>> blockCells;   //!< Matrix of cell's coordinates
             map<size_t, pair<size_t, size_t>> leftBorders;
             map<size_t, pair<size_t, size_t>> rightBorders;
             map<size_t, pair<size_t, size_t>> lowerBorders;
             map<size_t, pair<size_t, size_t>> upperBorders;
+            string cellState;                                  //! Cell's state
 
 
             bool checkOverlappingAtNextStep();
+
+            void updateBordersCells();
     };
 };
 
