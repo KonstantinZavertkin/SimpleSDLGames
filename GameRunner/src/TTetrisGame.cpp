@@ -101,8 +101,16 @@ void TTetrisGame::ioThread()
                     {
                         if ( !allBlocks.empty() )
                         {
-                            allBlocks.back().moveDirection = vectorNext;
-                            allBlocks.back().step();
+                            if ( vectorNext == vectorUp )
+                            {
+                                cout << "turn" << endl;
+                                allBlocks.back().turn( {0,0} );
+                            }
+                            else
+                            {
+                                allBlocks.back().moveDirection = vectorNext;
+                                allBlocks.back().step();
+                            }
                         }
                     }
                 }

@@ -24,6 +24,8 @@ namespace game_backend
         }
 
         canMove = true;
+
+        setRotatePoint( { 1, startPosition.second + 1 } );
     }
 
     void TCellsBlock::setRotatePoint( pair<int, int> rotatePointArg )
@@ -33,7 +35,31 @@ namespace game_backend
 
     void TCellsBlock::turn( pair<int, int> rotateVector )
     {
-        
+        //! TODO Добавить проверку границ
+
+        string stateBuf = TCellStates::backgroundStateKey;
+
+        for ( size_t i = 0; i < blockCells.size(); ++i )
+        {
+            auto& [x, y] = blockCells[i];
+            gameField.field[x][y].ownersBlocksId = 0;
+            stateBuf = gameField.field[x][y].currentState;
+            gameField.field[x][y].currentState = TCellStates::backgroundStateKey;
+        }
+
+        for ( size_t i = 0; i < blockCells.size(); ++i )
+        {
+            auto& [x, y] = blockCells[i];
+            auto [rx, ry] = rotatePoint;
+
+            auto newX = rx - (y - ry);
+            auto newY = ry + (x - rx);
+
+            blockCells[i] = { newX, newY };
+            gameField.field[newX][newY].ownersBlocksId = blocksId;
+            gameField.field[newX][newY].currentState = stateBuf;
+
+        }
     };
 
     void TCellsBlock::step()
@@ -57,20 +83,11 @@ namespace game_backend
                     skip = true;
                     break;
                 }
-
-            const auto fieldBlocksId = gameField.field[x + dx][y + dy].ownersBlocksId;
-
-            if ( ( fieldBlocksId != 0 ) && fieldBlocksId != blocksId )
-            {
-                cout << fieldBlocksId << endl;
-                skip = true;
-                checkOverlappingAtNextStep();
-                break;
-            }
         }
 
         if ( canMove && !skip )
             checkOverlappingAtNextStep();
+            
 
         if ( !canMove || skip )
         {
@@ -116,17 +133,9 @@ namespace game_backend
 
     bool TCellsBlock::checkOverlappingAtNextStep()
     {
-        map<size_t, pair<size_t, size_t>>& borders = lowerBorders;
-
-        if ( moveDirection == vectorLeft )
-            borders = leftBorders;
-
-        if ( moveDirection == vectorRight )
-            borders = rightBorders;
-
-        for ( auto& cell : borders )
+        for ( auto& cell : blockCells )
         {
-            auto [x, y] = cell.second;
+            auto [x, y] = cell;
             auto [dx, dy] = moveDirection;
 
             const auto fieldBlocksId = gameField.field[x + dx][y + dy].ownersBlocksId;
