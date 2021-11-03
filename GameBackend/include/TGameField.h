@@ -17,6 +17,8 @@ namespace game_backend
 
             void debugPrint();
 
+            void scrollField( pair<int, int> );
+
             vector<vector<TCell>> field;     //! 2d field representation
             pair<size_t, size_t> fieldSize;
     };

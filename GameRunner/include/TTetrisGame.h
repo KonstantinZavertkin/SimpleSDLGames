@@ -19,8 +19,9 @@ class TTetrisGame
         TTetrisGame( pair<size_t, size_t> fieldSize );
         ~TTetrisGame();
 
-        bool step();
-        void turn( pair<int, int> rotateVector );
+        //bool step();
+        //void turn( pair<int, int> rotateVector );
+        bool checkBottomLine();
 
         void gameThread();
         void ioThread();

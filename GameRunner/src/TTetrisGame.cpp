@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include "TTetrisGame.h"
 
 TTetrisGame::TTetrisGame( pair<size_t, size_t> fieldSize )
@@ -9,6 +10,19 @@ TTetrisGame::TTetrisGame( pair<size_t, size_t> fieldSize )
 TTetrisGame::~TTetrisGame()
 {
 
+}
+
+bool TTetrisGame::checkBottomLine()
+{
+    const auto linesCount = gameField.field.size();
+    const auto lastLine = gameField.field[linesCount - 1];
+
+    auto isNotVoidCell = []( const TCell& cell )
+    {
+        return cell.currentState != TCellStates::backgroundStateKey;
+    };
+
+    return  all_of( lastLine.begin(), lastLine.end(), isNotVoidCell );
 };
 
 void TTetrisGame::gameThread()
@@ -33,6 +47,11 @@ void TTetrisGame::gameThread()
             {
                 allBlocks.back().step();
             }
+
+            //! TODO Сделать удаление фигур из очереди
+            //! TODO Сделать задержку на шаг при удалении строки
+            while ( checkBottomLine() )
+                gameField.scrollField( { 1, 0 } );
         }
         
         syncPoint.unlock();
@@ -104,7 +123,7 @@ void TTetrisGame::ioThread()
                             if ( vectorNext == vectorUp )
                             {
                                 cout << "turn" << endl;
-                                allBlocks.back().turn( {0,0} );
+                                allBlocks.back().turn( {0, 0} );
                             }
                             else
                             {
