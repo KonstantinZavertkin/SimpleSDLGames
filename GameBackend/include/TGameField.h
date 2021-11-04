@@ -21,7 +21,7 @@ namespace game_backend
             void scrollField( pair<int, int> direction, optional<size_t> fromLine );
 
             vector<vector<TCell>> field;     //! 2d field representation
-            pair<size_t, size_t> fieldSize;
+            pair<int, int> fieldSize;
     };
 };
 

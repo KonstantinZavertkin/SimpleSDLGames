@@ -21,7 +21,7 @@ namespace game_backend
             blockCells.push_back( { x, y } );
             gameField.field[x][y].currentState = color;
             gameField.field[x][y].ownersBlocksId = blocksId;
-            gameField.field[x][y].canMove = true;
+            gameField.field[x][y].canBeMoved = true;
         }
 
         canMove = true;
@@ -36,33 +36,91 @@ namespace game_backend
 
     void TCellsBlock::turn( pair<int, int> rotateVector )
     {
+        cout << "Turn start";
         //! TODO ƒобавить проверку границ
+        //! TODO ƒобавить проверку на пересечени€ с другими фигурами
+        //! TODO —делать запрет поворота, если в результате фигура оказываетс€ выше изначального положени€
 
         string stateBuf = TCellStates::backgroundStateKey;
 
         for ( size_t i = 0; i < blockCells.size(); ++i )
         {
             auto& [x, y] = blockCells[i];
+            //cout << "(" << x << ", " << y << ") ";
             gameField.field[x][y].ownersBlocksId = 0;
             stateBuf = gameField.field[x][y].currentState;
             gameField.field[x][y].currentState = TCellStates::backgroundStateKey;
-            gameField.field[x][y].canMove = false;
+            gameField.field[x][y].canBeMoved = false;
         }
+
+        cout << " 1";
+
+        int shiftLeft = 0;
+        int shiftRight = 0;
+        int shiftBottom = 0;
 
         for ( size_t i = 0; i < blockCells.size(); ++i )
         {
             auto& [x, y] = blockCells[i];
             auto [rx, ry] = rotatePoint;
 
-            auto newX = rx - (y - ry);
-            auto newY = ry + (x - rx);
+            int newX = static_cast<int>( rx ) - ( y - ry );
+            int newY = static_cast<int>( ry ) + ( x - rx );
+
+            if ( newX >= gameField.fieldSize.first )
+                if ( newX > shiftBottom )
+                    shiftBottom = newX;
+
+            if ( newY < 0 )
+                if ( newY < shiftLeft )
+                    shiftLeft = newY;
+
+            if ( newY >= gameField.fieldSize.second )
+                if ( newY > shiftRight )
+                    shiftRight = newY;
+
+            blockCells[i] = { newX, newY };
+            
+        }
+
+        cout << " 2" << endl;
+
+        if ( shiftBottom != 0 )
+        {
+            shiftBottom -= (gameField.fieldSize.first - 1 );
+            rotatePoint.first -= std::abs( shiftBottom );
+        }
+
+        if ( shiftLeft != 0 )
+            rotatePoint.second += std::abs( shiftLeft );
+        
+        if ( shiftRight != 0 )
+        {
+            shiftRight -= gameField.fieldSize.second - 1;
+            rotatePoint.second -= std::abs( shiftRight );
+        }
+
+        for ( size_t i = 0; i < blockCells.size(); ++i )
+        {
+            auto [newX, newY] = blockCells[i];
+
+            if ( shiftLeft != 0 )
+                newY += std::abs( shiftLeft );
+                
+            if ( shiftRight != 0 )
+                newY -= std::abs( shiftRight );
+
+            if ( shiftBottom != 0 )
+                newX -= std::abs( shiftBottom );
+                
+            cout << "newX = " << newX << ", NewY = " << newY << endl;
 
             blockCells[i] = { newX, newY };
             gameField.field[newX][newY].ownersBlocksId = blocksId;
             gameField.field[newX][newY].currentState = stateBuf;
-            gameField.field[newX][newY].canMove = true;
-
+            gameField.field[newX][newY].canBeMoved = true;
         }
+        cout << endl;
     };
 
     void TCellsBlock::step()
@@ -107,7 +165,7 @@ namespace game_backend
                 cellState = gameField.field[x][y].currentState;
                 gameField.field[x][y].currentState = TCellStates::backgroundStateKey;
                 gameField.field[x][y].ownersBlocksId = 0;
-                gameField.field[x][y].canMove = false;
+                gameField.field[x][y].canBeMoved = false;
             }
         }
 
@@ -122,7 +180,7 @@ namespace game_backend
 
             gameField.field[x][y].currentState = cellState;
             gameField.field[x][y].ownersBlocksId = blocksId;
-            gameField.field[x][y].canMove = true;
+            gameField.field[x][y].canBeMoved = true;
         }
 
         rotatePoint.first += dx;
@@ -157,20 +215,12 @@ namespace game_backend
 
     void TCellsBlock::stopFigure()
     {
-        cout << "StopFigure " << blocksId << endl;
         canMove = false;
 
         for ( const auto& cell : blockCells )
         {
             const auto [x, y] = cell;
-
-            if ( gameField.field[x][y].canMove )
-            {
-                gameField.field[x][y].canMove = false;
-                cout << "stop: (" << x << ", " << y << "), " << gameField.field[x][y].currentState << ", oid: " <<gameField.field[x][y].ownersBlocksId << endl;
-            }
+            gameField.field[x][y].canBeMoved = false;    
         }
-
-        cout << endl;
     };
 };

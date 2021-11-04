@@ -34,7 +34,8 @@ namespace game_backend
 
             string currentState;
             size_t ownersBlocksId = 0;
-            bool canMove = false;
+            bool canBeMoved = false;
+
             pair<int, int> moveDirection;          //!< 2-D vector of speed
             pair<int, int> moveDirectionDelta;     //!< dx, dy for next step
             pair<size_t, size_t> thisCoordinates;  //!< { lineIndex; columnIndex }

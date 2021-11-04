@@ -43,7 +43,7 @@ namespace game_backend
         
         private:
 
-            vector<pair<size_t, size_t>> blockCells;   //!< Matrix of cell's coordinates
+            vector<pair<int, int>> blockCells;   //!< Matrix of cell's coordinates
             string cellState;                                  //! Cell's state
 
             pair<int, int> rotatePoint;

@@ -81,22 +81,18 @@ namespace game_backend
         if ( fromLine )
             lastLineIndex = fromLine.value();
 
-        cout << "scroll from " << lastLineIndex << endl;
-
         for ( int i = lastLineIndex; i > 0; --i )
         {
             for ( size_t j = 0; j < fieldSize.second; ++j )
             {
-                if ( !field[i][j].canMove || ( field[i][j].currentState == TCellStates::backgroundStateKey ) )
+                if ( !field[i][j].canBeMoved || ( field[i][j].currentState == TCellStates::backgroundStateKey ) )
                 {
-                    if ( !field[i - 1][j].canMove )
+                    if ( !field[i - 1][j].canBeMoved )
                     {
-                        field[i][j].canMove = field[i - 1][j].canMove;
+                        field[i][j].canBeMoved = field[i - 1][j].canBeMoved;
                         field[i][j].currentState = field[i - 1][j].currentState;
                         field[i][j].ownersBlocksId = field[i - 1][j].ownersBlocksId;
                     }
-                    else
-                        cout << "Can't move " << i - 1 << ", " << j << endl;
                 }
             }
         }

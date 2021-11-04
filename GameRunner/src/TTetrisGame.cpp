@@ -18,7 +18,7 @@ optional<size_t> TTetrisGame::checkFullLines()
 
     auto isNotVoidCell = []( const TCell& cell )
     {
-        return ( cell.currentState != TCellStates::backgroundStateKey ) && ( cell.canMove == false);
+        return ( cell.currentState != TCellStates::backgroundStateKey ) && ( cell.canBeMoved == false);
     };
 
     for ( auto i = gameField.field.size(); i > 0; i-- )
@@ -64,7 +64,7 @@ void TTetrisGame::gameThread()
             }
             else
             {
-                timeToSleep = 500;
+                timeToSleep = 5000;
 
                 if ( !allBlocks.empty() )
                 {
@@ -147,7 +147,6 @@ void TTetrisGame::ioThread()
                         {
                             if ( vectorNext == vectorUp )
                             {
-                                cout << "turn" << endl;
                                 allBlocks.back().turn( {0, 0} );
                             }
                             else
@@ -190,12 +189,12 @@ TCellsBlock TTetrisGame::createFigure( const size_t id )
 
     size_t idLocal = id % 7;
 
-    if ( idLocal == 0 )
+    if ( idLocal == 1 )
     {
         block.initFigure( {0, 5}, v0, TCellStates::blueColorStateKey, id + 1 );
     }
         
-    if ( idLocal == 1 )
+    if ( idLocal == 0 )
     {
         block.initFigure( {0, 5}, v1, TCellStates::greenColorStateKey, id + 1 );
     }
