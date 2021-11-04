@@ -38,6 +38,9 @@ optional<size_t> TTetrisGame::checkFullLines()
 void TTetrisGame::gameThread()
 {
     size_t id = 0;
+    size_t timeToSleep = 500;
+
+    bool blockStep = false;
 
     while ( !quit )
     {
@@ -52,27 +55,33 @@ void TTetrisGame::gameThread()
                 if ( !allBlocks.back().canMove )
                     allBlocks.push_back( createFigure( id++ ) );
 
-            if ( !allBlocks.empty() )
-            {
-                allBlocks.back().step();
-            }
+            const auto maybeFullLines = checkFullLines();
 
-            while ( const auto i = checkFullLines() )
+            if ( maybeFullLines )
             {
-                gameField.scrollField( { 1, 0 }, i );
-                syncPoint.unlock();
-                SDL_Delay( 250 );
-                syncPoint.lock();
+                gameField.scrollField( { 1, 0 }, maybeFullLines );
+                timeToSleep = 100;
+            }
+            else
+            {
+                timeToSleep = 500;
+
+                if ( !allBlocks.empty() )
+                {
+                    allBlocks.back().step();
+
+                    if ( checkFullLines() )
+                        timeToSleep = 100;
+                }
             }
                 
 
             //! TODO Сделать удаление фигур из очереди
-            //! TODO Сделать задержку на шаг при удалении строки
         }
         
         syncPoint.unlock();
 
-        SDL_Delay( 500 );
+        SDL_Delay( timeToSleep );
     }
     
     cout << "Tetris game thread done" << endl;
