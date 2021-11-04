@@ -45,8 +45,8 @@ int main( int argc, char **argv )
 
     //! Cells params
     TCellsFieldParams cellsFieldParams;
-    cellsFieldParams.xCellsCount = 15;
-    cellsFieldParams.yCellsCount = 15;
+    cellsFieldParams.xCellsCount = 10;
+    cellsFieldParams.yCellsCount = 20;
     cellsFieldParams.cellHeight = 20;
     cellsFieldParams.cellWidth = 20;
 

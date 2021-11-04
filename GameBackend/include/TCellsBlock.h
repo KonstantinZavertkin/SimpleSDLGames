@@ -50,6 +50,8 @@ namespace game_backend
             size_t blocksId = 0;
 
             bool checkOverlappingAtNextStep();
+
+            void stopFigure();
     };
 };
 

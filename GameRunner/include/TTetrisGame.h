@@ -5,6 +5,7 @@
 #include <utility>
 #include <deque>
 #include <mutex>
+#include <optional>
 
 #include "TGameField.h"
 #include "TCellsBlock.h"
@@ -21,7 +22,7 @@ class TTetrisGame
 
         //bool step();
         //void turn( pair<int, int> rotateVector );
-        bool checkBottomLine();
+        optional<size_t> checkFullLines();
 
         void gameThread();
         void ioThread();

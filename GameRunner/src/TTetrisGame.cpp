@@ -12,22 +12,31 @@ TTetrisGame::~TTetrisGame()
 
 }
 
-bool TTetrisGame::checkBottomLine()
+optional<size_t> TTetrisGame::checkFullLines()
 {
-    const auto linesCount = gameField.field.size();
-    const auto lastLine = gameField.field[linesCount - 1];
+    optional<size_t> maybeLineIndex;
 
     auto isNotVoidCell = []( const TCell& cell )
     {
-        return cell.currentState != TCellStates::backgroundStateKey;
+        return ( cell.currentState != TCellStates::backgroundStateKey ) && ( cell.canMove == false);
     };
 
-    return  all_of( lastLine.begin(), lastLine.end(), isNotVoidCell );
+    for ( auto i = gameField.field.size(); i > 0; i-- )
+    {
+        const auto& currentLine = gameField.field[i - 1];
+
+        if ( all_of( currentLine.begin(), currentLine.end(), isNotVoidCell ) )
+        {
+            maybeLineIndex = i - 1;
+            break;
+        }  
+    }
+
+    return maybeLineIndex;
 };
 
 void TTetrisGame::gameThread()
 {
-    bool quitLocal = false;
     size_t id = 0;
 
     while ( !quit )
@@ -48,10 +57,17 @@ void TTetrisGame::gameThread()
                 allBlocks.back().step();
             }
 
+            while ( const auto i = checkFullLines() )
+            {
+                gameField.scrollField( { 1, 0 }, i );
+                syncPoint.unlock();
+                SDL_Delay( 250 );
+                syncPoint.lock();
+            }
+                
+
             //! TODO Сделать удаление фигур из очереди
             //! TODO Сделать задержку на шаг при удалении строки
-            while ( checkBottomLine() )
-                gameField.scrollField( { 1, 0 } );
         }
         
         syncPoint.unlock();
@@ -131,6 +147,8 @@ void TTetrisGame::ioThread()
                                 allBlocks.back().step();
                             }
                         }
+
+                        vectorNext = vectorDefault;
                     }
                 }
 
@@ -150,6 +168,7 @@ void TTetrisGame::ioThread()
 
 TCellsBlock TTetrisGame::createFigure( const size_t id )
 {
+    cout << "Create figure " << id << endl;
     vector<pair<size_t, size_t>> v0 { {0, 0}, {0, 1}, {0, 2}, {1, 1} };
     vector<pair<size_t, size_t>> v1 { {0, 0}, {0, 1}, {0, 2}, {0, 3} };
     vector<pair<size_t, size_t>> v2 { {0, 0}, {0, 1}, {0, 2}, {1, 0} };

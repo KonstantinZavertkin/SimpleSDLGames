@@ -21,6 +21,7 @@ namespace game_backend
             blockCells.push_back( { x, y } );
             gameField.field[x][y].currentState = color;
             gameField.field[x][y].ownersBlocksId = blocksId;
+            gameField.field[x][y].canMove = true;
         }
 
         canMove = true;
@@ -45,6 +46,7 @@ namespace game_backend
             gameField.field[x][y].ownersBlocksId = 0;
             stateBuf = gameField.field[x][y].currentState;
             gameField.field[x][y].currentState = TCellStates::backgroundStateKey;
+            gameField.field[x][y].canMove = false;
         }
 
         for ( size_t i = 0; i < blockCells.size(); ++i )
@@ -58,6 +60,7 @@ namespace game_backend
             blockCells[i] = { newX, newY };
             gameField.field[newX][newY].ownersBlocksId = blocksId;
             gameField.field[newX][newY].currentState = stateBuf;
+            gameField.field[newX][newY].canMove = true;
 
         }
     };
@@ -73,7 +76,7 @@ namespace game_backend
 
             if ( x + dx >= gameField.field.size() )
             {
-                canMove = false;
+                stopFigure();
                 break;
             }
 
@@ -104,6 +107,7 @@ namespace game_backend
                 cellState = gameField.field[x][y].currentState;
                 gameField.field[x][y].currentState = TCellStates::backgroundStateKey;
                 gameField.field[x][y].ownersBlocksId = 0;
+                gameField.field[x][y].canMove = false;
             }
         }
 
@@ -118,6 +122,7 @@ namespace game_backend
 
             gameField.field[x][y].currentState = cellState;
             gameField.field[x][y].ownersBlocksId = blocksId;
+            gameField.field[x][y].canMove = true;
         }
 
         rotatePoint.first += dx;
@@ -145,8 +150,27 @@ namespace game_backend
         }
 
         if ( skip && ( moveDirection == vectorDown ) )
-            canMove = false;
+            stopFigure();
 
         return skip;
+    }
+
+    void TCellsBlock::stopFigure()
+    {
+        cout << "StopFigure " << blocksId << endl;
+        canMove = false;
+
+        for ( const auto& cell : blockCells )
+        {
+            const auto [x, y] = cell;
+
+            if ( gameField.field[x][y].canMove )
+            {
+                gameField.field[x][y].canMove = false;
+                cout << "stop: (" << x << ", " << y << "), " << gameField.field[x][y].currentState << ", oid: " <<gameField.field[x][y].ownersBlocksId << endl;
+            }
+        }
+
+        cout << endl;
     };
 };

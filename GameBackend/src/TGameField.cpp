@@ -70,23 +70,35 @@ namespace game_backend
         cout << endl;
     }
 
-    void TGameField::scrollField( pair<int, int> direction )
+    void TGameField::scrollField( pair<int, int> direction, optional<size_t> fromLine )
     {
         const auto [dx, dy] = direction;
 
         vector<TCell> deletedLineCopy = vector<TCell>( field[field.size() - 1] );
 
-        const auto lastLineIndex = field.size() - 1;
+        size_t lastLineIndex = field.size() - 1;
 
-        for ( int i = lastLineIndex; i >= 1; --i )
+        if ( fromLine )
+            lastLineIndex = fromLine.value();
+
+        cout << "scroll from " << lastLineIndex << endl;
+
+        for ( int i = lastLineIndex; i > 0; --i )
         {
             for ( size_t j = 0; j < fieldSize.second; ++j )
             {
-                field[i][j].currentState = field[i - 1][j].currentState;
-                field[i][j].ownersBlocksId = field[i - 1][j].ownersBlocksId;
+                if ( !field[i][j].canMove || ( field[i][j].currentState == TCellStates::backgroundStateKey ) )
+                {
+                    if ( !field[i - 1][j].canMove )
+                    {
+                        field[i][j].canMove = field[i - 1][j].canMove;
+                        field[i][j].currentState = field[i - 1][j].currentState;
+                        field[i][j].ownersBlocksId = field[i - 1][j].ownersBlocksId;
+                    }
+                    else
+                        cout << "Can't move " << i - 1 << ", " << j << endl;
+                }
             }
         }
-
-        cout << "scroll" << endl;
     };
 }
