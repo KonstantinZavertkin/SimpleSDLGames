@@ -1,4 +1,4 @@
-#include <iostream>
+п»ї#include <iostream>
 #include "TCellsBlock.h"
 
 namespace game_backend
@@ -36,29 +36,30 @@ namespace game_backend
 
     void TCellsBlock::turn( pair<int, int> rotateVector )
     {
-        cout << "Turn start";
-        //! TODO Добавить проверку границ
-        //! TODO Добавить проверку на пересечения с другими фигурами
-        //! TODO Сделать запрет поворота, если в результате фигура оказывается выше изначального положения
+        cout << "Turn start" << endl;
+        //! TODO: РџРµСЂРµСЃРјРѕС‚СЂРµС‚СЊ Р°Р»РіРѕСЂРёС‚Рј СЌС‚РѕР№ С„СѓРЅРєС†РёРё. Р’РѕР·РјРѕР¶РЅРѕ, СЃС‚РѕРёС‚ СЃРЅР°С‡Р°Р»Р° РїСЂРѕРІРµСЂРёС‚СЊ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ РІСЂР°С‰РµРЅРёСЏ,
+        //! TODO: Р° СѓР¶Рµ РїРѕС‚РѕРј РѕС‡РёС‰Р°С‚СЊ gameField.field
 
-        string stateBuf = TCellStates::backgroundStateKey;
+        stateBuf = TCellStates::backgroundStateKey;
 
+        //std::copy( blockCells.begin(), blockCells.end(), back_inserter( blockCellsCopy ) );
+        blockCellsCopy = vector( blockCells );
+
+        //! Delete this figure from field
         for ( size_t i = 0; i < blockCells.size(); ++i )
         {
             auto& [x, y] = blockCells[i];
-            //cout << "(" << x << ", " << y << ") ";
             gameField.field[x][y].ownersBlocksId = 0;
             stateBuf = gameField.field[x][y].currentState;
             gameField.field[x][y].currentState = TCellStates::backgroundStateKey;
             gameField.field[x][y].canBeMoved = false;
         }
 
-        cout << " 1";
+        shiftLeft = 0;
+        shiftRight = 0;
+        shiftBottom = 0;
 
-        int shiftLeft = 0;
-        int shiftRight = 0;
-        int shiftBottom = 0;
-
+        //! Rotate the figure without checking boundaries
         for ( size_t i = 0; i < blockCells.size(); ++i )
         {
             auto& [x, y] = blockCells[i];
@@ -80,14 +81,11 @@ namespace game_backend
                     shiftRight = newY;
 
             blockCells[i] = { newX, newY };
-            
         }
-
-        cout << " 2" << endl;
 
         if ( shiftBottom != 0 )
         {
-            shiftBottom -= (gameField.fieldSize.first - 1 );
+            shiftBottom -= ( gameField.fieldSize.first - 1 );
             rotatePoint.first -= std::abs( shiftBottom );
         }
 
@@ -100,27 +98,7 @@ namespace game_backend
             rotatePoint.second -= std::abs( shiftRight );
         }
 
-        for ( size_t i = 0; i < blockCells.size(); ++i )
-        {
-            auto [newX, newY] = blockCells[i];
-
-            if ( shiftLeft != 0 )
-                newY += std::abs( shiftLeft );
-                
-            if ( shiftRight != 0 )
-                newY -= std::abs( shiftRight );
-
-            if ( shiftBottom != 0 )
-                newX -= std::abs( shiftBottom );
-                
-            cout << "newX = " << newX << ", NewY = " << newY << endl;
-
-            blockCells[i] = { newX, newY };
-            gameField.field[newX][newY].ownersBlocksId = blocksId;
-            gameField.field[newX][newY].currentState = stateBuf;
-            gameField.field[newX][newY].canBeMoved = true;
-        }
-        cout << endl;
+        tryWriteFigure();
     };
 
     void TCellsBlock::step()
@@ -192,6 +170,11 @@ namespace game_backend
     bool TCellsBlock::isGameOver()
     {
         return gameOverFlag;
+    }
+
+    const pair<int, int> TCellsBlock::getRotatePoint() const
+    {
+        return rotatePoint;
     };
 
     bool TCellsBlock::checkOverlappingAtNextStep()
@@ -222,5 +205,53 @@ namespace game_backend
             const auto [x, y] = cell;
             gameField.field[x][y].canBeMoved = false;    
         }
+    }
+
+    bool TCellsBlock::tryWriteFigure()
+    {
+        bool restoreFigure = false;
+
+        //! Write figure in the field considering bounds checks 
+        for ( size_t i = 0; i < blockCells.size(); ++i )
+        {
+            auto [newX, newY] = blockCells[i];
+
+            if ( shiftLeft != 0 )
+                newY += std::abs( shiftLeft );
+                
+            if ( shiftRight != 0 )
+                newY -= std::abs( shiftRight );
+
+            if ( shiftBottom != 0 )
+                newX -= std::abs( shiftBottom );
+
+            blockCells[i] = { newX, newY };
+
+            if ( gameField.field[newX][newY].ownersBlocksId != 0 && gameField.field[newX][newY].ownersBlocksId != blocksId )
+            {
+                restoreFigure = true;
+                break;
+            }
+        }
+
+        if ( restoreFigure )
+        {
+            shiftLeft = 0;
+            shiftRight = 0;
+            shiftBottom = 0;
+
+            blockCells = blockCellsCopy;
+        }
+
+        for ( size_t i = 0; i < blockCells.size(); ++i )
+        {
+            auto [newX, newY] = blockCells[i];
+
+            gameField.field[newX][newY].ownersBlocksId = blocksId;
+            gameField.field[newX][newY].currentState = stateBuf;
+            gameField.field[newX][newY].canBeMoved = true;
+        }
+
+        return restoreFigure;
     };
 };

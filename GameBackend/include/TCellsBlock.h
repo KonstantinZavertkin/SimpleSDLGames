@@ -27,6 +27,8 @@ namespace game_backend
             void step();
 
             bool isGameOver();
+
+            const pair<int, int> getRotatePoint() const;
             
             TGameField& gameField;
 
@@ -44,14 +46,23 @@ namespace game_backend
         private:
 
             vector<pair<int, int>> blockCells;   //!< Matrix of cell's coordinates
+            vector<pair<int, int>> blockCellsCopy;   //!< Matrix of cell's coordinates
             string cellState;                                  //! Cell's state
 
             pair<int, int> rotatePoint;
             size_t blocksId = 0;
 
+            int shiftLeft = 0;
+            int shiftRight = 0;
+            int shiftBottom = 0;
+
+            string stateBuf;
+
             bool checkOverlappingAtNextStep();
 
             void stopFigure();
+
+            bool tryWriteFigure();
     };
 };
 

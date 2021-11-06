@@ -64,7 +64,7 @@ void TTetrisGame::gameThread()
             }
             else
             {
-                timeToSleep = 5000;
+                timeToSleep = 500;
 
                 if ( !allBlocks.empty() )
                 {
@@ -189,14 +189,15 @@ TCellsBlock TTetrisGame::createFigure( const size_t id )
 
     size_t idLocal = id % 7;
 
-    if ( idLocal == 1 )
+    if ( idLocal == 0 )
     {
         block.initFigure( {0, 5}, v0, TCellStates::blueColorStateKey, id + 1 );
     }
         
-    if ( idLocal == 0 )
+    if ( idLocal == 1 )
     {
         block.initFigure( {0, 5}, v1, TCellStates::greenColorStateKey, id + 1 );
+        block.setRotatePoint( { 0, block.getRotatePoint().second + 1 } );
     }
 
     if ( idLocal == 2 )
