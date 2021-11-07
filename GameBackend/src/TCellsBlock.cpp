@@ -1,6 +1,8 @@
 ﻿#include <iostream>
 #include "TCellsBlock.h"
 
+#include <algorithm>
+
 namespace game_backend
 {
     TCellsBlock::TCellsBlock( TGameField& gameField ) : gameField( gameField )
@@ -42,9 +44,9 @@ namespace game_backend
         blockCellsCopy = vector( blockCells );
 
         shiftLeft = 0;
-        shiftRight = 0;
         shiftTop = 0;
-        shiftBottom = 0;
+        shiftRight = gameField.fieldSize.second - 1;
+        shiftBottom = gameField.fieldSize.first - 1;
 
         //! Rotate the figure without checking boundaries
         for ( size_t i = 0; i < blockCells.size(); ++i )
@@ -55,42 +57,22 @@ namespace game_backend
             int newX = static_cast<int>( rx ) - ( y - ry );
             int newY = static_cast<int>( ry ) + ( x - rx );
 
-            if ( newX < 0 )
-                if ( newX < shiftTop )
-                    shiftTop = newX;
-
-            if ( newX >= gameField.fieldSize.first )
-                if ( newX > shiftBottom )
-                    shiftBottom = newX;
-
-            if ( newY < 0 )
-                if ( newY < shiftLeft )
-                    shiftLeft = newY;
-
-            if ( newY >= gameField.fieldSize.second )
-                if ( newY > shiftRight )
-                    shiftRight = newY;
+            //! Save shifts to place whole figure in fields boundaries 
+            shiftTop = std::min( shiftTop, newX );
+            shiftBottom = std::max( shiftBottom, newX );
+            shiftLeft = std::min( shiftLeft, newY );
+            shiftRight = std::max( shiftRight, newY );
 
             blockCells[i] = { newX, newY };
         }
 
-        if ( shiftTop != 0 )
-            rotatePoint.first += std::abs( shiftTop );
+        shiftBottom -= ( gameField.fieldSize.first - 1 );
+        shiftRight -= ( gameField.fieldSize.second - 1 );
 
-        if ( shiftBottom != 0 )
-        {
-            shiftBottom -= ( gameField.fieldSize.first - 1 );
-            rotatePoint.first -= std::abs( shiftBottom );
-        }
-
-        if ( shiftLeft != 0 )
-            rotatePoint.second += std::abs( shiftLeft );
-        
-        if ( shiftRight != 0 )
-        {
-            shiftRight -= gameField.fieldSize.second - 1;
-            rotatePoint.second -= std::abs( shiftRight );
-        }
+        rotatePoint.first += std::abs( shiftTop );
+        rotatePoint.second += std::abs( shiftLeft );
+        rotatePoint.first -= std::abs( shiftBottom );
+        rotatePoint.second -= std::abs( shiftRight );
 
         tryWriteFigure();
     };
