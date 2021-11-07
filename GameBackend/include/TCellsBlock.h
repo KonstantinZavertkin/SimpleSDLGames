@@ -56,11 +56,12 @@ namespace game_backend
             int shiftRight = 0;
             int shiftBottom = 0;
 
-            string stateBuf;
-
             bool checkOverlappingAtNextStep();
 
             void stopFigure();
+
+            void writeCellsToField( const vector<pair<int, int>>& cells );
+            void removeFigureFromField( const vector<pair<int, int>>& cells );
 
             bool tryWriteFigure();
     };

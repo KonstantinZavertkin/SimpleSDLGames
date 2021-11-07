@@ -36,24 +36,10 @@ namespace game_backend
 
     void TCellsBlock::turn( pair<int, int> rotateVector )
     {
-        cout << "Turn start" << endl;
         //! TODO: Пересмотреть алгоритм этой функции. Возможно, стоит сначала проверить возможность вращения,
         //! TODO: а уже потом очищать gameField.field
 
-        stateBuf = TCellStates::backgroundStateKey;
-
-        //std::copy( blockCells.begin(), blockCells.end(), back_inserter( blockCellsCopy ) );
         blockCellsCopy = vector( blockCells );
-
-        //! Delete this figure from field
-        for ( size_t i = 0; i < blockCells.size(); ++i )
-        {
-            auto& [x, y] = blockCells[i];
-            gameField.field[x][y].ownersBlocksId = 0;
-            stateBuf = gameField.field[x][y].currentState;
-            gameField.field[x][y].currentState = TCellStates::backgroundStateKey;
-            gameField.field[x][y].canBeMoved = false;
-        }
 
         shiftLeft = 0;
         shiftRight = 0;
@@ -207,11 +193,35 @@ namespace game_backend
         }
     }
 
+    void TCellsBlock::writeCellsToField( const vector<pair<int, int>>& cells )
+    {
+        for ( size_t i = 0; i < cells.size(); ++i )
+        {
+            auto [newX, newY] = cells[i];
+
+            gameField.field[newX][newY].ownersBlocksId = blocksId;
+            gameField.field[newX][newY].currentState = cellState;
+            gameField.field[newX][newY].canBeMoved = true;
+        }
+    }
+
+    void TCellsBlock::removeFigureFromField( const vector<pair<int, int>>& cells )
+    {
+        for ( size_t i = 0; i < cells.size(); ++i )
+        {
+            auto& [x, y] = cells[i];
+
+            gameField.field[x][y].ownersBlocksId = 0;
+            gameField.field[x][y].currentState = TCellStates::backgroundStateKey;
+            gameField.field[x][y].canBeMoved = false;
+        }
+    }
+
     bool TCellsBlock::tryWriteFigure()
     {
-        bool restoreFigure = false;
+        bool cantPlaceFigure = false;
 
-        //! Write figure in the field considering bounds checks 
+        //! Write figure in the blockCells considering bounds checks 
         for ( size_t i = 0; i < blockCells.size(); ++i )
         {
             auto [newX, newY] = blockCells[i];
@@ -229,29 +239,19 @@ namespace game_backend
 
             if ( gameField.field[newX][newY].ownersBlocksId != 0 && gameField.field[newX][newY].ownersBlocksId != blocksId )
             {
-                restoreFigure = true;
+                cantPlaceFigure = true;
                 break;
             }
         }
 
-        if ( restoreFigure )
+        if ( !cantPlaceFigure )
         {
-            shiftLeft = 0;
-            shiftRight = 0;
-            shiftBottom = 0;
-
+            removeFigureFromField( blockCellsCopy );
+            writeCellsToField( blockCells );
+        }
+        else
             blockCells = blockCellsCopy;
-        }
 
-        for ( size_t i = 0; i < blockCells.size(); ++i )
-        {
-            auto [newX, newY] = blockCells[i];
-
-            gameField.field[newX][newY].ownersBlocksId = blocksId;
-            gameField.field[newX][newY].currentState = stateBuf;
-            gameField.field[newX][newY].canBeMoved = true;
-        }
-
-        return restoreFigure;
+        return cantPlaceFigure;
     };
 };
