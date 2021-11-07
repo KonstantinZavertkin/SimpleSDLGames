@@ -26,7 +26,7 @@ namespace game_backend
 
             void step();
 
-            bool isGameOver();
+            bool isGameOver() const;
 
             const pair<int, int> getRotatePoint() const;
             
@@ -54,6 +54,7 @@ namespace game_backend
 
             int shiftLeft = 0;
             int shiftRight = 0;
+            int shiftTop = 0;
             int shiftBottom = 0;
 
             bool checkOverlappingAtNextStep();
