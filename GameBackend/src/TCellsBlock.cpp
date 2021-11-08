@@ -81,47 +81,10 @@ namespace game_backend
     {
         skip = false;
 
-        for ( auto& cell : blockCells )
-        {
-            auto [x, y] = cell;
-            auto [dx, dy] = moveDirection;
-
-            if ( x + dx >= gameField.field.size() )
-            {
-                stopFigure();
-                break;
-            }
-
-            if ( canMove )
-                if ( y + dy >= gameField.field[x].size() )
-                {
-                    skip = true;
-                    break;
-                }
-        }
-
-        if ( canMove && !skip )
-            checkOverlappingAtNextStep();
-            
-
-        if ( !canMove || skip )
-        {
-            moveDirection = moveDirectionDefault;
+        if ( !canMove )
             return;
-        }
 
-        for ( auto& cell : blockCells )
-        {
-            auto [x, y] = cell;
-            
-            if ( x < gameField.field.size() && ( !gameOverFlag ) )
-            {
-                cellState = gameField.field[x][y].currentState;
-                gameField.field[x][y].currentState = TCellStates::backgroundStateKey;
-                gameField.field[x][y].ownersBlocksId = 0;
-                gameField.field[x][y].canBeMoved = false;
-            }
-        }
+        blockCellsCopy = vector( blockCells );
 
         auto [dx, dy] = moveDirection;
 
@@ -131,14 +94,16 @@ namespace game_backend
 
             x += dx;
             y += dy;
-
-            gameField.field[x][y].currentState = cellState;
-            gameField.field[x][y].ownersBlocksId = blocksId;
-            gameField.field[x][y].canBeMoved = true;
         }
 
-        rotatePoint.first += dx;
-        rotatePoint.second += dy;
+        if ( !tryWriteFigure() )
+        {
+            rotatePoint.first += dx;
+            rotatePoint.second += dy;
+        }
+        else
+            if ( moveDirection == moveDirectionDefault )
+                stopFigure();
 
         moveDirection = moveDirectionDefault;
     };
@@ -152,25 +117,6 @@ namespace game_backend
     {
         return rotatePoint;
     };
-
-    bool TCellsBlock::checkOverlappingAtNextStep()
-    {
-        for ( auto& cell : blockCells )
-        {
-            auto [x, y] = cell;
-            auto [dx, dy] = moveDirection;
-
-            const auto fieldBlocksId = gameField.field[x + dx][y + dy].ownersBlocksId;
-
-            if ( ( fieldBlocksId != 0 ) && ( fieldBlocksId != blocksId ) )
-                skip = true;
-        }
-
-        if ( skip && ( moveDirection == vectorDown ) )
-            stopFigure();
-
-        return skip;
-    }
 
     void TCellsBlock::stopFigure()
     {
@@ -229,6 +175,18 @@ namespace game_backend
                 newX -= std::abs( shiftBottom );
 
             cell = { newX, newY };
+
+            if ( newX < 0 || newY < 0 )
+            {
+                cantPlaceFigure = true;
+                break;
+            }
+
+            if ( newX >= gameField.fieldSize.first || newY >= gameField.fieldSize.second )
+            {
+                cantPlaceFigure = true;
+                break;
+            }
 
             if ( gameField.field[newX][newY].ownersBlocksId != 0 && gameField.field[newX][newY].ownersBlocksId != blocksId )
             {

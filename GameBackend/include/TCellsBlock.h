@@ -57,8 +57,6 @@ namespace game_backend
             int shiftTop = 0;
             int shiftBottom = 0;
 
-            bool checkOverlappingAtNextStep();
-
             void stopFigure();
 
             void writeCellsToField( const vector<pair<int, int>>& cells );
