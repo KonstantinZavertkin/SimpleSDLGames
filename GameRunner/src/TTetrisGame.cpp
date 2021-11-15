@@ -108,6 +108,8 @@ void TTetrisGame::ioThread()
     pair<int, int> vectorNext = { 0, 0 };
     pair<int, int> vectorDefault = { 0, 0 };
 
+    bool figureFallSignal = false;
+
     while ( !quitLocal )
     {
         while ( SDL_PollEvent( &exitEvent ) != 0 )
@@ -124,7 +126,7 @@ void TTetrisGame::ioThread()
             {
                 auto keyValue = exitEvent.key.keysym.sym;
 
-                if ( keyValue != SDLK_SPACE )
+                if ( keyValue != SDLK_ESCAPE )
                 {
                     if ( keyValue == SDLK_UP || keyValue == SDLK_w )
                         vectorNext = vectorUp;
@@ -137,6 +139,9 @@ void TTetrisGame::ioThread()
 
                     if ( keyValue == SDLK_RIGHT || keyValue == SDLK_d )
                         vectorNext = vectorRight;
+
+                    if ( keyValue == SDLK_SPACE )
+                        figureFallSignal = true;
                 }
                 else
                     pauseLocal = !pauseLocal;
@@ -164,6 +169,14 @@ void TTetrisGame::ioThread()
 
                         vectorNext = vectorDefault;
                     }
+
+                    if ( figureFallSignal )
+                    {
+                        figureFallSignal = false;
+
+                        while ( allBlocks.back().canMove )
+                            allBlocks.back().step();
+                    }
                 }
 
                 syncPoint.unlock();
@@ -171,6 +184,7 @@ void TTetrisGame::ioThread()
         }
 
         syncPoint.lock();
+        quitLocal = quit;
         fDrawer->draw();
         syncPoint.unlock();
 
