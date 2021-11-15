@@ -25,8 +25,8 @@ class TSnakeGame
         void gameThread();
         void ioThread();
 
-        game_backend::TGameField gameField;
-        game_backend::TCellsChain snake;
+        TGameField gameField;
+        TCellsChain snake;
 
         TFieldDrawer* fDrawer;
 

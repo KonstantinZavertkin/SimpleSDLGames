@@ -33,6 +33,8 @@ class TTetrisGame
 
         deque<TCellsBlock> allBlocks;
 
+        TCellsBlock virtualBlock;
+
         TFieldDrawer* fDrawer;
 
         size_t clockCounter = 0;

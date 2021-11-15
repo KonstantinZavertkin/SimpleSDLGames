@@ -3,7 +3,7 @@
 #include "TTetrisGame.h"
 
 TTetrisGame::TTetrisGame( pair<size_t, size_t> fieldSize )
-    : gameField( fieldSize.first, fieldSize.second )
+    : gameField( fieldSize.first, fieldSize.second ), virtualBlock( gameField )
 {
 };
 
@@ -196,7 +196,6 @@ void TTetrisGame::ioThread()
 
 TCellsBlock TTetrisGame::createFigure( const size_t id )
 {
-    cout << "Create figure " << id << endl;
     vector<pair<size_t, size_t>> v0 { {0, 0}, {0, 1}, {0, 2}, {1, 1} };
     vector<pair<size_t, size_t>> v1 { {0, 0}, {0, 1}, {0, 2}, {0, 3} };
     vector<pair<size_t, size_t>> v2 { {0, 0}, {0, 1}, {0, 2}, {1, 0} };

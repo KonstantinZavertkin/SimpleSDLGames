@@ -16,10 +16,11 @@ namespace game_backend
             {
                 field[i].push_back( TCell() );
                 auto& cell = field[i][j];
+                cell.ownersBlocksId = 0;
                 cell.currentState = TCellStates::backgroundStateKey;
-                cell.moveDirection = { 0, 0 };
-                cell.moveDirectionDelta = { 0, 0 };
-                cell.thisCoordinates = { i, j };
+                //cell.moveDirection = { 0, 0 };
+                //cell.moveDirectionDelta = { 0, 0 };
+                //cell.thisCoordinates = { i, j };
             }
         }
 

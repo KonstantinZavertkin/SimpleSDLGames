@@ -24,21 +24,30 @@ namespace game_backend
             static const string magentaColorStateKey;
             static const string yellowColorStateKey;
             static const string orangeColorStateKey;
+
+            static const string virtualFigure;
     };
 
     class TCell
     {
         public:
             TCell();
-            ~TCell();
+            virtual ~TCell();
 
             string currentState;
             size_t ownersBlocksId = 0;
             bool canBeMoved = false;
+    };
+
+    class TExtendedCell : public TCell
+    {
+        public:
+            TExtendedCell(){};
+            ~TExtendedCell(){};
 
             pair<int, int> moveDirection;          //!< 2-D vector of speed
             pair<int, int> moveDirectionDelta;     //!< dx, dy for next step
-            pair<size_t, size_t> thisCoordinates;  //!< { lineIndex; columnIndex }
+            pair<int, int> thisCoordinates;        //!< { lineIndex; columnIndex }
     };
 };
 

@@ -19,6 +19,8 @@ namespace game_backend
     const std::string TCellStates::yellowColorStateKey = "yellowColor";
     const std::string TCellStates::orangeColorStateKey = "orangeColor";
 
+    const std::string TCellStates::virtualFigure = "virtualFigure";
+
     TCell::TCell() : currentState( TCellStates::backgroundStateKey ){};
 
     TCell::~TCell(){};

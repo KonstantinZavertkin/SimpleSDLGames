@@ -18,94 +18,92 @@ namespace game_backend
         {
             auto x = startPosition.first;
             auto y = startPosition.second + snakeLength - i - 1;
-            snakeCells.push_back( make_pair( x, y ) );
+            TExtendedCell tempCell;
+            tempCell.thisCoordinates = make_pair( x, y );
+            tempCell.moveDirection = make_pair( 0, 1 );
+            snakeCells.push_back( tempCell );
             gameField.field[x][y].currentState = TCellStates::snakeBodyStateKey;
-            gameField.field[x][y].moveDirection = make_pair( 0, 1 );
         }
-
-        updateSnakeHeadAndTail();
     };
 
     void TCellsChain::turn( pair<int, int> rotateVector )
     {
-        auto headCellCoords = snakeCells.front();
-        auto x = headCellCoords.first;
-        auto y = headCellCoords.second;
+        TExtendedCell& headCell = snakeCells.front();
 
-        gameField.field[x][y].moveDirectionDelta = rotateVector;
+        auto [x, y] = headCell.moveDirection;
+        auto [dx, dy] = rotateVector;
+
+        if ( ( x + dx != 0 ) || ( y + dy != 0 ) )
+            snakeCells.front().moveDirection = rotateVector;
     };
 
     void TCellsChain::step()
     {
-        auto fieldSize = gameField.fieldSize;
         bool isFoodFound = false;
-        TCell lastCellBuffer;
+
+        auto snakeCellsCopy = snakeCells;
         
         // Handle body
-        for ( size_t i = 0; i < snakeCells.size(); ++i )
+        size_t cellsSize = snakeCellsCopy.size();
+
+        for ( size_t i = 0; i < cellsSize; ++i )
         {
-            auto x = snakeCells[i].first;
-            auto y = snakeCells[i].second;
-            auto moveVector = gameField.field[x][y].moveDirection;
-            auto moveVectorDelta = gameField.field[x][y].moveDirectionDelta;
+            auto& [x, y] = snakeCellsCopy[i].thisCoordinates;
+            auto [dx, dy] = snakeCellsCopy[i].moveDirection;
 
-            if ( moveVectorDelta.first != 0 || moveVectorDelta.second != 0 )
-            {
-                auto condition0 = moveVector.first != moveVectorDelta.first * -1;
-                auto condition1 = moveVector.second != moveVectorDelta.second * -1;
+            x += dx;
+            y += dy;
 
-                if ( condition0 && condition1 )
-                    moveVector = moveVectorDelta;
-            }
-
-            lastCellBuffer = gameField.field[x][y];
-            gameField.field[x][y].currentState = TCellStates::backgroundStateKey;
-            gameField.field[x][y].moveDirection = make_pair( 0, 0 );
-
-            if ( ( x == 0 && moveVector.first < 0 ) || ( y == 0 && moveVector.second < 0 ) )
-            {
-                gameOverFlag = true;
-                continue;
-            }
-            
-            snakeCells[i].first += moveVector.first;
-            snakeCells[i].second += moveVector.second;
-            
-            x = snakeCells[i].first;
-            y = snakeCells[i].second;
-
-            if ( x >= fieldSize.first || y >= fieldSize.second )
-            {
-                gameOverFlag = true;
-                continue;
-            }
+            if ( i == 0 )
+                if ( x < 0 || x >= gameField.fieldSize.first || y < 0 || y >= gameField.fieldSize.second )
+                {
+                    gameOverFlag = true;
+                    break;
+                }
 
             auto state = gameField.field[x][y].currentState;
-
-            if ( state == TCellStates::snakeBodyStateKey || state == TCellStates::snakeTailStateKey )
-            {
-                gameOverFlag = true;
-                continue;
-            }
+            
+            if ( i == 0 )
+                if ( state == TCellStates::snakeBodyStateKey || state == TCellStates::snakeTailStateKey )
+                {
+                    gameOverFlag = true;
+                    break;
+                }
 
             if ( state == TCellStates::eatStateKey )
                 isFoodFound = true;
-
-            gameField.field[x][y].currentState = TCellStates::snakeBodyStateKey;
-            gameField.field[x][y].moveDirection = moveVector;
         }
 
         if ( isFoodFound )
         {
-            auto x = lastCellBuffer.thisCoordinates.first;
-            auto y = lastCellBuffer.thisCoordinates.second;
-            gameField.field[x][y] = lastCellBuffer;
-            snakeCells.push_back( make_pair( x, y ) );
-            cout << snakeCells.size() << endl;
+            TExtendedCell lastCellBuffer = snakeCells.back();
+            snakeCellsCopy.push_back( lastCellBuffer );
+            cout << snakeCellsCopy.size() << endl;
+        }
+
+        //! Copy moveDirection along chain
+        cellsSize = snakeCellsCopy.size();
+
+        for ( int i = cellsSize - 1; i > 0; --i )
+            snakeCellsCopy[i].moveDirection = snakeCellsCopy[i - 1].moveDirection;
+
+        for ( auto& cell : snakeCells )
+        {
+            auto [x, y] = cell.thisCoordinates;
+            gameField.field[x][y].currentState = TCellStates::backgroundStateKey;
         }
 
         if ( !gameOverFlag )
-            updateSnakeHeadAndTail();
+            snakeCells = snakeCellsCopy;
+
+        for ( auto& cell : snakeCells )
+        {
+            auto [x, y] = cell.thisCoordinates;
+            gameField.field[x][y].currentState = TCellStates::snakeBodyStateKey;
+        }
+
+        auto [x, y] = snakeCells.front().thisCoordinates;
+        gameField.field[x][y].currentState = TCellStates::snakeHeadStateKey;
     };
 
     bool TCellsChain::isGameOver()
@@ -113,30 +111,4 @@ namespace game_backend
         return gameOverFlag;
     };
 
-    void TCellsChain::updateSnakeHeadAndTail()
-    {
-        auto headCellCoords = snakeCells.front();
-        auto xHead = headCellCoords.first;
-        auto yHead = headCellCoords.second;
-        gameField.field[xHead][yHead].currentState = TCellStates::snakeHeadStateKey;
-
-        auto tailCellCoords = snakeCells.back();
-        auto xTail = tailCellCoords.first;
-        auto yTail = tailCellCoords.second;
-        gameField.field[xTail][yTail].currentState = TCellStates::snakeTailStateKey;
-
-        auto moveVector = gameField.field[xTail][yTail].moveDirection;
-        auto moveVectorDelta = gameField.field[xTail][yTail].moveDirectionDelta;
-
-        if ( moveVectorDelta.first != 0 || moveVectorDelta.second != 0 )
-        {
-            auto condition0 = moveVector.first != moveVectorDelta.first * -1;
-            auto condition1 = moveVector.second != moveVectorDelta.second * -1;
-
-            if ( condition0 && condition1 )
-                gameField.field[xTail][yTail].moveDirection = moveVectorDelta;
-        }
-
-        gameField.field[xTail][yTail].moveDirectionDelta = { 0, 0 };
-    };
 } 

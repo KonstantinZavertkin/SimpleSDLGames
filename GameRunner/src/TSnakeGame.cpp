@@ -17,6 +17,7 @@ TSnakeGame::~TSnakeGame()
 
 bool TSnakeGame::step()
 {
+    cout << "step" << endl;
     snake.step();
     checkFood();
     return snake.isGameOver();
@@ -35,7 +36,7 @@ void TSnakeGame::checkFood()
     for ( auto line : gameField.field )
     {
         for ( auto cell : line )
-            if ( cell.currentState == game_backend::TCellStates::eatStateKey )
+            if ( cell.currentState == TCellStates::eatStateKey )
                 isRequiredFood = false;
     }
 
@@ -43,7 +44,7 @@ void TSnakeGame::checkFood()
     {
         auto x = rand() % gameField.field.size();
         auto y = rand() % gameField.field[0].size();
-        gameField.field[x][y].currentState = game_backend::TCellStates::eatStateKey;
+        gameField.field[x][y].currentState = TCellStates::eatStateKey;
     }
 };
 

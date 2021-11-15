@@ -26,10 +26,9 @@ namespace game_backend
             //!< { x, y } -> { lineIndex, columnIndex }
             //!< snakeCells.front() - head
             //!< snakeCells.back() - tail
-            deque<pair<size_t, size_t>> snakeCells;
+            deque<TExtendedCell> snakeCells;
 
         private:
-            void updateSnakeHeadAndTail();
             bool gameOverFlag = false;
     };
 }
