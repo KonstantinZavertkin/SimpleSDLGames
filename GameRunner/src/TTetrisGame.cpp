@@ -55,6 +55,12 @@ void TTetrisGame::gameThread()
                 if ( !allBlocks.back().canMove )
                     allBlocks.push_back( createFigure( id++ ) );
 
+            if ( allBlocks.back().isGameOver() )
+            {
+                quit = true;
+                cout << "Game over" << endl;
+            }
+
             const auto maybeFullLines = checkFullLines();
 
             if ( maybeFullLines )

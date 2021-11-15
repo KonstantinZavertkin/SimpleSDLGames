@@ -16,10 +16,15 @@ namespace game_backend
         cellState = color;
         blocksId = blocksIdArg;
 
+        const auto [dx, dy] = startPosition;
+
         for ( auto& cell : cells )
         {
-            auto x = startPosition.first + cell.first;
-            auto y = startPosition.second + cell.second;
+            auto [x, y] = make_pair( cell.first + dx, cell.second + dy );
+
+            if ( gameField.field[x][y].ownersBlocksId != 0 && gameField.field[x][y].ownersBlocksId != blocksId )
+                gameOverFlag = true;
+
             blockCells.push_back( { x, y } );
             gameField.field[x][y].currentState = color;
             gameField.field[x][y].ownersBlocksId = blocksId;
@@ -81,7 +86,7 @@ namespace game_backend
     {
         skip = false;
 
-        if ( !canMove )
+        if ( !canMove || gameOverFlag )
             return;
 
         blockCellsCopy = vector( blockCells );
@@ -194,6 +199,11 @@ namespace game_backend
                 break;
             }
         }
+
+        shiftLeft = 0;
+        shiftTop = 0;
+        shiftRight = 0;
+        shiftBottom = 0;
 
         if ( !cantPlaceFigure )
         {
