@@ -28,6 +28,10 @@ namespace game_backend
 
             bool isGameOver() const;
 
+            void clearVirtual();
+
+            void makeVirtual();
+
             const pair<int, int> getRotatePoint() const;
             
             TGameField& gameField;
@@ -43,7 +47,7 @@ namespace game_backend
             const pair<int, int> vectorLeft = { 0, -1 };
             const pair<int, int> vectorRight = { 0, 1 };
         
-        private:
+        //private:
 
             vector<pair<int, int>> blockCells;   //!< Matrix of cell's coordinates
             vector<pair<int, int>> blockCellsCopy;   //!< Matrix of cell's coordinates

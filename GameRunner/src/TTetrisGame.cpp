@@ -3,7 +3,7 @@
 #include "TTetrisGame.h"
 
 TTetrisGame::TTetrisGame( pair<size_t, size_t> fieldSize )
-    : gameField( fieldSize.first, fieldSize.second ), virtualBlock( gameField )
+    : gameField( fieldSize.first, fieldSize.second )
 {
 };
 
@@ -18,7 +18,9 @@ optional<size_t> TTetrisGame::checkFullLines()
 
     auto isNotVoidCell = []( const TCell& cell )
     {
-        return ( cell.currentState != TCellStates::backgroundStateKey ) && ( cell.canBeMoved == false);
+        return ( cell.currentState != TCellStates::backgroundStateKey ) &&
+               ( cell.canBeMoved == false ) &&
+               ( cell.currentState != TCellStates::virtualFigure );
     };
 
     for ( auto i = gameField.field.size(); i > 0; i-- )
@@ -40,8 +42,6 @@ void TTetrisGame::gameThread()
     size_t id = 0;
     size_t timeToSleep = 500;
 
-    bool blockStep = false;
-
     while ( !quit )
     {
         syncPoint.lock();
@@ -49,11 +49,13 @@ void TTetrisGame::gameThread()
         if ( !pauseGame )
         {
             if ( allBlocks.empty() )
-                allBlocks.push_back( createFigure( id++ ) );
+                createFigure( id++ );
             
             if ( !allBlocks.empty() )
                 if ( !allBlocks.back().canMove )
-                    allBlocks.push_back( createFigure( id++ ) );
+                    createFigure( id++ );
+
+            showBlockShadow();
 
             if ( allBlocks.back().isGameOver() )
             {
@@ -165,6 +167,8 @@ void TTetrisGame::ioThread()
                                 allBlocks.back().moveDirection = vectorNext;
                                 allBlocks.back().step();
                             }
+
+                            showBlockShadow();
                         }
 
                         vectorNext = vectorDefault;
@@ -194,7 +198,7 @@ void TTetrisGame::ioThread()
     cout << "Tetris io thread done" << endl;
 };
 
-TCellsBlock TTetrisGame::createFigure( const size_t id )
+void TTetrisGame::createFigure( const size_t id )
 {
     vector<pair<size_t, size_t>> v0 { {0, 0}, {0, 1}, {0, 2}, {1, 1} };
     vector<pair<size_t, size_t>> v1 { {0, 0}, {0, 1}, {0, 2}, {0, 3} };
@@ -244,5 +248,18 @@ TCellsBlock TTetrisGame::createFigure( const size_t id )
         block.initFigure( {0, 5}, v6, TCellStates::orangeColorStateKey, id + 1 );
     }
 
-    return block;
+    allBlocks.push_back( block );
+};
+
+void TTetrisGame::showBlockShadow()
+{
+    virtualBlock = nullptr;
+    virtualBlock = make_unique<TCellsBlock>( TCellsBlock( allBlocks.back() ) );
+    virtualBlock->clearVirtual();
+    virtualBlock->makeVirtual();
+
+    while ( virtualBlock->canMove )
+        virtualBlock->step();
+
+    allBlocks.back().tryWriteFigure();
 };

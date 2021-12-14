@@ -27,13 +27,15 @@ class TTetrisGame
         void gameThread();
         void ioThread();
 
-        TCellsBlock createFigure( const size_t id );
+        void createFigure( const size_t id );
+
+        void showBlockShadow();
 
         TGameField gameField;
 
         deque<TCellsBlock> allBlocks;
 
-        TCellsBlock virtualBlock;
+        unique_ptr<TCellsBlock> virtualBlock;
 
         TFieldDrawer* fDrawer;
 

@@ -48,6 +48,9 @@ void TFieldDrawer::draw()
             if ( field[i][j].currentState == TCellStates::orangeColorStateKey )
                 cr.color = { 0xFF, 0x7F, 0x50, 0xFF };
 
+            if ( field[i][j].currentState == TCellStates::virtualFigure )
+                cr.color = { 0x80, 0x80, 0x80, 0xFF };
+
             drawer.draw( cr );
 
             if ( field[i][j].currentState != TCellStates::backgroundStateKey )

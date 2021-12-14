@@ -6,7 +6,7 @@
 namespace game_backend
 {
     TCellsBlock::TCellsBlock( TGameField& gameField ) : gameField( gameField )
-    {};
+    {}
 
     TCellsBlock::~TCellsBlock()
     {};
@@ -118,10 +118,27 @@ namespace game_backend
         return gameOverFlag;
     }
 
+    void TCellsBlock::clearVirtual()
+    {
+        for ( auto& line : gameField.field )
+            for ( auto& cell : line )
+                if ( cell.currentState == TCellStates::virtualFigure )
+                {
+                    cell.currentState = TCellStates::backgroundStateKey;
+                    cell.ownersBlocksId = 0;
+                    cell.canBeMoved = false;
+                }
+    }
+
+    void TCellsBlock::makeVirtual()
+    {
+        cellState = TCellStates::virtualFigure;
+    }
+
     const pair<int, int> TCellsBlock::getRotatePoint() const
     {
         return rotatePoint;
-    };
+    }
 
     void TCellsBlock::stopFigure()
     {
