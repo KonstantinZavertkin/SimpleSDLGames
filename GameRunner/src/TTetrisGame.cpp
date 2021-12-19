@@ -9,7 +9,6 @@ TTetrisGame::TTetrisGame( pair<size_t, size_t> fieldSize )
 
 TTetrisGame::~TTetrisGame()
 {
-
 }
 
 optional<size_t> TTetrisGame::checkFullLines()
@@ -39,8 +38,8 @@ optional<size_t> TTetrisGame::checkFullLines()
 
 void TTetrisGame::gameThread()
 {
-    size_t id = 0;
     size_t timeToSleep = 500;
+    std::srand( time( 0 ) );
 
     while ( !quit )
     {
@@ -49,19 +48,13 @@ void TTetrisGame::gameThread()
         if ( !pauseGame )
         {
             if ( allBlocks.empty() )
-                createFigure( id++ );
+                createFigure();
             
             if ( !allBlocks.empty() )
                 if ( !allBlocks.back().canMove )
-                    createFigure( id++ );
+                    createFigure();
 
             showBlockShadow();
-
-            if ( allBlocks.back().isGameOver() )
-            {
-                quit = true;
-                cout << "Game over" << endl;
-            }
 
             const auto maybeFullLines = checkFullLines();
 
@@ -198,61 +191,74 @@ void TTetrisGame::ioThread()
     cout << "Tetris io thread done" << endl;
 };
 
-void TTetrisGame::createFigure( const size_t id )
+void TTetrisGame::createFigure()
 {
-    vector<pair<size_t, size_t>> v0 { {0, 0}, {0, 1}, {0, 2}, {1, 1} };
-    vector<pair<size_t, size_t>> v1 { {0, 0}, {0, 1}, {0, 2}, {0, 3} };
-    vector<pair<size_t, size_t>> v2 { {0, 0}, {0, 1}, {0, 2}, {1, 0} };
-    vector<pair<size_t, size_t>> v3 { {0, 0}, {1, 0}, {1, 1}, {1, 2} };
-    vector<pair<size_t, size_t>> v4 { {0, 0}, {0, 1}, {1, 0}, {1, 1} };
-    vector<pair<size_t, size_t>> v5 { {0, 0}, {0, 1}, {1, 1}, {1, 2} };
-    vector<pair<size_t, size_t>> v6 { {0, 1}, {0, 2}, {1, 0}, {1, 1} };
+    pair<size_t, size_t> startPos = {0, 5};
+    pair<size_t, size_t> rotationPoint = {1, 6};
+    vector<pair<size_t, size_t>> figurePoints = {};
+    auto figureColor = TCellStates::blueColorStateKey;
 
     TCellsBlock block( gameField );
 
-    size_t idLocal = id % 7;
+    size_t idLocal = rand() % 7;
 
     if ( idLocal == 0 )
     {
-        block.initFigure( {0, 5}, v0, TCellStates::blueColorStateKey, id + 1 );
+        figurePoints = { {0, 0}, {0, 1}, {0, 2}, {1, 1} };
+        figureColor = TCellStates::blueColorStateKey;
     }
         
     if ( idLocal == 1 )
     {
-        block.initFigure( {0, 5}, v1, TCellStates::greenColorStateKey, id + 1 );
-        block.setRotatePoint( { 0, block.getRotatePoint().second + 1 } );
+        figurePoints = { {0, 0}, {0, 1}, {0, 2}, {0, 3} };
+        figureColor = TCellStates::greenColorStateKey;
+        rotationPoint = {0, 6};
     }
 
     if ( idLocal == 2 )
     {
-        block.initFigure( {0, 5}, v2, TCellStates::redColorStateKey, id + 1 );
+        figurePoints = { {0, 0}, {0, 1}, {0, 2}, {1, 0} };
+        figureColor = TCellStates::redColorStateKey;
     }
 
     if ( idLocal == 3 )
     {
-        block.initFigure( {0, 5}, v3, TCellStates::cyanColorStateKey, id + 1 );
+        figurePoints = { {0, 0}, {1, 0}, {1, 1}, {1, 2} };
+        figureColor = TCellStates::cyanColorStateKey;
     }
 
     if ( idLocal == 4 )
     {
-        block.initFigure( {0, 5}, v4, TCellStates::magentaColorStateKey, id + 1 );
+        figurePoints = { {0, 0}, {0, 1}, {1, 0}, {1, 1} };
+        figureColor = TCellStates::magentaColorStateKey;
     }
 
     if ( idLocal == 5 )
     {
-        block.initFigure( {0, 5}, v5, TCellStates::yellowColorStateKey, id + 1 );
+        figurePoints = { {0, 0}, {0, 1}, {1, 1}, {1, 2} };
+        figureColor = TCellStates::yellowColorStateKey;
     }
 
     if ( idLocal == 6 )
     {
-        block.initFigure( {0, 5}, v6, TCellStates::orangeColorStateKey, id + 1 );
+        figurePoints = { {0, 1}, {0, 2}, {1, 0}, {1, 1} };
+        figureColor = TCellStates::orangeColorStateKey;
     }
 
+    block.initFigure( startPos, figurePoints, figureColor, ++figureId );
+    block.setRotatePoint( rotationPoint );
+
     allBlocks.push_back( block );
+
+    if ( block.isGameOver() )
+        quit = true;
 };
 
 void TTetrisGame::showBlockShadow()
 {
+    if ( quit )
+        return;
+
     virtualBlock = nullptr;
     virtualBlock = make_unique<TCellsBlock>( TCellsBlock( allBlocks.back() ) );
     virtualBlock->clearVirtual();

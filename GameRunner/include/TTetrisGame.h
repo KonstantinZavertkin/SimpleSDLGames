@@ -27,7 +27,7 @@ class TTetrisGame
         void gameThread();
         void ioThread();
 
-        void createFigure( const size_t id );
+        void createFigure();
 
         void showBlockShadow();
 
@@ -47,6 +47,8 @@ class TTetrisGame
         deque<pair<int, int>> rotationsQueue;
 
         mutex syncPoint;
+
+        size_t figureId = 0;
 };
 
 #endif
