@@ -2,7 +2,7 @@
 
 void TFieldDrawer::draw()
 {
-    auto field = gameField.field;
+    auto& field = gameField.field;
 
     for ( size_t i = 0; i < field.size(); ++i )
     {

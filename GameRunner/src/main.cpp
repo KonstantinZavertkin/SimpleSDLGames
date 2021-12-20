@@ -50,7 +50,7 @@ int main( int argc, char **argv )
     cellsFieldParams.cellHeight = 20;
     cellsFieldParams.cellWidth = 20;
 
-    //! Area for cells
+    //! Area for main field
     TRectangleDescription activeGameField;
     activeGameField.xStart = xStartBias;
     activeGameField.yStart = yStartBias;
@@ -58,6 +58,19 @@ int main( int argc, char **argv )
     activeGameField.height = activeGameFieldHeight;
     activeGameField.color = { 0, 0, 0, 0xFF };
     activeGameField.isFilled = true;
+
+    TCellsFieldParams cellsInfoFieldParams;
+    cellsInfoFieldParams.xCellsCount = 5;
+    cellsInfoFieldParams.yCellsCount = 5;
+    cellsInfoFieldParams.cellHeight = 10;
+    cellsInfoFieldParams.cellWidth = 10;
+
+    //! Area for main field
+    TRectangleDescription gameInfoField;
+    gameInfoField.xStart = activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth;
+    gameInfoField.yStart = 50;
+    gameInfoField.width = cellsInfoFieldParams.xCellsCount * cellsInfoFieldParams.cellWidth;
+    gameInfoField.height = cellsInfoFieldParams.yCellsCount * cellsInfoFieldParams.cellHeight;
 
     //! Border around area for cells
     TRectangleDescription gameFieldBound;
@@ -82,9 +95,13 @@ int main( int argc, char **argv )
     //! Mapping (xCell, yCell) to (xWindow, yWindow)
     //! where [x|y]Cell - cells coordinate in 2d array of cells
     //! [x|y]Window - cells coordinate in pixels for corresponding window
-    TCellRectangles cellRectangles;
-    cellRectangles.setCellsFieldParams( activeGameField, cellsFieldParams );
-    cellRectangles.calcGrid();
+    TCellRectangles mainFieldCellsGrid;
+    mainFieldCellsGrid.setCellsFieldParams( activeGameField, cellsFieldParams );
+    mainFieldCellsGrid.calcGrid();
+
+    TCellRectangles infoFieldCellsGrid;
+    infoFieldCellsGrid.setCellsFieldParams( gameInfoField, cellsInfoFieldParams );
+    infoFieldCellsGrid.calcGrid();
 
     //! Game backend
     /*TSnakeGame snakeGame( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount }, 5 );
@@ -102,11 +119,21 @@ int main( int argc, char **argv )
 
     TTetrisGame tetris( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount } );
 
-    TFieldDrawer tetrisDrawer( tetris.gameField, drawer, cellRectangles );
+    TFieldDrawer tetrisDrawer( tetris.gameField, drawer, mainFieldCellsGrid );
     tetrisDrawer.addStaticPrimitive( gameFieldBound );
+
+    TGameField infoField( cellsInfoFieldParams.yCellsCount, cellsInfoFieldParams.xCellsCount );
+
+    for ( auto& line : infoField.field )
+        for ( auto& cell : line )
+            cell.currentState = TCellStates::virtualFigure;
+
+    TFieldDrawer infoFieldDrawer( infoField, drawer, infoFieldCellsGrid );
 
     tetris.fDrawer = &tetrisDrawer;
     tetris.fDrawer->draw();
+
+    infoFieldDrawer.draw();
 
     thread mainThr2( &TTetrisGame::gameThread, &tetris );
 
