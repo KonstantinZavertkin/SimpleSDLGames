@@ -32,12 +32,14 @@ class TTetrisGame
         void showBlockShadow();
 
         TGameField gameField;
+        TGameField nextFigureField;
 
         deque<TCellsBlock> allBlocks;
 
         unique_ptr<TCellsBlock> virtualBlock;
 
-        TFieldDrawer* fDrawer;
+        TFieldDrawer* mainFieldDrawer;
+        TFieldDrawer* nextFigureFieldDrawer;
 
         size_t clockCounter = 0;
         bool performStep = true;
@@ -49,6 +51,9 @@ class TTetrisGame
         mutex syncPoint;
 
         size_t figureId = 0;
+
+        size_t currentFigureId = 0;
+        size_t nextFigureId = 0;
 };
 
 #endif

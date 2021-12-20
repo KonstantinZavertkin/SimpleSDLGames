@@ -60,10 +60,10 @@ int main( int argc, char **argv )
     activeGameField.isFilled = true;
 
     TCellsFieldParams cellsInfoFieldParams;
-    cellsInfoFieldParams.xCellsCount = 5;
-    cellsInfoFieldParams.yCellsCount = 5;
-    cellsInfoFieldParams.cellHeight = 10;
-    cellsInfoFieldParams.cellWidth = 10;
+    cellsInfoFieldParams.xCellsCount = 4;
+    cellsInfoFieldParams.yCellsCount = 4;
+    cellsInfoFieldParams.cellHeight = 15;
+    cellsInfoFieldParams.cellWidth = 15;
 
     //! Area for main field
     TRectangleDescription gameInfoField;
@@ -80,6 +80,14 @@ int main( int argc, char **argv )
     gameFieldBound.height = cellsFieldParams.yCellsCount * cellsFieldParams.cellHeight + 2;
     gameFieldBound.isFilled = false;
     gameFieldBound.color = { 0xFF, 0xFF, 0xFF, 0xFF };
+
+    TRectangleDescription infoFieldBound;
+    infoFieldBound.xStart = gameInfoField.xStart - 1;
+    infoFieldBound.yStart = gameInfoField.yStart - 1;
+    infoFieldBound.width = cellsInfoFieldParams.xCellsCount * cellsInfoFieldParams.cellWidth + 2;
+    infoFieldBound.height = cellsInfoFieldParams.yCellsCount * cellsInfoFieldParams.cellHeight + 2;
+    infoFieldBound.isFilled = false;
+    infoFieldBound.color = { 0xFF, 0xFF, 0xFF, 0xFF };
 
     //! Create window, renderer and drawer
     TWindow wnd( "Main", mainWindowParams );
@@ -109,7 +117,7 @@ int main( int argc, char **argv )
     TFieldDrawer snakeDrawer( snakeGame.gameField, drawer, cellRectangles );
     snakeDrawer.addStaticPrimitive( gameFieldBound );
 
-    snakeGame.fDrawer = &snakeDrawer;
+    snakeGame.mainFieldDrawer = &snakeDrawer;
 
     thread mainThr( &TSnakeGame::gameThread, &snakeGame );
 
@@ -122,16 +130,12 @@ int main( int argc, char **argv )
     TFieldDrawer tetrisDrawer( tetris.gameField, drawer, mainFieldCellsGrid );
     tetrisDrawer.addStaticPrimitive( gameFieldBound );
 
-    TGameField infoField( cellsInfoFieldParams.yCellsCount, cellsInfoFieldParams.xCellsCount );
+    TFieldDrawer infoFieldDrawer( tetris.nextFigureField, drawer, infoFieldCellsGrid );
+    infoFieldDrawer.addStaticPrimitive( infoFieldBound );
 
-    for ( auto& line : infoField.field )
-        for ( auto& cell : line )
-            cell.currentState = TCellStates::virtualFigure;
-
-    TFieldDrawer infoFieldDrawer( infoField, drawer, infoFieldCellsGrid );
-
-    tetris.fDrawer = &tetrisDrawer;
-    tetris.fDrawer->draw();
+    tetris.mainFieldDrawer = &tetrisDrawer;
+    tetris.mainFieldDrawer->draw();
+    tetris.nextFigureFieldDrawer = &infoFieldDrawer;
 
     infoFieldDrawer.draw();
 

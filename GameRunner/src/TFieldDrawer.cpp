@@ -1,5 +1,54 @@
 #include "TFieldDrawer.h"
 
+pair<TColorRGB, bool> tetrisCellsMapper( const TCell& cell )
+{
+    if ( cell.currentState == TCellStates::redColorStateKey )
+        return { { 0xFF, 0x00, 0x00, 0xFF }, true };
+    
+    if ( cell.currentState == TCellStates::greenColorStateKey )
+        return { { 0x00, 0xFF, 0x00, 0xFF }, true };
+    
+    if ( cell.currentState == TCellStates::blueColorStateKey )
+        return { { 0x00, 0x00, 0xFF, 0xFF }, true };
+
+    if ( cell.currentState == TCellStates::cyanColorStateKey )
+        return { { 0x00, 0xFF, 0xFF, 0xFF }, true };
+    
+    if ( cell.currentState == TCellStates::magentaColorStateKey )
+        return { { 0xFF, 0x00, 0xFF, 0xFF }, true };
+    
+    if ( cell.currentState == TCellStates::yellowColorStateKey )
+        return { { 0xFF, 0xFF, 0x00, 0xFF }, true };
+
+    if ( cell.currentState == TCellStates::orangeColorStateKey )
+        return { { 0xFF, 0x7F, 0x50, 0xFF }, true };
+
+    if ( cell.currentState == TCellStates::virtualFigure )
+        return { { 0x80, 0x80, 0x80, 0xFF }, true };
+    
+    return { { 0x00, 0x00, 0x00, 0xFF }, false };
+}
+
+pair<TColorRGB, bool> snakeCellsMapper( const TCell& cell )
+{
+    if ( cell.currentState == TCellStates::backgroundStateKey )
+        return { { 0x00, 0x00, 0x00, 0xFF }, true };
+
+    if ( cell.currentState == TCellStates::snakeBodyStateKey )
+        return { { 0xFF, 0x00, 0x00, 0xFF }, true };
+
+    if ( cell.currentState == TCellStates::snakeHeadStateKey )
+        return { { 0x00, 0x00, 0xFF, 0xFF }, true };
+
+    if ( cell.currentState == TCellStates::snakeTailStateKey )
+        return { { 0xFF, 0x00, 0x00, 0xFF }, true };
+
+    if ( cell.currentState == TCellStates::eatStateKey )
+        return { { 0x00, 0xFF, 0x00, 0xFF }, true };
+    
+    return { { 0x00, 0x00, 0x00, 0xFF }, false };
+}
+
 void TFieldDrawer::draw()
 {
     auto& field = gameField.field;
@@ -11,49 +60,11 @@ void TFieldDrawer::draw()
             auto cr = cellRectangles.getCellRectangle( i, j );
             cr.isFilled = true;
 
-            if ( field[i][j].currentState == TCellStates::backgroundStateKey )
-                cr.color = { 0x00, 0x00, 0x00, 0xFF };
-
-            if ( field[i][j].currentState == TCellStates::snakeBodyStateKey )
-                cr.color = { 0xFF, 0x00, 0x00, 0xFF };
-
-            if ( field[i][j].currentState == TCellStates::snakeHeadStateKey )
-                cr.color = { 0x00, 0x00, 0xFF, 0xFF };
-
-            if ( field[i][j].currentState == TCellStates::snakeTailStateKey )
-                cr.color = { 0xFF, 0x00, 0x00, 0xFF };
-
-            if ( field[i][j].currentState == TCellStates::eatStateKey )
-                cr.color = { 0x00, 0xFF, 0x00, 0xFF };
-            
-
-            if ( field[i][j].currentState == TCellStates::redColorStateKey )
-                cr.color = { 0xFF, 0x00, 0x00, 0xFF };
-            
-            if ( field[i][j].currentState == TCellStates::greenColorStateKey )
-                cr.color = { 0x00, 0xFF, 0x00, 0xFF };
-            
-            if ( field[i][j].currentState == TCellStates::blueColorStateKey )
-                cr.color = { 0x00, 0x00, 0xFF, 0xFF };
-
-            if ( field[i][j].currentState == TCellStates::cyanColorStateKey )
-                cr.color = { 0x00, 0xFF, 0xFF, 0xFF };
-            
-            if ( field[i][j].currentState == TCellStates::magentaColorStateKey )
-                cr.color = { 0xFF, 0x00, 0xFF, 0xFF };
-            
-            if ( field[i][j].currentState == TCellStates::yellowColorStateKey )
-                cr.color = { 0xFF, 0xFF, 0x00, 0xFF };
-
-            if ( field[i][j].currentState == TCellStates::orangeColorStateKey )
-                cr.color = { 0xFF, 0x7F, 0x50, 0xFF };
-
-            if ( field[i][j].currentState == TCellStates::virtualFigure )
-                cr.color = { 0x80, 0x80, 0x80, 0xFF };
-
+            auto [color, isHaveBorder] = tetrisCellsMapper( field[i][j] );
+            cr.color = color;
             drawer.draw( cr );
 
-            if ( field[i][j].currentState != TCellStates::backgroundStateKey )
+            if ( isHaveBorder )
             {
                 cr.isFilled = false;
                 cr.color = { 0xFF, 0xFF, 0xFF, 0xFF };

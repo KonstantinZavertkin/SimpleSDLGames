@@ -9,6 +9,9 @@ using namespace std;
 using namespace game_backend;
 using namespace io_submodule;
 
+pair<TColorRGB, bool> tetrisCellsMapper( const TCell& cell );
+pair<TColorRGB, bool> snakeCellsMapper( const TCell& cell );
+
 class TFieldDrawer
 {
     public:

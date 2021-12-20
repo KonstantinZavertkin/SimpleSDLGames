@@ -3,7 +3,7 @@
 #include "TTetrisGame.h"
 
 TTetrisGame::TTetrisGame( pair<size_t, size_t> fieldSize )
-    : gameField( fieldSize.first, fieldSize.second )
+    : gameField( fieldSize.first, fieldSize.second ), nextFigureField( 4, 4 )
 {
 };
 
@@ -182,7 +182,10 @@ void TTetrisGame::ioThread()
 
         syncPoint.lock();
         quitLocal = quit;
-        fDrawer->draw();
+
+        mainFieldDrawer->draw();
+        nextFigureFieldDrawer->draw();
+
         syncPoint.unlock();
 
         SDL_Delay( 1 );
@@ -199,51 +202,67 @@ void TTetrisGame::createFigure()
     auto figureColor = TCellStates::blueColorStateKey;
 
     TCellsBlock block( gameField );
+    TCellsBlock nextBlock( nextFigureField );
 
-    size_t idLocal = rand() % 7;
+    currentFigureId = nextFigureId;
+    nextFigureId = rand() % 7;
 
-    if ( idLocal == 0 )
+    auto mapIdToFigure = [&figurePoints, &figureColor, &rotationPoint]( size_t figureIdVar )
     {
-        figurePoints = { {0, 0}, {0, 1}, {0, 2}, {1, 1} };
-        figureColor = TCellStates::blueColorStateKey;
-    }
-        
-    if ( idLocal == 1 )
-    {
-        figurePoints = { {0, 0}, {0, 1}, {0, 2}, {0, 3} };
-        figureColor = TCellStates::greenColorStateKey;
-        rotationPoint = {0, 6};
-    }
+        if ( figureIdVar == 0 )
+        {
+            figurePoints = { {0, 0}, {0, 1}, {0, 2}, {1, 1} };
+            figureColor = TCellStates::blueColorStateKey;
+        }
+            
+        if ( figureIdVar == 1 )
+        {
+            figurePoints = { {0, 0}, {0, 1}, {0, 2}, {0, 3} };
+            figureColor = TCellStates::greenColorStateKey;
+            rotationPoint = {0, 6};
+        }
 
-    if ( idLocal == 2 )
-    {
-        figurePoints = { {0, 0}, {0, 1}, {0, 2}, {1, 0} };
-        figureColor = TCellStates::redColorStateKey;
-    }
+        if ( figureIdVar == 2 )
+        {
+            figurePoints = { {0, 0}, {0, 1}, {0, 2}, {1, 0} };
+            figureColor = TCellStates::redColorStateKey;
+        }
 
-    if ( idLocal == 3 )
-    {
-        figurePoints = { {0, 0}, {1, 0}, {1, 1}, {1, 2} };
-        figureColor = TCellStates::cyanColorStateKey;
-    }
+        if ( figureIdVar == 3 )
+        {
+            figurePoints = { {0, 0}, {1, 0}, {1, 1}, {1, 2} };
+            figureColor = TCellStates::cyanColorStateKey;
+        }
 
-    if ( idLocal == 4 )
-    {
-        figurePoints = { {0, 0}, {0, 1}, {1, 0}, {1, 1} };
-        figureColor = TCellStates::magentaColorStateKey;
-    }
+        if ( figureIdVar == 4 )
+        {
+            figurePoints = { {0, 0}, {0, 1}, {1, 0}, {1, 1} };
+            figureColor = TCellStates::magentaColorStateKey;
+        }
 
-    if ( idLocal == 5 )
-    {
-        figurePoints = { {0, 0}, {0, 1}, {1, 1}, {1, 2} };
-        figureColor = TCellStates::yellowColorStateKey;
-    }
+        if ( figureIdVar == 5 )
+        {
+            figurePoints = { {0, 0}, {0, 1}, {1, 1}, {1, 2} };
+            figureColor = TCellStates::yellowColorStateKey;
+        }
 
-    if ( idLocal == 6 )
-    {
-        figurePoints = { {0, 1}, {0, 2}, {1, 0}, {1, 1} };
-        figureColor = TCellStates::orangeColorStateKey;
-    }
+        if ( figureIdVar == 6 )
+        {
+            figurePoints = { {0, 1}, {0, 2}, {1, 0}, {1, 1} };
+            figureColor = TCellStates::orangeColorStateKey;
+        }
+    };
+
+    mapIdToFigure( nextFigureId );
+
+    for ( auto& line : nextBlock.gameField.field )
+        for ( auto& cell : line )
+            cell.currentState = TCellStates::backgroundStateKey;
+
+    nextBlock.initFigure( {1, 0}, figurePoints, figureColor, ++figureId );
+    nextBlock.setRotatePoint( rotationPoint );
+
+    mapIdToFigure( currentFigureId );
 
     block.initFigure( startPos, figurePoints, figureColor, ++figureId );
     block.setRotatePoint( rotationPoint );
