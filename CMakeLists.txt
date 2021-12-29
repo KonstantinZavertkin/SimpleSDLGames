@@ -9,14 +9,21 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     # https://stackoverflow.com/questions/28395833/using-sdl2-with-cmake
     set(SDL2_DIR "" CACHE PATH "The directory containing the SDL2 library")
     set(SDL2_INCLUDE_DIRS "${SDL2_DIR}/include")
+    
+    set(SDL2_TTF_DIR "" CACHE PATH "The directory containing the SDL_ttf library")
+    set(SDL2_TTF_INCLUDE_DIRS "${SDL2_TTF_DIR}/include")
 
     # Support both 32 and 64 bit builds
     if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
       set(SDL2_LIBRARIES "${SDL2_DIR}/lib/x64/SDL2.lib;${SDL2_DIR}/lib/x64/SDL2main.lib")
-      set(SDL2_LIBRARIES_DLL ${SDL2_DIR}/lib/x64/SDL2.dll)
+      set(SDL2_LIBRARIES_DLL ${SDL2_DIR}/lib/x64/)
+      set(SDL2_TTF_LIBRARIES "${SDL2_TTF_DIR}/lib/x64/SDL2_ttf.lib")
+      set(SDL2_TTF_LIBRARIES_DLL ${SDL2_TTF_DIR}/lib/x64/)
     else ()
       set(SDL2_LIBRARIES "${SDL2_DIR}/lib/x86/SDL2.lib;${SDL2_DIR}/lib/x86/SDL2main.lib")
-      set(SDL2_LIBRARIES_DLL ${SDL2_DIR}/lib/x86/SDL2.dll)
+      set(SDL2_LIBRARIES_DLL ${SDL2_DIR}/lib/x86/)
+      set(SDL2_TTF_LIBRARIES "${SDL2_TTF_DIR}/lib/x86/SDL2_ttf.lib")
+      set(SDL2_TTF_LIBRARIES_DLL ${SDL2_TTF_DIR}/lib/x86/)
     endif ()
 
     string(STRIP "${SDL2_LIBRARIES}" SDL2_LIBRARIES)
@@ -38,6 +45,7 @@ file(GLOB HEADERS_GUI ./GUI/include/*.h)
 
 add_library(GUI STATIC ${SRCS_GUI} ${HEADERS_GUI})
 include_directories(GUI ${SDL2_INCLUDE_DIRS})
+include_directories(GUI ${SDL2_TTF_INCLUDE_DIRS})
 target_include_directories(GUI PUBLIC GUI/include)
 
 file(GLOB SRCS_GameRunner ./GameRunner/src/*.cpp)
@@ -53,19 +61,27 @@ else()
 endif()
 
 target_link_libraries(GameRunner ${SDL2_LIBRARIES})
+target_link_libraries(GameRunner ${SDL2_TTF_LIBRARIES})
 target_link_libraries(GameRunner GameBackend)
 target_link_libraries(GameRunner GUI)
 include_directories(GameRunner ${SDL2_INCLUDE_DIRS})
+include_directories(GameRunner ${SDL2_TTF_INCLUDE_DIRS})
 target_include_directories(GameRunner PUBLIC GameBackend/include)
 target_include_directories(GameRunner PUBLIC GUI/include)
 target_include_directories(GameRunner PUBLIC GameRunner/include)
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     file(TO_NATIVE_PATH ${SDL2_LIBRARIES_DLL} SOURCE_PATH_)
+    file(TO_NATIVE_PATH ${SDL2_TTF_LIBRARIES_DLL} SOURCE_PATH_TTF_)
     
     # Post-build event for msvs to copy SDL2.dll
     add_custom_command(TARGET GameRunner POST_BUILD 
-        COMMAND copy /Y ${SOURCE_PATH_} "$(SolutionDir)$(Configuration)"
+        COMMAND xcopy /y /e ${SOURCE_PATH_} "$(SolutionDir)$(Configuration)\\*.*"
+    )
+    
+    # Post-build event for msvs to copy SDL2.dll
+    add_custom_command(TARGET GameRunner POST_BUILD 
+        COMMAND xcopy /y /e ${SOURCE_PATH_TTF_} "$(SolutionDir)$(Configuration)\\*.*"
     )
 else()
     target_link_libraries(GameRunner Threads::Threads)

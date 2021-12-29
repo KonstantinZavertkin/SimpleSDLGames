@@ -18,6 +18,8 @@
 #include "TCellsChain.h"
 #include "TSnakeGame.h"
 #include "TFieldDrawer.h"
+#include "TFontTTF.h"
+#include "TFontDrawer.h"
 
 #include "TTetrisGame.h"
 
@@ -67,12 +69,12 @@ int main( int argc, char **argv )
 
     //! Area for main field
     TRectangleDescription gameInfoField;
-    gameInfoField.xStart = activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth;
-    gameInfoField.yStart = 50;
+    gameInfoField.xStart = activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth + 20;
+    gameInfoField.yStart = 100;
     gameInfoField.width = cellsInfoFieldParams.xCellsCount * cellsInfoFieldParams.cellWidth;
     gameInfoField.height = cellsInfoFieldParams.yCellsCount * cellsInfoFieldParams.cellHeight;
 
-    //! Border around area for cells
+    //! Border around the main area
     TRectangleDescription gameFieldBound;
     gameFieldBound.xStart = activeGameField.xStart - 1;
     gameFieldBound.yStart = activeGameField.yStart - 1;
@@ -81,6 +83,7 @@ int main( int argc, char **argv )
     gameFieldBound.isFilled = false;
     gameFieldBound.color = { 0xFF, 0xFF, 0xFF, 0xFF };
 
+    //! Border around the info area
     TRectangleDescription infoFieldBound;
     infoFieldBound.xStart = gameInfoField.xStart - 1;
     infoFieldBound.yStart = gameInfoField.yStart - 1;
@@ -89,7 +92,7 @@ int main( int argc, char **argv )
     infoFieldBound.isFilled = false;
     infoFieldBound.color = { 0xFF, 0xFF, 0xFF, 0xFF };
 
-    //! Create window, renderer and drawer
+    //! Create window, drawer and drawer
     TWindow wnd( "Main", mainWindowParams );
     TRenderer renderer( wnd );
     TDrawer drawer( renderer );
@@ -98,6 +101,17 @@ int main( int argc, char **argv )
     drawer.draw( mainWindowParams );
     drawer.draw( activeGameField );
     drawer.draw( gameFieldBound );
+
+    ////
+
+    //string fontFile = "C:/git/SnakeGame/resources/font/Samson.ttf";
+    string fontFile = "C:/git/SnakeGame/build/Samson.ttf";
+    int fontSize = 20;
+
+    TFontTTF ttfTextPrinter( drawer, fontFile, fontSize );
+    auto point = make_pair( gameFieldBound.xStart + gameFieldBound.width + 20, gameFieldBound.yStart );
+    ttfTextPrinter.setPoint( point );
+    TFontDrawer textDrawer( ttfTextPrinter );
 
     //! Calc cells coordinates
     //! Mapping (xCell, yCell) to (xWindow, yWindow)
@@ -136,6 +150,7 @@ int main( int argc, char **argv )
     tetris.mainFieldDrawer = &tetrisDrawer;
     tetris.mainFieldDrawer->draw();
     tetris.nextFigureFieldDrawer = &infoFieldDrawer;
+    tetris.scorePrinter = &textDrawer;
 
     infoFieldDrawer.draw();
 

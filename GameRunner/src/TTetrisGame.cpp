@@ -185,6 +185,8 @@ void TTetrisGame::ioThread()
 
         mainFieldDrawer->draw();
         nextFigureFieldDrawer->draw();
+        scorePrinter->setText( "Score: " + to_string( figureId ) );
+        
 
         syncPoint.unlock();
 
@@ -259,7 +261,7 @@ void TTetrisGame::createFigure()
         for ( auto& cell : line )
             cell.currentState = TCellStates::backgroundStateKey;
 
-    nextBlock.initFigure( {1, 0}, figurePoints, figureColor, ++figureId );
+    nextBlock.initFigure( {1, 0}, figurePoints, figureColor, figureId );
     nextBlock.setRotatePoint( rotationPoint );
 
     mapIdToFigure( currentFigureId );

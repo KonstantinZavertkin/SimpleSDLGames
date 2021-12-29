@@ -10,13 +10,20 @@ namespace io_submodule
     class TTexture
     {
         public:
+
+            TTexture( TRenderer& renderer );
             TTexture( TRenderer& renderer, TSurface& surface );
             ~TTexture();
 
+            void updateSurface( TSurface& );
+
+            TSurface& getSurface();
             SDL_Texture* getTexturePtr();
 
         private:
-            SDL_Texture* texturePtr;
+            SDL_Texture* texturePtr = nullptr;
+            TRenderer& renderer;
+            TSurface surface;
 
             TTexture( const TTexture& ) = delete;
             TTexture& operator=( const TTexture& ) = delete;

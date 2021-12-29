@@ -9,7 +9,7 @@ namespace io_submodule
 
         if ( renderer == nullptr )
         {
-            std::string error = std::string( "Can't create renderer, error: " ) + SDL_GetError();
+            std::string error = std::string( "Can't create drawer, error: " ) + SDL_GetError();
             throw std::runtime_error( error );
         }
     };

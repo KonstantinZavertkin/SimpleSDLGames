@@ -12,6 +12,21 @@ namespace io_submodule
     {
         SDL_RenderClear( rendererRef.getRenderer() );
         SDL_RenderCopy( rendererRef.getRenderer(), texture.getTexturePtr(), nullptr, nullptr );
+    }
+
+    void TDrawer::draw( TTexture& texture, std::pair<int, int> point )
+    {
+        SDL_Rect r;
+        r.x = point.first;
+        r.y = point.second;
+        r.h = texture.getSurface().getSurface()->h;
+        r.w = texture.getSurface().getSurface()->w;
+
+        TColorRGB color = { 0, 0, 0, 0xFF };
+
+        SDL_SetRenderDrawColor( rendererRef.getRenderer(), color.r, color.g, color.b, color.alpha );
+        SDL_RenderFillRect( rendererRef.getRenderer(), &r );
+        SDL_RenderCopy( rendererRef.getRenderer(), texture.getTexturePtr(), nullptr, &r );
     };
 
     void TDrawer::draw( TRectangleDescription rectangleParams )
@@ -35,5 +50,10 @@ namespace io_submodule
     {
         SDL_Delay( 1 );
         SDL_RenderPresent( rendererRef.getRenderer() );
+    }
+
+    TRenderer& TDrawer::getRenderer()
+    {
+        return rendererRef;
     };
 };

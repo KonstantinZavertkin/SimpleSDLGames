@@ -10,6 +10,7 @@
 #include "TGameField.h"
 #include "TCellsBlock.h"
 #include "TFieldDrawer.h"
+#include "TFontDrawer.h"
 
 using namespace std;
 using namespace game_backend;
@@ -38,8 +39,9 @@ class TTetrisGame
 
         unique_ptr<TCellsBlock> virtualBlock;
 
-        TFieldDrawer* mainFieldDrawer;
-        TFieldDrawer* nextFigureFieldDrawer;
+        TFieldDrawer* mainFieldDrawer = nullptr;
+        TFieldDrawer* nextFigureFieldDrawer = nullptr;
+        TFontDrawer* scorePrinter = nullptr;
 
         size_t clockCounter = 0;
         bool performStep = true;

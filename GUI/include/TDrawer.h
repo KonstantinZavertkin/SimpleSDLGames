@@ -15,14 +15,17 @@ namespace io_submodule
             ~TDrawer();
 
             void draw( TTexture& texture );
+            void draw( TTexture& texture, std::pair<int, int> point );
             void draw( TRectangleDescription rectangleParams );
 
             void updateScreen();
 
+            TRenderer& getRenderer();
+
         private:
             TRenderer& rendererRef;
             
-            TDrawer() = default;
+            TDrawer() = delete;
             TDrawer( const TDrawer& ) = delete;
             TDrawer& operator=( const TDrawer& ) = delete;
     };
