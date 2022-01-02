@@ -37,6 +37,10 @@ int main( int argc, char **argv )
     size_t yStartBias = 50;
     size_t activeGameFieldWidth = wholeWidth - xStartBias * 2;
     size_t activeGameFieldHeight = wholeHeight - yStartBias - 10;
+
+    //string fontFile = "C:/git/SnakeGame/resources/font/Samson.ttf";
+    string fontFile = "C:/git/SnakeGame/build/Samson.ttf";
+    int fontSize = 20;
     
     //! Main window params
     TRectangleDescription mainWindowParams;
@@ -52,6 +56,12 @@ int main( int argc, char **argv )
     cellsFieldParams.cellHeight = 20;
     cellsFieldParams.cellWidth = 20;
 
+    TCellsFieldParams cellsInfoFieldParams;
+    cellsInfoFieldParams.xCellsCount = 4;
+    cellsInfoFieldParams.yCellsCount = 4;
+    cellsInfoFieldParams.cellHeight = 15;
+    cellsInfoFieldParams.cellWidth = 15;
+
     //! Area for main field
     TRectangleDescription activeGameField;
     activeGameField.xStart = xStartBias;
@@ -60,12 +70,6 @@ int main( int argc, char **argv )
     activeGameField.height = activeGameFieldHeight;
     activeGameField.color = { 0, 0, 0, 0xFF };
     activeGameField.isFilled = true;
-
-    TCellsFieldParams cellsInfoFieldParams;
-    cellsInfoFieldParams.xCellsCount = 4;
-    cellsInfoFieldParams.yCellsCount = 4;
-    cellsInfoFieldParams.cellHeight = 15;
-    cellsInfoFieldParams.cellWidth = 15;
 
     //! Area for main field
     TRectangleDescription gameInfoField;
@@ -92,26 +96,35 @@ int main( int argc, char **argv )
     infoFieldBound.isFilled = false;
     infoFieldBound.color = { 0xFF, 0xFF, 0xFF, 0xFF };
 
+    //! Debug screen
+    TRectangleDescription debugGameField;
+    debugGameField.xStart = 320;
+    debugGameField.yStart = yStartBias;
+    debugGameField.width = activeGameFieldWidth / 2;
+    debugGameField.height = activeGameFieldHeight;
+    debugGameField.color = { 0, 0, 0, 0xFF };
+    debugGameField.isFilled = true;
+
+    TRectangleDescription debugFieldBound;
+    debugFieldBound.xStart = debugGameField.xStart - 1;
+    debugFieldBound.yStart = debugGameField.yStart - 1;
+    debugFieldBound.width = cellsFieldParams.xCellsCount * cellsFieldParams.cellWidth + 2;
+    debugFieldBound.height = cellsFieldParams.yCellsCount * cellsFieldParams.cellHeight + 2;
+    debugFieldBound.isFilled = false;
+    debugFieldBound.color = { 0xFF, 0xFF, 0xFF, 0xFF };
+
     //! Create window, drawer and drawer
     TWindow wnd( "Main", mainWindowParams );
     TRenderer renderer( wnd );
     TDrawer drawer( renderer );
 
     //! Draw static objects
-    drawer.draw( mainWindowParams );
-    drawer.draw( activeGameField );
-    drawer.draw( gameFieldBound );
+    //drawer.draw( mainWindowParams );
+    //drawer.draw( activeGameField );
+    //drawer.draw( gameFieldBound );
 
-    ////
-
-    //string fontFile = "C:/git/SnakeGame/resources/font/Samson.ttf";
-    string fontFile = "C:/git/SnakeGame/build/Samson.ttf";
-    int fontSize = 20;
-
-    TFontTTF ttfTextPrinter( drawer, fontFile, fontSize );
-    auto point = make_pair( gameFieldBound.xStart + gameFieldBound.width + 20, gameFieldBound.yStart );
-    ttfTextPrinter.setPoint( point );
-    TFontDrawer textDrawer( ttfTextPrinter );
+    //drawer.draw( debugGameField );
+    //drawer.draw( debugFieldBound );
 
     //! Calc cells coordinates
     //! Mapping (xCell, yCell) to (xWindow, yWindow)
@@ -124,6 +137,10 @@ int main( int argc, char **argv )
     TCellRectangles infoFieldCellsGrid;
     infoFieldCellsGrid.setCellsFieldParams( gameInfoField, cellsInfoFieldParams );
     infoFieldCellsGrid.calcGrid();
+
+    TCellRectangles debugFieldCellsGrid;
+    debugFieldCellsGrid.setCellsFieldParams( debugGameField, cellsFieldParams );
+    debugFieldCellsGrid.calcGrid();
 
     //! Game backend
     /*TSnakeGame snakeGame( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount }, 5 );
@@ -142,17 +159,26 @@ int main( int argc, char **argv )
     TTetrisGame tetris( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount } );
 
     TFieldDrawer tetrisDrawer( tetris.gameField, drawer, mainFieldCellsGrid );
+    tetrisDrawer.cellsMapper = tetrisCellsMapper;
     tetrisDrawer.addStaticPrimitive( gameFieldBound );
 
     TFieldDrawer infoFieldDrawer( tetris.nextFigureField, drawer, infoFieldCellsGrid );
+    infoFieldDrawer.cellsMapper = tetrisCellsMapper;
     infoFieldDrawer.addStaticPrimitive( infoFieldBound );
 
+    TFieldDrawer debugFieldDrawer( tetris.gameField, drawer, debugFieldCellsGrid );
+    debugFieldDrawer.cellsMapper = tetrisCellsMapperDebug;
+    tetrisDrawer.addStaticPrimitive( debugFieldBound );
+
+    TFontTTF ttfTextPrinter( drawer, fontFile, fontSize );
+    auto point = make_pair( gameFieldBound.xStart + gameFieldBound.width + 20, gameFieldBound.yStart );
+    ttfTextPrinter.setPoint( point );
+    TFontDrawer textDrawer( ttfTextPrinter );
+
     tetris.mainFieldDrawer = &tetrisDrawer;
-    tetris.mainFieldDrawer->draw();
     tetris.nextFigureFieldDrawer = &infoFieldDrawer;
     tetris.scorePrinter = &textDrawer;
-
-    infoFieldDrawer.draw();
+    tetris.debugFieldDrawer = &debugFieldDrawer;
 
     thread mainThr2( &TTetrisGame::gameThread, &tetris );
 

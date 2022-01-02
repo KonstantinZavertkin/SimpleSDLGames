@@ -37,7 +37,6 @@ namespace game_backend
             TGameField& gameField;
 
             bool canMove = true;
-            bool skip = false;
             bool gameOverFlag = false;
             pair<int, int> moveDirection = { 1, 0 };
             const pair<int, int> moveDirectionDefault = { 1, 0 };

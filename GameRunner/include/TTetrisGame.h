@@ -30,6 +30,8 @@ class TTetrisGame
 
         void createFigure();
 
+        void createFigureIfRequired();
+
         void showBlockShadow();
 
         TGameField gameField;
@@ -42,13 +44,12 @@ class TTetrisGame
         TFieldDrawer* mainFieldDrawer = nullptr;
         TFieldDrawer* nextFigureFieldDrawer = nullptr;
         TFontDrawer* scorePrinter = nullptr;
+        TFieldDrawer* debugFieldDrawer = nullptr;
 
         size_t clockCounter = 0;
         bool performStep = true;
         bool pauseGame = false;
         bool quit = false;
-
-        deque<pair<int, int>> rotationsQueue;
 
         mutex syncPoint;
 
@@ -56,6 +57,8 @@ class TTetrisGame
 
         size_t currentFigureId = 0;
         size_t nextFigureId = 0;
+
+        size_t gameScore = 0;
 };
 
 #endif

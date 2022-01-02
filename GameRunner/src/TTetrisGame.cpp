@@ -38,8 +38,9 @@ optional<size_t> TTetrisGame::checkFullLines()
 
 void TTetrisGame::gameThread()
 {
+    size_t gameScoreDelta = 0;
     size_t timeToSleep = 500;
-    std::srand( time( 0 ) );
+    //std::srand( time( 0 ) );
 
     while ( !quit )
     {
@@ -47,14 +48,7 @@ void TTetrisGame::gameThread()
 
         if ( !pauseGame )
         {
-            if ( allBlocks.empty() )
-                createFigure();
-            
-            if ( !allBlocks.empty() )
-                if ( !allBlocks.back().canMove )
-                    createFigure();
-
-            showBlockShadow();
+            createFigureIfRequired();
 
             const auto maybeFullLines = checkFullLines();
 
@@ -62,6 +56,7 @@ void TTetrisGame::gameThread()
             {
                 gameField.scrollField( { 1, 0 }, maybeFullLines );
                 timeToSleep = 100;
+                ++gameScoreDelta;
             }
             else
             {
@@ -72,12 +67,20 @@ void TTetrisGame::gameThread()
                     allBlocks.back().step();
 
                     if ( checkFullLines() )
+                    {
                         timeToSleep = 100;
+                        ++gameScoreDelta;
+                    }
+                    else
+                    {
+                        if ( gameScoreDelta )
+                        {
+                            gameScore += (1 << (gameScoreDelta - 1));
+                            gameScoreDelta = 0;
+                        }
+                    }
                 }
             }
-                
-
-            //! TODO Сделать удаление фигур из очереди
         }
         
         syncPoint.unlock();
@@ -151,6 +154,8 @@ void TTetrisGame::ioThread()
                     {
                         if ( !allBlocks.empty() )
                         {
+                            createFigureIfRequired();
+
                             if ( vectorNext == vectorUp )
                             {
                                 allBlocks.back().turn( {0, 0} );
@@ -173,6 +178,8 @@ void TTetrisGame::ioThread()
 
                         while ( allBlocks.back().canMove )
                             allBlocks.back().step();
+
+                        createFigureIfRequired();
                     }
                 }
 
@@ -183,10 +190,13 @@ void TTetrisGame::ioThread()
         syncPoint.lock();
         quitLocal = quit;
 
+        mainFieldDrawer->drawer.resetScreen();
         mainFieldDrawer->draw();
         nextFigureFieldDrawer->draw();
-        scorePrinter->setText( "Score: " + to_string( figureId ) );
+        debugFieldDrawer->draw();
+        scorePrinter->setText( "Score: " + to_string( gameScore ) );
         
+        mainFieldDrawer->drawer.updateScreen();
 
         syncPoint.unlock();
 
@@ -198,8 +208,8 @@ void TTetrisGame::ioThread()
 
 void TTetrisGame::createFigure()
 {
-    pair<size_t, size_t> startPos = {0, 5};
-    pair<size_t, size_t> rotationPoint = {1, 6};
+    pair<size_t, size_t> startPos = {1, 0};
+    pair<size_t, size_t> rotationPoint = {1, 5};
     vector<pair<size_t, size_t>> figurePoints = {};
     auto figureColor = TCellStates::blueColorStateKey;
 
@@ -209,7 +219,7 @@ void TTetrisGame::createFigure()
     currentFigureId = nextFigureId;
     nextFigureId = rand() % 7;
 
-    auto mapIdToFigure = [&figurePoints, &figureColor, &rotationPoint]( size_t figureIdVar )
+    auto mapIdToFigure = [&figurePoints, &figureColor, &rotationPoint, &startPos]( size_t figureIdVar )
     {
         if ( figureIdVar == 0 )
         {
@@ -221,7 +231,7 @@ void TTetrisGame::createFigure()
         {
             figurePoints = { {0, 0}, {0, 1}, {0, 2}, {0, 3} };
             figureColor = TCellStates::greenColorStateKey;
-            rotationPoint = {0, 6};
+            rotationPoint = {0, 5};
         }
 
         if ( figureIdVar == 2 )
@@ -240,6 +250,7 @@ void TTetrisGame::createFigure()
         {
             figurePoints = { {0, 0}, {0, 1}, {1, 0}, {1, 1} };
             figureColor = TCellStates::magentaColorStateKey;
+            startPos = {1, 1};
         }
 
         if ( figureIdVar == 5 )
@@ -257,15 +268,14 @@ void TTetrisGame::createFigure()
 
     mapIdToFigure( nextFigureId );
 
-    for ( auto& line : nextBlock.gameField.field )
-        for ( auto& cell : line )
-            cell.currentState = TCellStates::backgroundStateKey;
+    nextBlock.gameField.resetField();
 
-    nextBlock.initFigure( {1, 0}, figurePoints, figureColor, figureId );
+    nextBlock.initFigure( startPos, figurePoints, figureColor, figureId );
     nextBlock.setRotatePoint( rotationPoint );
 
     mapIdToFigure( currentFigureId );
 
+    startPos = {0, 4};
     block.initFigure( startPos, figurePoints, figureColor, ++figureId );
     block.setRotatePoint( rotationPoint );
 
@@ -273,7 +283,21 @@ void TTetrisGame::createFigure()
 
     if ( block.isGameOver() )
         quit = true;
-};
+}
+
+void TTetrisGame::createFigureIfRequired()
+{
+    if ( allBlocks.empty() )
+        createFigure();
+
+    if ( !allBlocks.empty() )
+    {
+        if ( !allBlocks.back().canMove )
+            createFigure();
+    }
+
+    showBlockShadow();
+}
 
 void TTetrisGame::showBlockShadow()
 {
@@ -289,4 +313,4 @@ void TTetrisGame::showBlockShadow()
         virtualBlock->step();
 
     allBlocks.back().tryWriteFigure();
-};
+}

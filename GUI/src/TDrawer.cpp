@@ -3,16 +3,12 @@
 namespace io_submodule
 {
     TDrawer::TDrawer( TRenderer& renderer ) : rendererRef( renderer )
-    {};
+    {
+        SDL_RenderClear( rendererRef.getRenderer() );
+    };
 
     TDrawer::~TDrawer()
     {};
-
-    void TDrawer::draw( TTexture& texture )
-    {
-        SDL_RenderClear( rendererRef.getRenderer() );
-        SDL_RenderCopy( rendererRef.getRenderer(), texture.getTexturePtr(), nullptr, nullptr );
-    }
 
     void TDrawer::draw( TTexture& texture, std::pair<int, int> point )
     {
@@ -22,10 +18,6 @@ namespace io_submodule
         r.h = texture.getSurface().getSurface()->h;
         r.w = texture.getSurface().getSurface()->w;
 
-        TColorRGB color = { 0, 0, 0, 0xFF };
-
-        SDL_SetRenderDrawColor( rendererRef.getRenderer(), color.r, color.g, color.b, color.alpha );
-        SDL_RenderFillRect( rendererRef.getRenderer(), &r );
         SDL_RenderCopy( rendererRef.getRenderer(), texture.getTexturePtr(), nullptr, &r );
     };
 
@@ -44,6 +36,15 @@ namespace io_submodule
             SDL_RenderFillRect( rendererRef.getRenderer(), &tempRect );
         else
             SDL_RenderDrawRect( rendererRef.getRenderer(), &tempRect );
+
+        const TColorRGB colorW = { 0xFF, 0xFF, 0xFF, 0x0 };
+
+        SDL_SetRenderDrawColor( rendererRef.getRenderer(), colorW.r, colorW.g, colorW.b, colorW.alpha );
+    }
+
+    void TDrawer::resetScreen()
+    {
+        SDL_RenderClear( rendererRef.getRenderer() );
     };
 
     void TDrawer::updateScreen()

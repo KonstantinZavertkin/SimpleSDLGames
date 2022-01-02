@@ -55,8 +55,9 @@ namespace io_submodule
 
             surface = TSurface( TTF_RenderText_Blended( font, this->strToPrint.c_str(), color ) );
             texture.updateSurface( surface );
-            drawer.draw( texture, point );
         }
+
+        drawer.draw( texture, point );
     }
 
     TSurface& TFontTTF::getTextSurface()

@@ -14,10 +14,10 @@ namespace io_submodule
             TDrawer( TRenderer& renderer );
             ~TDrawer();
 
-            void draw( TTexture& texture );
             void draw( TTexture& texture, std::pair<int, int> point );
             void draw( TRectangleDescription rectangleParams );
 
+            void resetScreen();
             void updateScreen();
 
             TRenderer& getRenderer();

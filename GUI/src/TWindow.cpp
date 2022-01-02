@@ -2,7 +2,7 @@
 
 namespace io_submodule
 {
-    TWindow::TWindow( const std::string name, const TRectangleDescription rectStruct  )
+    TWindow::TWindow( const std::string name, const TRectangleDescription rectStruct )
     {
         auto w = rectStruct.width;
         auto h = rectStruct.height;
@@ -14,7 +14,7 @@ namespace io_submodule
             std::string errorMessage = std::string( "SDL error (mainWindow): ") + std::string( SDL_GetError() );
             throw std::runtime_error( errorMessage );
         }
-    };
+    }
 
     TWindow::~TWindow()
     {

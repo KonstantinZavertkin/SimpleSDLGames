@@ -84,8 +84,6 @@ namespace game_backend
 
     void TCellsBlock::step()
     {
-        skip = false;
-
         if ( !canMove || gameOverFlag )
             return;
 
@@ -147,7 +145,7 @@ namespace game_backend
         for ( const auto& cell : blockCells )
         {
             const auto [x, y] = cell;
-            gameField.field[x][y].canBeMoved = false;    
+            gameField.field[x][y].canBeMoved = false;
         }
     }
 

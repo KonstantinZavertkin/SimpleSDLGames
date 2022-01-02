@@ -49,6 +49,19 @@ pair<TColorRGB, bool> snakeCellsMapper( const TCell& cell )
     return { { 0x00, 0x00, 0x00, 0xFF }, false };
 }
 
+pair<TColorRGB, bool> tetrisCellsMapperDebug( const TCell& cell )
+{
+    if ( !cell.canBeMoved && 
+         cell.currentState != TCellStates::backgroundStateKey &&
+         cell.currentState != TCellStates::virtualFigure )
+        return { { 0x80, 0x80, 0x80, 0xFF }, true };
+
+    if ( cell.canBeMoved )
+        return { { 0xFF, 0x00, 0x00, 0xFF }, true };
+
+    return { { 0x00, 0x00, 0x00, 0xFF }, false };
+}
+
 void TFieldDrawer::draw()
 {
     auto& field = gameField.field;
@@ -60,7 +73,7 @@ void TFieldDrawer::draw()
             auto cr = cellRectangles.getCellRectangle( i, j );
             cr.isFilled = true;
 
-            auto [color, isHaveBorder] = tetrisCellsMapper( field[i][j] );
+            auto [color, isHaveBorder] = cellsMapper( field[i][j] );
             cr.color = color;
             drawer.draw( cr );
 
@@ -75,11 +88,9 @@ void TFieldDrawer::draw()
 
     for ( const auto& val : staticPrimitives )
         drawer.draw( val );
-    
-    drawer.updateScreen();
-};
+}
 
 void TFieldDrawer::addStaticPrimitive( TRectangleDescription figureDescription )
 {
     staticPrimitives.push_back( figureDescription );
-};
+}

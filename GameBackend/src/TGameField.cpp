@@ -8,23 +8,20 @@ namespace game_backend
 
     TGameField::TGameField( size_t linesCount, size_t columnsCount )
     {
-        for ( size_t i = 0; i < linesCount; ++i )
+        fieldSize = make_pair( linesCount, columnsCount );
+        
+        for ( int i = 0; i < fieldSize.first; ++i )
         {
-            field.push_back( vector<TCell>() );
+            field.emplace_back();
 
-            for ( size_t j = 0; j < columnsCount; ++j )
+            for ( int j = 0; j < fieldSize.second; ++j )
             {
-                field[i].push_back( TCell() );
+                field[i].emplace_back();
                 auto& cell = field[i][j];
                 cell.ownersBlocksId = 0;
                 cell.currentState = TCellStates::backgroundStateKey;
-                //cell.moveDirection = { 0, 0 };
-                //cell.moveDirectionDelta = { 0, 0 };
-                //cell.thisCoordinates = { i, j };
             }
         }
-
-        fieldSize = make_pair( linesCount, columnsCount );
     };
 
     TGameField::~TGameField()
@@ -73,10 +70,6 @@ namespace game_backend
 
     void TGameField::scrollField( pair<int, int> direction, optional<size_t> fromLine )
     {
-        const auto [dx, dy] = direction;
-
-        vector<TCell> deletedLineCopy = vector<TCell>( field[field.size() - 1] );
-
         size_t lastLineIndex = field.size() - 1;
 
         if ( fromLine )
@@ -97,5 +90,18 @@ namespace game_backend
                 }
             }
         }
-    };
+    }
+
+    void TGameField::resetField()
+    {
+        for ( int i = 0; i < fieldSize.first; ++i )
+        {
+            for ( int j = 0; j < fieldSize.second; ++j )
+            {
+                auto& cell = field[i][j];
+                cell.ownersBlocksId = 0;
+                cell.currentState = TCellStates::backgroundStateKey;
+            }
+        }
+    }
 }
