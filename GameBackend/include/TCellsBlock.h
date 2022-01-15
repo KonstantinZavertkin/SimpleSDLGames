@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 
+#include "CommonTypes.hpp"
 #include "TGameField.h"
 
 namespace game_backend
@@ -18,11 +19,11 @@ namespace game_backend
 
             ~TCellsBlock();
 
-            void initFigure( pair<size_t, size_t> startPosition, vector<pair<size_t, size_t>> cells, const string color, const size_t blocksId );
+            void initFigure( TCoords startPosition, vector<TCoords> cells, const string color, const size_t blocksId );
 
-            void setRotatePoint( pair<int, int> rotatePoint );
+            void setRotatePoint( TCoords rotatePoint );
 
-            void turn( pair<int, int> rotateVector );
+            void turn( TCoords rotateVector );
 
             void step();
 
@@ -32,27 +33,24 @@ namespace game_backend
 
             void makeVirtual();
 
-            const pair<int, int> getRotatePoint() const;
+            const TCoords getRotatePoint() const;
             
             TGameField& gameField;
 
             bool canMove = true;
             bool gameOverFlag = false;
-            pair<int, int> moveDirection = { 1, 0 };
-            const pair<int, int> moveDirectionDefault = { 1, 0 };
+            TCoords moveDirection = { 1, 0 };
+            const TCoords moveDirectionDefault = { 1, 0 };
 
-            const pair<int, int> vectorUp = { -1, 0 };
-            const pair<int, int> vectorDown = { 1, 0 };
-            const pair<int, int> vectorLeft = { 0, -1 };
-            const pair<int, int> vectorRight = { 0, 1 };
+            
         
         //private:
 
-            vector<pair<int, int>> blockCells;   //!< Matrix of cell's coordinates
-            vector<pair<int, int>> blockCellsCopy;   //!< Matrix of cell's coordinates
+            vector<TCoords> blockCells;   //!< Matrix of cell's coordinates
+            vector<TCoords> blockCellsCopy;   //!< Matrix of cell's coordinates
             string cellState;                                  //! Cell's state
 
-            pair<int, int> rotatePoint;
+            TCoords rotatePoint;
             size_t blocksId = 0;
 
             int shiftLeft = 0;
@@ -62,8 +60,8 @@ namespace game_backend
 
             void stopFigure();
 
-            void writeCellsToField( const vector<pair<int, int>>& cells );
-            void removeFigureFromField( const vector<pair<int, int>>& cells );
+            void writeCellsToField( const vector<TCoords>& cells );
+            void removeFigureFromField( const vector<TCoords>& cells );
 
             bool tryWriteFigure();
     };

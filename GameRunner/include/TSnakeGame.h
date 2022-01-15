@@ -15,11 +15,11 @@ using namespace std;
 class TSnakeGame
 {
     public:
-        TSnakeGame( pair<size_t, size_t> fieldSize, size_t snakeLength );
+        TSnakeGame( TCoords fieldSize, size_t snakeLength );
         ~TSnakeGame();
 
         bool step();
-        void turn( pair<int, int> rotateVector );
+        void turn( TCoords rotateVector );
         void checkFood();
 
         void gameThread();
@@ -35,7 +35,7 @@ class TSnakeGame
         bool pauseGame = false;
         bool quit = false;
 
-        deque<pair<int, int>> rotationsQueue;
+        deque<TCoords> rotationsQueue;
 
         mutex syncPoint;
         

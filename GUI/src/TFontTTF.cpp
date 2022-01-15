@@ -35,12 +35,12 @@ namespace io_submodule
         TTF_Quit();
     }
 
-    void TFontTTF::setPoint( pair<size_t, size_t> point )
+    void TFontTTF::setPoint( TCoords point )
     {
         this->point = point;
     }
 
-    pair<size_t, size_t> TFontTTF::getPoint() const
+    TCoords TFontTTF::getPoint() const
     {
         return point;
     }

@@ -31,6 +31,7 @@ class TFieldDrawer
         function<pair<TColorRGB, bool>( const TCell& cell )> cellsMapper;
 
         TDrawer& drawer;
+
     private:
         TGameField& gameField;
         

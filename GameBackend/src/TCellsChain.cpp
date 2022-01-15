@@ -12,7 +12,7 @@ namespace game_backend
     TCellsChain::~TCellsChain()
     {};
 
-    void TCellsChain::initCellsChain( pair<size_t, size_t> startPosition, size_t snakeLength )
+    void TCellsChain::initCellsChain( TCoords startPosition, size_t snakeLength )
     {
         for ( size_t i = 0; i < snakeLength; ++i )
         {
@@ -26,7 +26,7 @@ namespace game_backend
         }
     };
 
-    void TCellsChain::turn( pair<int, int> rotateVector )
+    void TCellsChain::turn( TCoords rotateVector )
     {
         TExtendedCell& headCell = snakeCells.front();
 

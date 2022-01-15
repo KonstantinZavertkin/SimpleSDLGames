@@ -68,7 +68,7 @@ namespace game_backend
         cout << endl;
     }
 
-    void TGameField::scrollField( pair<int, int> direction, optional<size_t> fromLine )
+    void TGameField::scrollField( TCoords direction, optional<size_t> fromLine )
     {
         size_t lastLineIndex = field.size() - 1;
 

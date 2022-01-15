@@ -11,6 +11,7 @@
 #include "TCellsBlock.h"
 #include "TFieldDrawer.h"
 #include "TFontDrawer.h"
+#include "TTetrisBackend.h"
 
 using namespace std;
 using namespace game_backend;
@@ -18,47 +19,20 @@ using namespace game_backend;
 class TTetrisGame
 {
     public:
-        TTetrisGame( pair<size_t, size_t> fieldSize );
+        TTetrisGame( TCoords fieldSize );
         ~TTetrisGame();
-
-        //bool step();
-        //void turn( pair<int, int> rotateVector );
-        optional<size_t> checkFullLines();
 
         void gameThread();
         void ioThread();
 
-        void createFigure();
-
-        void createFigureIfRequired();
-
-        void showBlockShadow();
-
-        TGameField gameField;
-        TGameField nextFigureField;
-
-        deque<TCellsBlock> allBlocks;
-
-        unique_ptr<TCellsBlock> virtualBlock;
+        TTetrisBackend tetrisBackend;
 
         TFieldDrawer* mainFieldDrawer = nullptr;
         TFieldDrawer* nextFigureFieldDrawer = nullptr;
         TFontDrawer* scorePrinter = nullptr;
-        TFieldDrawer* debugFieldDrawer = nullptr;
 
-        size_t clockCounter = 0;
-        bool performStep = true;
-        bool pauseGame = false;
-        bool quit = false;
-
+    private:
         mutex syncPoint;
-
-        size_t figureId = 0;
-
-        size_t currentFigureId = 0;
-        size_t nextFigureId = 0;
-
-        size_t gameScore = 0;
 };
 
 #endif

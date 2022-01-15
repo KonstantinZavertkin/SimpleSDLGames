@@ -23,11 +23,14 @@
 
 #include "TTetrisGame.h"
 
+#include "CommonTypes.hpp"
+
 using namespace io_submodule;
 using namespace game_backend;
 
 int main( int argc, char **argv )
 {
+    std::srand( time( 0 ) );
     TSdlWrapper::getInstance();
 
     //! Main window params
@@ -158,17 +161,13 @@ int main( int argc, char **argv )
 
     TTetrisGame tetris( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount } );
 
-    TFieldDrawer tetrisDrawer( tetris.gameField, drawer, mainFieldCellsGrid );
+    TFieldDrawer tetrisDrawer( tetris.tetrisBackend.gameField, drawer, mainFieldCellsGrid );
     tetrisDrawer.cellsMapper = tetrisCellsMapper;
     tetrisDrawer.addStaticPrimitive( gameFieldBound );
 
-    TFieldDrawer infoFieldDrawer( tetris.nextFigureField, drawer, infoFieldCellsGrid );
+    TFieldDrawer infoFieldDrawer( tetris.tetrisBackend.nextFigureField, drawer, infoFieldCellsGrid );
     infoFieldDrawer.cellsMapper = tetrisCellsMapper;
     infoFieldDrawer.addStaticPrimitive( infoFieldBound );
-
-    TFieldDrawer debugFieldDrawer( tetris.gameField, drawer, debugFieldCellsGrid );
-    debugFieldDrawer.cellsMapper = tetrisCellsMapperDebug;
-    tetrisDrawer.addStaticPrimitive( debugFieldBound );
 
     TFontTTF ttfTextPrinter( drawer, fontFile, fontSize );
     auto point = make_pair( gameFieldBound.xStart + gameFieldBound.width + 20, gameFieldBound.yStart );
@@ -178,7 +177,6 @@ int main( int argc, char **argv )
     tetris.mainFieldDrawer = &tetrisDrawer;
     tetris.nextFigureFieldDrawer = &infoFieldDrawer;
     tetris.scorePrinter = &textDrawer;
-    tetris.debugFieldDrawer = &debugFieldDrawer;
 
     thread mainThr2( &TTetrisGame::gameThread, &tetris );
 

@@ -10,7 +10,7 @@ namespace io_submodule
     TDrawer::~TDrawer()
     {};
 
-    void TDrawer::draw( TTexture& texture, std::pair<int, int> point )
+    void TDrawer::draw( TTexture& texture, TCoords point )
     {
         SDL_Rect r;
         r.x = point.first;

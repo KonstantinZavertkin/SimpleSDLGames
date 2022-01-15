@@ -16,8 +16,8 @@ namespace io_submodule
             TFontTTF( TDrawer& renderer, const string pathToTtf, const size_t fontSize );
             ~TFontTTF();
 
-            void setPoint( pair<size_t, size_t> point );
-            pair<size_t, size_t> getPoint() const;
+            void setPoint( TCoords point );
+            TCoords getPoint() const;
 
             void setText( const string& strToPrint );
             TSurface& getTextSurface();
@@ -25,7 +25,7 @@ namespace io_submodule
 
         private:
 
-            pair<size_t, size_t> point;
+            TCoords point;
 
             TTF_Font* font = nullptr;
             TSurface surface;

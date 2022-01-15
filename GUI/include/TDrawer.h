@@ -5,6 +5,7 @@
 #include "TTexture.h"
 #include "TRenderer.h"
 #include "TParams.h"
+#include "CommonTypes.hpp"
 
 namespace io_submodule
 {
@@ -14,7 +15,7 @@ namespace io_submodule
             TDrawer( TRenderer& renderer );
             ~TDrawer();
 
-            void draw( TTexture& texture, std::pair<int, int> point );
+            void draw( TTexture& texture, TCoords point );
             void draw( TRectangleDescription rectangleParams );
 
             void resetScreen();

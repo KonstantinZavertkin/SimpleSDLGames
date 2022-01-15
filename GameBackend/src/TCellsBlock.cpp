@@ -11,7 +11,7 @@ namespace game_backend
     TCellsBlock::~TCellsBlock()
     {};
 
-    void TCellsBlock::initFigure( pair<size_t, size_t> startPosition, vector<pair<size_t, size_t>> cells, const string color, const size_t blocksIdArg )
+    void TCellsBlock::initFigure( TCoords startPosition, vector<TCoords> cells, const string color, const size_t blocksIdArg )
     {
         cellState = color;
         blocksId = blocksIdArg;
@@ -25,7 +25,7 @@ namespace game_backend
             if ( gameField.field[x][y].ownersBlocksId != 0 && gameField.field[x][y].ownersBlocksId != blocksId )
                 gameOverFlag = true;
 
-            blockCells.push_back( { x, y } );
+            blockCells.emplace_back( x, y );
             gameField.field[x][y].currentState = color;
             gameField.field[x][y].ownersBlocksId = blocksId;
             gameField.field[x][y].canBeMoved = true;
@@ -36,12 +36,12 @@ namespace game_backend
         setRotatePoint( { 1, startPosition.second + 1 } );
     }
 
-    void TCellsBlock::setRotatePoint( pair<int, int> rotatePointArg )
+    void TCellsBlock::setRotatePoint( TCoords rotatePointArg )
     {
         rotatePoint = rotatePointArg;
     };
 
-    void TCellsBlock::turn( pair<int, int> rotateVector )
+    void TCellsBlock::turn( TCoords rotateVector )
     {
         if ( !canMove )
             return;
@@ -133,7 +133,7 @@ namespace game_backend
         cellState = TCellStates::virtualFigure;
     }
 
-    const pair<int, int> TCellsBlock::getRotatePoint() const
+    const TCoords TCellsBlock::getRotatePoint() const
     {
         return rotatePoint;
     }
@@ -149,7 +149,7 @@ namespace game_backend
         }
     }
 
-    void TCellsBlock::writeCellsToField( const vector<pair<int, int>>& cells )
+    void TCellsBlock::writeCellsToField( const vector<TCoords>& cells )
     {
         for ( const auto& cell : cells )
         {
@@ -161,7 +161,7 @@ namespace game_backend
         }
     }
 
-    void TCellsBlock::removeFigureFromField( const vector<pair<int, int>>& cells )
+    void TCellsBlock::removeFigureFromField( const vector<TCoords>& cells )
     {
         for ( const auto& cell : cells )
         {

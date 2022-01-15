@@ -2,6 +2,7 @@
 #define _TCELL_H_
 
 #include <string>
+#include "CommonTypes.hpp"
 
 namespace game_backend 
 {
@@ -45,9 +46,9 @@ namespace game_backend
             TExtendedCell(){};
             ~TExtendedCell(){};
 
-            pair<int, int> moveDirection;          //!< 2-D vector of speed
-            pair<int, int> moveDirectionDelta;     //!< dx, dy for next step
-            pair<int, int> thisCoordinates;        //!< { lineIndex; columnIndex }
+            TCoords moveDirection;          //!< 2-D vector of speed
+            TCoords moveDirectionDelta;     //!< dx, dy for next step
+            TCoords thisCoordinates;        //!< { lineIndex; columnIndex }
     };
 };
 

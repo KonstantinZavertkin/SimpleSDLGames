@@ -1,11 +1,12 @@
-#include "sdl2_include.h"
-#include "TSnakeGame.h"
-
 #include <algorithm>
 #include <iostream>
 #include <cmath>
 
-TSnakeGame::TSnakeGame( pair<size_t, size_t> fieldSize, size_t snakeLength ) 
+#include "sdl2_include.h"
+#include "TSnakeGame.h"
+#include "CommonTypes.hpp"
+
+TSnakeGame::TSnakeGame( TCoords fieldSize, size_t snakeLength ) 
     : gameField( fieldSize.first, fieldSize.second ), snake( gameField )
 {
     snake.initCellsChain( { 1, 1 }, snakeLength );
@@ -17,13 +18,12 @@ TSnakeGame::~TSnakeGame()
 
 bool TSnakeGame::step()
 {
-    cout << "step" << endl;
     snake.step();
     checkFood();
     return snake.isGameOver();
 };
 
-void TSnakeGame::turn( pair<int, int> rotateVector )
+void TSnakeGame::turn( TCoords rotateVector )
 {
     snake.turn( rotateVector );
 };
@@ -101,12 +101,8 @@ void TSnakeGame::ioThread()
     bool pauseLocal = false;
     bool quitLocal = false;
 
-    pair<int, int> vectorUp = { -1, 0 };
-    pair<int, int> vectorDown = { 1, 0 };
-    pair<int, int> vectorLeft = { 0, -1 };
-    pair<int, int> vectorRight = { 0, 1 };
-    pair<int, int> vectorLast = { 0, 0 };
-    pair<int, int> vectorNext = { 0, 0 };
+    TCoords vectorLast = { 0, 0 };
+    TCoords vectorNext = { 0, 0 };
 
     while ( !quitLocal )
     {

@@ -14,9 +14,9 @@ namespace game_backend
 
             ~TCellsChain();
 
-            void initCellsChain( pair<size_t, size_t> startPosition, size_t snakeLength );
+            void initCellsChain( TCoords startPosition, size_t snakeLength );
 
-            void turn( pair<int, int> rotateVector );
+            void turn( TCoords rotateVector );
 
             void step();
 

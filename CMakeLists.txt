@@ -34,10 +34,13 @@ else()
     find_package(Threads REQUIRED)
 endif()
 
+file(GLOB HEADERS_Common ./Common/include/*.h)
+
 file(GLOB SRCS_GameBackend ./GameBackend/src/*.cpp)
 file(GLOB HEADERS_GameBackend ./GameBackend/include/*.h)
 
 add_library(GameBackend STATIC ${SRCS_GameBackend} ${HEADERS_GameBackend})
+target_include_directories(GameBackend PUBLIC Common/include)
 target_include_directories(GameBackend PUBLIC GameBackend/include)
 
 file(GLOB SRCS_GUI ./GUI/src/*.cpp)
@@ -46,6 +49,7 @@ file(GLOB HEADERS_GUI ./GUI/include/*.h)
 add_library(GUI STATIC ${SRCS_GUI} ${HEADERS_GUI})
 include_directories(GUI ${SDL2_INCLUDE_DIRS})
 include_directories(GUI ${SDL2_TTF_INCLUDE_DIRS})
+target_include_directories(GUI PUBLIC Common/include)
 target_include_directories(GUI PUBLIC GUI/include)
 
 file(GLOB SRCS_GameRunner ./GameRunner/src/*.cpp)
@@ -66,6 +70,7 @@ target_link_libraries(GameRunner GameBackend)
 target_link_libraries(GameRunner GUI)
 include_directories(GameRunner ${SDL2_INCLUDE_DIRS})
 include_directories(GameRunner ${SDL2_TTF_INCLUDE_DIRS})
+target_include_directories(GameRunner PUBLIC Common/include)
 target_include_directories(GameRunner PUBLIC GameBackend/include)
 target_include_directories(GameRunner PUBLIC GUI/include)
 target_include_directories(GameRunner PUBLIC GameRunner/include)
@@ -83,6 +88,8 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     add_custom_command(TARGET GameRunner POST_BUILD 
         COMMAND xcopy /y /e ${SOURCE_PATH_TTF_} "$(SolutionDir)$(Configuration)\\*.*"
     )
+    
+    # set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT GameRunner)
 else()
     target_link_libraries(GameRunner Threads::Threads)
 endif()
