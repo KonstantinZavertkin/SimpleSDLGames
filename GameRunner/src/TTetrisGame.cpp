@@ -125,7 +125,6 @@ void TTetrisGame::ioThread()
         mainFieldDrawer->draw();
         nextFigureFieldDrawer->draw();
         scorePrinter->setText( "Score: " + to_string( tetrisBackend.gameScore ) );
-        
         mainFieldDrawer->drawer.updateScreen();
 
         syncPoint.unlock();

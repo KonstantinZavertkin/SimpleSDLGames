@@ -3,8 +3,6 @@
 
 #include <vector>
 #include "TParams.h"
-#include "TTexture.h"
-#include "TDrawer.h"
 
 using std::vector;
 

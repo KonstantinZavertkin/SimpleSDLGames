@@ -1,4 +1,5 @@
 #include "TTexture.h"
+#include "TRenderer.h"
 
 namespace io_submodule
 {
@@ -27,6 +28,10 @@ namespace io_submodule
     void TTexture::updateSurface( TSurface& surfaceRef )
     {
         surface = std::move( surfaceRef );
+
+        if ( texturePtr != nullptr )
+            SDL_DestroyTexture( texturePtr );
+
         texturePtr = SDL_CreateTextureFromSurface( renderer.getRenderer(), surface.getSurface() );
     }
 

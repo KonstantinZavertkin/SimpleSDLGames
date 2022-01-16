@@ -1,9 +1,10 @@
 #ifndef _TFONTTTF_H_
 #define _TFONTTTF_H_
 
+#include "CommonTypes.hpp"
 #include "TSurface.h"
 #include "TTexture.h"
-#include "TDrawer.h"
+#include "TRenderer.h"
 
 namespace io_submodule
 {
@@ -13,7 +14,7 @@ namespace io_submodule
     {
         public:
             
-            TFontTTF( TDrawer& renderer, const string pathToTtf, const size_t fontSize );
+            TFontTTF( TRenderer& renderer, const string pathToTtf, const size_t fontSize );
             ~TFontTTF();
 
             void setPoint( TCoords point );
@@ -32,7 +33,7 @@ namespace io_submodule
 
             string strToPrint;
 
-            TDrawer& drawer;
+            TRenderer& drawer;
             TTexture texture;
     };
 

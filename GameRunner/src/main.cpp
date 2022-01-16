@@ -119,7 +119,6 @@ int main( int argc, char **argv )
     //! Create window, drawer and drawer
     TWindow wnd( "Main", mainWindowParams );
     TRenderer renderer( wnd );
-    TDrawer drawer( renderer );
 
     //! Draw static objects
     //drawer.draw( mainWindowParams );
@@ -141,10 +140,6 @@ int main( int argc, char **argv )
     infoFieldCellsGrid.setCellsFieldParams( gameInfoField, cellsInfoFieldParams );
     infoFieldCellsGrid.calcGrid();
 
-    TCellRectangles debugFieldCellsGrid;
-    debugFieldCellsGrid.setCellsFieldParams( debugGameField, cellsFieldParams );
-    debugFieldCellsGrid.calcGrid();
-
     //! Game backend
     /*TSnakeGame snakeGame( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount }, 5 );
 
@@ -161,15 +156,15 @@ int main( int argc, char **argv )
 
     TTetrisGame tetris( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount } );
 
-    TFieldDrawer tetrisDrawer( tetris.tetrisBackend.gameField, drawer, mainFieldCellsGrid );
+    TFieldDrawer tetrisDrawer( tetris.tetrisBackend.gameField, renderer, mainFieldCellsGrid );
     tetrisDrawer.cellsMapper = tetrisCellsMapper;
     tetrisDrawer.addStaticPrimitive( gameFieldBound );
 
-    TFieldDrawer infoFieldDrawer( tetris.tetrisBackend.nextFigureField, drawer, infoFieldCellsGrid );
+    TFieldDrawer infoFieldDrawer( tetris.tetrisBackend.nextFigureField, renderer, infoFieldCellsGrid );
     infoFieldDrawer.cellsMapper = tetrisCellsMapper;
     infoFieldDrawer.addStaticPrimitive( infoFieldBound );
 
-    TFontTTF ttfTextPrinter( drawer, fontFile, fontSize );
+    TFontTTF ttfTextPrinter( renderer, fontFile, fontSize );
     auto point = make_pair( gameFieldBound.xStart + gameFieldBound.width + 20, gameFieldBound.yStart );
     ttfTextPrinter.setPoint( point );
     TFontDrawer textDrawer( ttfTextPrinter );

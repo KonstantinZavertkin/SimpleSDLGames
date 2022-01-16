@@ -3,7 +3,7 @@
 
 #include <functional>
 #include "TGameField.h"
-#include "TDrawer.h"
+#include "TRenderer.h"
 #include "TCellRectangles.h"
 
 using namespace std;
@@ -17,11 +17,9 @@ pair<TColorRGB, bool> tetrisCellsMapperDebug( const TCell& cell );
 class TFieldDrawer
 {
     public:
-        TFieldDrawer( TGameField& gameField, TDrawer& drawer, TCellRectangles& cellRectangles ) : 
-            gameField( gameField ), drawer( drawer ), cellRectangles( cellRectangles )
-        {};
+        TFieldDrawer( TGameField& gameField, TRenderer& drawer, TCellRectangles& cellRectangles );
 
-        ~TFieldDrawer(){};
+        ~TFieldDrawer();
 
         //! Draw main game field 
         void draw();
@@ -30,7 +28,7 @@ class TFieldDrawer
 
         function<pair<TColorRGB, bool>( const TCell& cell )> cellsMapper;
 
-        TDrawer& drawer;
+        TRenderer& drawer;
 
     private:
         TGameField& gameField;

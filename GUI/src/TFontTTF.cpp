@@ -2,8 +2,8 @@
 
 namespace io_submodule
 {
-    TFontTTF::TFontTTF( TDrawer& rendererRef, const string pathToTtf, const size_t fontSize )
-        : drawer( rendererRef ), texture( drawer.getRenderer() )
+    TFontTTF::TFontTTF( TRenderer& rendererRef, const string pathToTtf, const size_t fontSize )
+        : drawer( rendererRef ), texture( rendererRef )
     {
         point = {};
 

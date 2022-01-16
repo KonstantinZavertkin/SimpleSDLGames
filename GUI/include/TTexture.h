@@ -3,10 +3,11 @@
 
 #include "sdl2_include.h"
 #include "TSurface.h"
-#include "TRenderer.h"
 
 namespace io_submodule
 {
+    class TRenderer;
+
     class TTexture
     {
         public:

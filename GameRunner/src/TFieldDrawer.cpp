@@ -62,6 +62,15 @@ pair<TColorRGB, bool> tetrisCellsMapperDebug( const TCell& cell )
     return { { 0x00, 0x00, 0x00, 0xFF }, false };
 }
 
+TFieldDrawer::TFieldDrawer( TGameField& gameField, TRenderer& drawer, TCellRectangles& cellRectangles )
+    : gameField( gameField ), drawer( drawer ), cellRectangles( cellRectangles )
+{
+}
+
+TFieldDrawer::~TFieldDrawer()
+{
+}
+
 void TFieldDrawer::draw()
 {
     auto& field = gameField.field;

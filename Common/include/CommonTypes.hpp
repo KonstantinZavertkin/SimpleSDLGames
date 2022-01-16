@@ -1,6 +1,8 @@
 #ifndef _COMMON_TYPES_H_
 #define _COMMON_TYPES_H_
 
+#include <utility>
+
 //! First - Line index
 //! Second - Column index
 using TCoords = std::pair<int, int>;
