@@ -21,21 +21,25 @@ class TFieldDrawer
 
         ~TFieldDrawer();
 
-        //! Draw main game field 
-        void draw();
+        //! Draw main game field
+        void drawFirst();
+        void drawField();
+        void drawLast();
 
-        void addStaticPrimitive( TRectangleDescription );
+        void addStaticPrimitiveFirst( TRectangleDescription );
+        void addStaticPrimitiveLast( TRectangleDescription );
 
         function<pair<TColorRGB, bool>( const TCell& cell )> cellsMapper;
 
-        TRenderer& drawer;
+        TRenderer& renderer;
 
     private:
         TGameField& gameField;
         
         TCellRectangles& cellRectangles;
 
-        vector<TRectangleDescription> staticPrimitives;
+        vector<TRectangleDescription> staticPrimitivesFirst;
+        vector<TRectangleDescription> staticPrimitivesLast;
 };
 
 #endif

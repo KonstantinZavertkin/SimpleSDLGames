@@ -16,16 +16,20 @@ namespace io_submodule
             TDrawer( TRenderer& rendererRef );
             ~TDrawer();
 
-            std::vector<TRectangleDescription> staticPrimitives;
+            void addPrimitive( TRectangleDescription primitiveDescription );
+            void addField( TFieldDrawer* fieldDrawerPtr );
+            void addText( TFontDrawer* textPrinterPtr );
 
-            TFieldDrawer* mainFieldDrawer = nullptr;
-            TFieldDrawer* nextFigureFieldDrawer = nullptr;
-            TFontDrawer* scorePrinter = nullptr;
+            TRenderer& getRendererRef();
 
-            void drawSequentially();
+            void draw();
 
         private:
             TRenderer& renderer;
+
+            vector<TRectangleDescription> staticPrimitives;
+            vector<TFieldDrawer*> fieldDrawers;
+            vector<TFontDrawer*> textPrinters;
     };
 };
 

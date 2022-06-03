@@ -26,7 +26,7 @@ pair<TColorRGB, bool> tetrisCellsMapper( const TCell& cell )
     if ( cell.currentState == TCellStates::virtualFigure )
         return { { 0x80, 0x80, 0x80, 0xFF }, true };
     
-    return { { 0x00, 0x00, 0x00, 0xFF }, false };
+    return { { 0x40, 0x40, 0x40, 0xFF }, false }; //{ 0xA0, 0xA0, 0xA0, 0xFF };{ 0x00, 0x00, 0x00, 0xFF }
 }
 
 pair<TColorRGB, bool> snakeCellsMapper( const TCell& cell )
@@ -63,7 +63,7 @@ pair<TColorRGB, bool> tetrisCellsMapperDebug( const TCell& cell )
 }
 
 TFieldDrawer::TFieldDrawer( TGameField& gameField, TRenderer& drawer, TCellRectangles& cellRectangles )
-    : gameField( gameField ), drawer( drawer ), cellRectangles( cellRectangles )
+    : renderer( drawer ), gameField( gameField ), cellRectangles( cellRectangles )
 {
 }
 
@@ -71,7 +71,13 @@ TFieldDrawer::~TFieldDrawer()
 {
 }
 
-void TFieldDrawer::draw()
+void TFieldDrawer::drawFirst()
+{
+    for ( const auto& val : staticPrimitivesFirst )
+        renderer.draw( val );
+}
+
+void TFieldDrawer::drawField()
 {
     auto& field = gameField.field;
 
@@ -84,22 +90,30 @@ void TFieldDrawer::draw()
 
             auto [color, isHaveBorder] = cellsMapper( field[i][j] );
             cr.color = color;
-            drawer.draw( cr );
+            renderer.draw( cr );
 
             if ( isHaveBorder )
             {
                 cr.isFilled = false;
                 cr.color = { 0xFF, 0xFF, 0xFF, 0xFF };
-                drawer.draw( cr );
+                renderer.draw( cr );
             }
         }
     }
-
-    for ( const auto& val : staticPrimitives )
-        drawer.draw( val );
 }
 
-void TFieldDrawer::addStaticPrimitive( TRectangleDescription figureDescription )
+void TFieldDrawer::drawLast()
 {
-    staticPrimitives.push_back( figureDescription );
+    for ( const auto& val : staticPrimitivesLast )
+        renderer.draw( val );
+}
+
+void TFieldDrawer::addStaticPrimitiveFirst( TRectangleDescription figureDescription )
+{
+    staticPrimitivesFirst.push_back( figureDescription );
+}
+
+void TFieldDrawer::addStaticPrimitiveLast( TRectangleDescription figureDescription )
+{
+    staticPrimitivesLast.push_back( figureDescription );
 }

@@ -85,7 +85,7 @@ void TSnakeGame::gameThread()
 
         syncPoint.unlock();
 
-        fDrawer->draw();
+        fDrawer->drawField();
 
         SDL_Delay( max( 0, 50 - static_cast<int>( snake.snakeCells.size() * 2 ) ) );
 

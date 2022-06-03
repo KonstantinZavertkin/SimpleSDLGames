@@ -3,7 +3,7 @@
 namespace io_submodule
 {
     TFontTTF::TFontTTF( TRenderer& rendererRef, const string pathToTtf, const size_t fontSize )
-        : drawer( rendererRef ), texture( rendererRef )
+        : renderer( rendererRef ), texture( rendererRef )
     {
         point = {};
 
@@ -40,6 +40,15 @@ namespace io_submodule
         this->point = point;
     }
 
+    void TFontTTF::setColor( TColorRGB rgba )
+    {
+        color.r = rgba.r;
+        color.g = rgba.g;
+        color.b = rgba.b;
+        color.a = rgba.alpha;
+        flagToUpdateTexture = true;
+    }
+
     TCoords TFontTTF::getPoint() const
     {
         return point;
@@ -47,17 +56,19 @@ namespace io_submodule
 
     void TFontTTF::setText( const string& strToPrintVar )
     {
-        if ( this->strToPrint != strToPrintVar )
+        if ( this->strToPrint != strToPrintVar || flagToUpdateTexture )
         {
+            flagToUpdateTexture = false;
             this->strToPrint = strToPrintVar;
-
-            SDL_Color color = { 0, 255, 255, 255 };
 
             surface = TSurface( TTF_RenderText_Blended( font, this->strToPrint.c_str(), color ) );
             texture.updateSurface( surface );
         }
+    }
 
-        drawer.draw( texture, point );
+    void TFontTTF::drawText()
+    {
+        renderer.draw( texture, point );
     }
 
     TSurface& TFontTTF::getTextSurface()

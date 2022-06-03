@@ -121,11 +121,11 @@ void TTetrisGame::ioThread()
         syncPoint.lock();
         quitLocal = tetrisBackend.quit;
 
-        mainFieldDrawer->drawer.resetScreen();
-        mainFieldDrawer->draw();
-        nextFigureFieldDrawer->draw();
         scorePrinter->setText( "Score: " + to_string( tetrisBackend.gameScore ) );
-        mainFieldDrawer->drawer.updateScreen();
+        
+        mainDrawer->getRendererRef().resetScreen();
+        mainDrawer->draw();
+        mainDrawer->getRendererRef().updateScreen();
 
         syncPoint.unlock();
 

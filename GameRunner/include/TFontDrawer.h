@@ -12,6 +12,9 @@ class TFontDrawer
         ~TFontDrawer();
 
         void setText( const string& textToPrint );
+        void drawText();
+
+        TFontTTF& getFontDrawerRef();
 
     private:
 

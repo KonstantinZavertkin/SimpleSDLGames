@@ -9,10 +9,10 @@ namespace io_submodule
     //! Белый по умолчанию
     struct TColorRGB
     {
-        unsigned int r = 0xFF;
-        unsigned int g = 0xFF;
-        unsigned int b = 0xFF;
-        unsigned int alpha = 0xFF;
+        unsigned char r = 0xFF;
+        unsigned char g = 0xFF;
+        unsigned char b = 0xFF;
+        unsigned char alpha = 0xFF;
     };
 
     //! Описание произвольной прямоугольной области

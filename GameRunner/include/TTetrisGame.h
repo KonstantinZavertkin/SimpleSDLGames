@@ -7,6 +7,7 @@
 #include <mutex>
 #include <optional>
 
+#include "TDrawer.h"
 #include "TGameField.h"
 #include "TCellsBlock.h"
 #include "TFieldDrawer.h"
@@ -27,8 +28,9 @@ class TTetrisGame
 
         TTetrisBackend tetrisBackend;
 
-        TFieldDrawer* mainFieldDrawer = nullptr;
-        TFieldDrawer* nextFigureFieldDrawer = nullptr;
+        //TFieldDrawer* mainFieldDrawer = nullptr;
+        //TFieldDrawer* nextFigureFieldDrawer = nullptr;
+        TDrawer* mainDrawer;
         TFontDrawer* scorePrinter = nullptr;
 
     private:

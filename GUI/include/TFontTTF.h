@@ -18,22 +18,25 @@ namespace io_submodule
             ~TFontTTF();
 
             void setPoint( TCoords point );
+            void setColor( TColorRGB rgba );
             TCoords getPoint() const;
-
             void setText( const string& strToPrint );
+
+            void drawText();
+
             TSurface& getTextSurface();
             TTexture& getTextTexture();
 
         private:
 
-            TCoords point;
-
             TTF_Font* font = nullptr;
-            TSurface surface;
-
+            TCoords point;
             string strToPrint;
+            SDL_Color color = { 0, 255, 255, 255 };
+            bool flagToUpdateTexture = false;
 
-            TRenderer& drawer;
+            TSurface surface;
+            TRenderer& renderer;
             TTexture texture;
     };
 
