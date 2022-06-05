@@ -43,7 +43,6 @@ int main( int argc, char **argv )
     size_t activeGameFieldWidth = wholeWidth - xStartBias * 2;
     size_t activeGameFieldHeight = wholeHeight - yStartBias - 10;
 
-    //string fontFile = "C:/git/SnakeGame/build/Samson.ttf";
     string fontFile = "Samson.ttf";
     int fontSize = 22;
     
@@ -53,6 +52,18 @@ int main( int argc, char **argv )
     mainWindowParams.height = wholeHeight;
     mainWindowParams.isFilled = true;
     mainWindowParams.color = { 0, 0, 0, 0xFF };
+
+    TRectangleDescription background;
+    background.xStart = 0;
+    background.yStart = 0;
+    background.width = wholeWidth;
+    background.height = wholeHeight;
+    background.isFilled = true;
+    background.color = { 0, 0, 0, 0xFF };
+
+    //! Create window, renderer and renderer
+    TWindow wnd( "Main", mainWindowParams );
+    TRenderer renderer( wnd );
 
     //! Cells params
     TCellsFieldParams cellsFieldParams;
@@ -101,10 +112,6 @@ int main( int argc, char **argv )
     infoFieldBound.isFilled = false;
     infoFieldBound.color = { 0xFF, 0xFF, 0xFF, 0xFF };
 
-    //! Create window, renderer and renderer
-    TWindow wnd( "Main", mainWindowParams );
-    TRenderer renderer( wnd );
-
     //! Calc cells coordinates
     //! Mapping (xCell, yCell) to (xWindow, yWindow)
     //! where [x|y]Cell - cells coordinate in 2d array of cells
@@ -131,19 +138,10 @@ int main( int argc, char **argv )
 
     mainThr.join();*/
 
-    TRectangleDescription background;
-    background.xStart = 0;
-    background.yStart = 0;
-    background.width = wholeWidth;
-    background.height = wholeHeight;
-    background.isFilled = true;
-    background.color = { 0, 0, 0, 0xFF };
-
     TTetrisGame tetris( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount } );
 
     TFieldDrawer tetrisDrawer( tetris.tetrisBackend.gameField, renderer, mainFieldCellsGrid );
     tetrisDrawer.cellsMapper = tetrisCellsMapper;
-    //tetrisDrawer.addStaticPrimitiveFirst( background );
     tetrisDrawer.addStaticPrimitiveLast( gameFieldBound );
 
     TFieldDrawer infoFieldDrawer( tetris.tetrisBackend.nextFigureField, renderer, infoFieldCellsGrid );
@@ -156,7 +154,6 @@ int main( int argc, char **argv )
     TFontDrawer scoreTextDrawer( ttfScoreTextPrinter );
 
     TFontTTF ttfTitleTextPrinter( renderer, fontFile, fontSize + 6 );
-    //point = make_pair( activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth + 20, gameFieldBound.yStart );
     ttfTitleTextPrinter.setPoint( { wholeWidth / 2 - 50, 10 } );
     TFontDrawer titleTextDrawer( ttfTitleTextPrinter );
     titleTextDrawer.setText( "Tetris" );
