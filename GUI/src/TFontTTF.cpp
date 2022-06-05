@@ -35,9 +35,17 @@ namespace io_submodule
         TTF_Quit();
     }
 
-    void TFontTTF::setPoint( TCoords point )
+    void TFontTTF::setPoint( TCoords pointArg, TTextAlignment alignment  )
     {
-        this->point = point;
+        auto [x, y] = pointArg;
+
+        if ( alignment == TTextAlignment::centerAlignment )
+            x -= surface.getSurfaceWidth() / 2;
+
+        if ( alignment == TTextAlignment::centerAlignment )
+            x -= surface.getSurfaceWidth();
+
+        this->point = { x, y };
     }
 
     void TFontTTF::setColor( TColorRGB rgba )

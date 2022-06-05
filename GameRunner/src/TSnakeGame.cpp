@@ -9,7 +9,8 @@
 TSnakeGame::TSnakeGame( TCoords fieldSize, size_t snakeLength ) 
     : gameField( fieldSize.first, fieldSize.second ), snake( gameField )
 {
-    snake.initCellsChain( { 1, 1 }, snakeLength );
+    initSnakeLength = snakeLength;
+    snake.initCellsChain( { 1, 1 }, initSnakeLength );
 };
 
 TSnakeGame::~TSnakeGame()
@@ -84,8 +85,6 @@ void TSnakeGame::gameThread()
         }
 
         syncPoint.unlock();
-
-        fDrawer->drawField();
 
         SDL_Delay( max( 0, 50 - static_cast<int>( snake.snakeCells.size() * 2 ) ) );
 
@@ -162,11 +161,14 @@ void TSnakeGame::ioThread()
 
         syncPoint.lock();
 
+        scorePrinter->setText( "Score: " + to_string( snake.snakeCells.size() - initSnakeLength ) );
+
+        mainDrawer->getRendererRef().resetScreen();
+        mainDrawer->draw();
+        mainDrawer->getRendererRef().updateScreen();
+
         if ( quit )
-        {
             quitLocal = quit;
-            cout << "global quit received" << endl;
-        }
 
         syncPoint.unlock();
         

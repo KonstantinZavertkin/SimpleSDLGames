@@ -23,6 +23,8 @@ class TTetrisGame
         TTetrisGame( TCoords fieldSize );
         ~TTetrisGame();
 
+        void initGame();
+
         void gameThread();
         void ioThread();
 

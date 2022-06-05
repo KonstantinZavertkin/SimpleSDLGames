@@ -26,13 +26,13 @@ pair<TColorRGB, bool> tetrisCellsMapper( const TCell& cell )
     if ( cell.currentState == TCellStates::virtualFigure )
         return { { 0x80, 0x80, 0x80, 0xFF }, true };
     
-    return { { 0x40, 0x40, 0x40, 0xFF }, false }; //{ 0xA0, 0xA0, 0xA0, 0xFF };{ 0x00, 0x00, 0x00, 0xFF }
+    return { { 0x40, 0x40, 0x40, 0xFF }, false };
 }
 
 pair<TColorRGB, bool> snakeCellsMapper( const TCell& cell )
 {
     if ( cell.currentState == TCellStates::backgroundStateKey )
-        return { { 0x00, 0x00, 0x00, 0xFF }, true };
+        return { { 0x40, 0x40, 0x40, 0xFF }, false };
 
     if ( cell.currentState == TCellStates::snakeBodyStateKey )
         return { { 0xFF, 0x00, 0x00, 0xFF }, true };

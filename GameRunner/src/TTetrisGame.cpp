@@ -11,6 +11,10 @@ TTetrisGame::~TTetrisGame()
 {
 }
 
+void TTetrisGame::initGame()
+{
+}
+
 void TTetrisGame::gameThread()
 {
     while ( !tetrisBackend.quit )

@@ -78,7 +78,6 @@ namespace game_backend
         {
             TExtendedCell lastCellBuffer = snakeCells.back();
             snakeCellsCopy.push_back( lastCellBuffer );
-            cout << snakeCellsCopy.size() << endl;
         }
 
         //! Copy moveDirection along chain

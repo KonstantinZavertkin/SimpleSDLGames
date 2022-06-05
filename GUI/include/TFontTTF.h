@@ -10,6 +10,11 @@ namespace io_submodule
 {
     using namespace std;
 
+    enum class TTextAlignment
+    {
+        leftAlignment, centerAlignment, rightAlignment
+    };
+
     class TFontTTF
     {
         public:
@@ -17,7 +22,7 @@ namespace io_submodule
             TFontTTF( TRenderer& renderer, const string pathToTtf, const size_t fontSize );
             ~TFontTTF();
 
-            void setPoint( TCoords point );
+            void setPoint( TCoords point, TTextAlignment alignment );
             void setColor( TColorRGB rgba );
             TCoords getPoint() const;
             void setText( const string& strToPrint );

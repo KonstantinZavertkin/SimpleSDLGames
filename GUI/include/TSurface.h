@@ -22,6 +22,8 @@ namespace io_submodule
 
             SDL_Surface* getSurface();
 
+            int getSurfaceWidth() const;
+
         private:
             SDL_Surface* surfacePtr = nullptr;
 

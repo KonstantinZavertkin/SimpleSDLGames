@@ -6,6 +6,7 @@
 
 #include "TGameField.h"
 #include "TCellsChain.h"
+#include "TDrawer.h"
 #include "TFieldDrawer.h"
 
 using namespace std;
@@ -28,8 +29,10 @@ class TSnakeGame
         TGameField gameField;
         TCellsChain snake;
 
-        TFieldDrawer* fDrawer;
+        TDrawer* mainDrawer;
+        TFontDrawer* scorePrinter = nullptr;
 
+        size_t initSnakeLength = 0;
         size_t clockCounter = 0;
         bool performStep = true;
         bool pauseGame = false;

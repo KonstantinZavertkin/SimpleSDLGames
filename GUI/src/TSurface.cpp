@@ -46,5 +46,13 @@ namespace io_submodule
     SDL_Surface* TSurface::getSurface()
     {
         return surfacePtr;
+    }
+
+    int TSurface::getSurfaceWidth() const
+    {
+        if ( surfacePtr )
+           return surfacePtr->w;
+
+        return 0;
     };
 };
