@@ -25,10 +25,37 @@
 
 #include "CommonTypes.hpp"
 
+#include "TTetrisGameRunner.h"
+
 using namespace io_submodule;
 using namespace game_backend;
 
 //! TODO Добавить выборочный запуск
+
+void runTetrisNew( TRenderer& renderer, TRectangleDescription& activeGameField, TRectangleDescription& background, const string& fontFile, size_t fontSize )
+{
+    TTetrisGameRunner tetris( renderer );
+
+    tetris.activeGameField = activeGameField;
+    tetris.background = background;
+
+    tetris.cellsFieldParams.xCellsCount = 10;
+    tetris.cellsFieldParams.yCellsCount = 20;
+    tetris.cellsFieldParams.cellHeight = 25;
+    tetris.cellsFieldParams.cellWidth = 25;
+
+    tetris.cellsInfoFieldParams.xCellsCount = 4;
+    tetris.cellsInfoFieldParams.yCellsCount = 4;
+    tetris.cellsInfoFieldParams.cellHeight = 15;
+    tetris.cellsInfoFieldParams.cellWidth = 15;
+
+    tetris.fontFile = "Samson.ttf";
+    tetris.fontSize = 22;
+
+    tetris.init();
+
+    tetris.run();
+};
 
 void runSnake( TRenderer& renderer, TRectangleDescription& activeGameField, TRectangleDescription& background, const string& fontFile, size_t fontSize )
 {
@@ -99,13 +126,6 @@ void runTetris( TRenderer& renderer, TRectangleDescription& activeGameField, TRe
     cellsInfoFieldParams.cellHeight = 15;
     cellsInfoFieldParams.cellWidth = 15;
 
-    //! Area for main field
-    TRectangleDescription gameInfoField;
-    gameInfoField.xStart = activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth + 20;
-    gameInfoField.yStart = 120;
-    gameInfoField.width = cellsInfoFieldParams.xCellsCount * cellsInfoFieldParams.cellWidth;
-    gameInfoField.height = cellsInfoFieldParams.yCellsCount * cellsInfoFieldParams.cellHeight;
-
     //! Border around the main area
     TRectangleDescription gameFieldBound;
     gameFieldBound.xStart = activeGameField.xStart - 1;
@@ -114,6 +134,13 @@ void runTetris( TRenderer& renderer, TRectangleDescription& activeGameField, TRe
     gameFieldBound.height = cellsFieldParams.yCellsCount * cellsFieldParams.cellHeight + 2;
     gameFieldBound.isFilled = false;
     gameFieldBound.color = { 0xFF, 0xFF, 0xFF, 0xFF };
+
+    //! Area for main field
+    TRectangleDescription gameInfoField;
+    gameInfoField.xStart = activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth + 20;
+    gameInfoField.yStart = 120;
+    gameInfoField.width = cellsInfoFieldParams.xCellsCount * cellsInfoFieldParams.cellWidth;
+    gameInfoField.height = cellsInfoFieldParams.yCellsCount * cellsInfoFieldParams.cellHeight;
 
     //! Border around the info area
     TRectangleDescription infoFieldBound;
@@ -214,9 +241,9 @@ int main( int argc, char **argv )
     TWindow wnd( "Main", background );
     TRenderer renderer( wnd );
 
-    runSnake( renderer, activeGameField, background, fontFile, fontSize  );
+    //runSnake( renderer, activeGameField, background, fontFile, fontSize  );
 
-    runTetris( renderer, activeGameField, background, fontFile, fontSize );
+    runTetrisNew( renderer, activeGameField, background, fontFile, fontSize );
 
     TSdlWrapper::deteteInstance();
 

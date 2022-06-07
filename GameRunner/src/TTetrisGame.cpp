@@ -20,9 +20,7 @@ void TTetrisGame::gameThread()
     while ( !tetrisBackend.quit )
     {
         syncPoint.lock();
-
         tetrisBackend.gameStep();
-        
         syncPoint.unlock();
 
         SDL_Delay( tetrisBackend.timeToSleep );

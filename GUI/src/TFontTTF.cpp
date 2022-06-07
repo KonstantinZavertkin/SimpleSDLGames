@@ -38,12 +38,12 @@ namespace io_submodule
     void TFontTTF::setPoint( TCoords pointArg, TTextAlignment alignment  )
     {
         auto [x, y] = pointArg;
+        
+        if ( alignment == TTextAlignment::centerAlignment )
+            x -= texture.getSurface().getSurfaceWidth() / 2;
 
         if ( alignment == TTextAlignment::centerAlignment )
-            x -= surface.getSurfaceWidth() / 2;
-
-        if ( alignment == TTextAlignment::centerAlignment )
-            x -= surface.getSurfaceWidth();
+            x -= texture.getSurface().getSurfaceWidth();
 
         this->point = { x, y };
     }
