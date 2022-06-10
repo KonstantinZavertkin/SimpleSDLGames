@@ -29,7 +29,7 @@ class TSnakeGame
         TGameField gameField;
         TCellsChain snake;
 
-        TDrawer* mainDrawer;
+        TDrawer* mainDrawer = nullptr;
         TFontDrawer* scorePrinter = nullptr;
 
         size_t initSnakeLength = 0;

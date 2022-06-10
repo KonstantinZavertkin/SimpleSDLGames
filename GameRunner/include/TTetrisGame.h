@@ -30,7 +30,7 @@ class TTetrisGame
 
         TTetrisBackend tetrisBackend;
 
-        TDrawer* mainDrawer;
+        TDrawer* mainDrawer = nullptr;
         TFontDrawer* scorePrinter = nullptr;
 
     private:

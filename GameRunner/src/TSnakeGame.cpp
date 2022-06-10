@@ -6,11 +6,11 @@
 #include "TSnakeGame.h"
 #include "CommonTypes.hpp"
 
-TSnakeGame::TSnakeGame( TCoords fieldSize, size_t snakeLength ) 
-    : gameField( fieldSize.first, fieldSize.second ), snake( gameField )
+TSnakeGame::TSnakeGame( TCoords fieldSize, size_t snakeLength )
+    : gameField(fieldSize.first, fieldSize.second), snake(gameField )
 {
     initSnakeLength = snakeLength;
-    snake.initCellsChain( { 1, 1 }, initSnakeLength );
+    snake.initCellsChain({1, 1}, initSnakeLength);
 };
 
 TSnakeGame::~TSnakeGame()
