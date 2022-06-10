@@ -42,7 +42,7 @@ namespace io_submodule
         if ( alignment == TTextAlignment::centerAlignment )
             x -= texture.getSurface().getSurfaceWidth() / 2;
 
-        if ( alignment == TTextAlignment::centerAlignment )
+        if ( alignment == TTextAlignment::rightAlignment )
             x -= texture.getSurface().getSurfaceWidth();
 
         this->point = { x, y };
@@ -76,6 +76,7 @@ namespace io_submodule
 
     void TFontTTF::drawText()
     {
+        setText( strToPrint );
         renderer.draw( texture, point );
     }
 

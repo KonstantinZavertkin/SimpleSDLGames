@@ -27,6 +27,7 @@
 
 #include "TTetrisGameRunner.h"
 #include "TSnakeGameRunner.h"
+#include "TMainMenu.h"
 
 using namespace io_submodule;
 using namespace game_backend;
@@ -94,7 +95,13 @@ int main( int argc, char **argv )
     activeGameField.isFilled = false;
     activeGameField.xStart = xStartBias;
     activeGameField.yStart = yStartBias;
-    
+
+    TMainMenu menu( renderer );
+    menu.background = background;
+    menu.fontSize = fontSize;
+    menu.fontFile = fontFile;
+    menu.show();
+
     runSnakeNew( renderer, activeGameField, background, fontFile, fontSize );
 
     activeGameField.xStart = 200;

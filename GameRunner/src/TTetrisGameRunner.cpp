@@ -65,7 +65,7 @@ void TTetrisGameRunner::run()
     TFontTTF ttfTitleTextPrinter( renderer, fontFile, fontSize + 6 );
     ttfTitleTextPrinter.setPoint( { background.width / 2, 10 }, TTextAlignment::centerAlignment );
     TFontDrawer titleTextDrawer( ttfTitleTextPrinter );
-    titleTextDrawer .setText( "Tetris" ); 
+    titleTextDrawer.setText( "Tetris" ); 
     
     TDrawer mainDrawer( renderer );
     mainDrawer.addPrimitive( background );
