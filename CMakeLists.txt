@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(SnakeGame VERSION 0.1 LANGUAGES C CXX)
+project(SimpleSDL2Games VERSION 0.1 LANGUAGES C CXX)
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     # The SDL2 library is distributed without configuration file for cmake on Windows
@@ -87,6 +87,11 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     # Post-build event for msvs to copy SDL2.dll
     add_custom_command(TARGET GameRunner POST_BUILD 
         COMMAND xcopy /y /e ${SOURCE_PATH_TTF_} "$(SolutionDir)$(Configuration)\\*.*"
+    )
+	
+	# Post-build event for msvs to copy resources
+    add_custom_command(TARGET GameRunner POST_BUILD 
+        COMMAND xcopy /y /e "$(SolutionDir)\\..\\resources\\font\\" "$(SolutionDir)$(Configuration)\\*.*"
     )
     
     # set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT GameRunner)
