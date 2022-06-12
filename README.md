@@ -13,5 +13,6 @@ Building the executable file can be done using the following commands:
 &emsp;make all    
 Run:  
 &emsp;./GameRunner  
+  
 Don't forget to copy the contents of the folder ./resources/font/ to the directory with builded binaries (On Linux-based OS).  
 Tested on Debian 10 and Windows 10.  
