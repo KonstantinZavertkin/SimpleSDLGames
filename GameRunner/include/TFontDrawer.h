@@ -16,6 +16,8 @@ class TFontDrawer
 
         TFontTTF& getFontDrawerRef();
 
+        bool isVisible = true;
+
     private:
 
         TFontTTF fontRenderer;

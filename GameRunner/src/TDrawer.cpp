@@ -33,6 +33,8 @@ namespace io_submodule
 
     void TDrawer::draw()
     {
+        renderer.resetScreen();
+
         for ( auto& primitive : staticPrimitives )
             renderer.draw( primitive );
 
@@ -41,6 +43,8 @@ namespace io_submodule
 
         for ( auto& textPrinter : textPrinters )
            textPrinter->drawText();
+
+        renderer.updateScreen();
 
     }
 };

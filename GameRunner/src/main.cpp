@@ -1,29 +1,9 @@
-#include <stdlib.h>
 #include <iostream>
 #include <string>
-#include <functional>
-#include <thread>
 #include "sdl2_include.h"
 
 #include "TWindow.h"
 #include "TSdlWrapper.h"
-#include "TRenderer.h"
-#include "TSurface.h"
-#include "TTexture.h"
-#include "TDrawer.h"
-#include "TParams.h"
-#include "TCellRectangles.h"
-#include "TCell.h"
-#include "TGameField.h"
-#include "TCellsChain.h"
-#include "TSnakeGame.h"
-#include "TFieldDrawer.h"
-#include "TFontTTF.h"
-#include "TFontDrawer.h"
-
-#include "TTetrisGame.h"
-
-#include "CommonTypes.hpp"
 
 #include "TTetrisGameRunner.h"
 #include "TSnakeGameRunner.h"
@@ -31,8 +11,6 @@
 
 using namespace io_submodule;
 using namespace game_backend;
-
-//! TODO Добавить выборочный запуск
 
 void runTetrisNew( TRenderer& renderer, TRectangleDescription& activeGameField, TRectangleDescription& background, const string& fontFile, size_t fontSize )
 {
@@ -100,13 +78,24 @@ int main( int argc, char **argv )
     menu.background = background;
     menu.fontSize = fontSize;
     menu.fontFile = fontFile;
-    menu.show();
 
-    runSnakeNew( renderer, activeGameField, background, fontFile, fontSize );
+    while ( !menu.exitEvent() )
+    {
+        const auto selectedItem = menu.show();
 
-    activeGameField.xStart = 200;
-    runTetrisNew( renderer, activeGameField, background, fontFile, fontSize );
+        if ( selectedItem == 0 )
+        {
+            activeGameField.xStart = 200;
+            runTetrisNew( renderer, activeGameField, background, fontFile, fontSize );
+        }
 
+        if ( selectedItem == 1 )
+        {
+            activeGameField.xStart = xStartBias;
+            runSnakeNew( renderer, activeGameField, background, fontFile, fontSize );
+        }
+    }
+    
     TSdlWrapper::deteteInstance();
 
     return 0;

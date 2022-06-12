@@ -16,7 +16,8 @@ void TFontDrawer::setText( const string& textToPrint )
 
 void TFontDrawer::drawText()
 {
-    fontRenderer.drawText();
+    if ( isVisible )
+        fontRenderer.drawText();
 }
 
 TFontTTF& TFontDrawer::getFontDrawerRef()
