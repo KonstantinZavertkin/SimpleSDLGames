@@ -8,7 +8,7 @@ using namespace io_submodule;
 class TFontDrawer
 {
     public:
-        TFontDrawer( TFontTTF& fontRenderer );
+        TFontDrawer( TRenderer& renderer, const string pathToTtf, const size_t fontSize );
         ~TFontDrawer();
 
         void setText( const string& textToPrint );
@@ -18,7 +18,7 @@ class TFontDrawer
 
     private:
 
-        TFontTTF& fontRenderer;
+        TFontTTF fontRenderer;
 };
 
 

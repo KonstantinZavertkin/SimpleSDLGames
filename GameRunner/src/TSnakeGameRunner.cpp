@@ -31,15 +31,13 @@ void TSnakeGameRunner::run()
     TFieldDrawer snakeDrawer( snakeGame.gameField, renderer, mainFieldCellsGrid );
     snakeDrawer.cellsMapper = snakeCellsMapper;
 
-    TFontTTF ttfTitleTextPrinter( renderer, fontFile, fontSize + 6 );
-    ttfTitleTextPrinter.setPoint( { background.width / 2, 10 }, TTextAlignment::centerAlignment );
-    TFontDrawer titleTextDrawer( ttfTitleTextPrinter );
+    TFontDrawer titleTextDrawer( renderer, fontFile, fontSize + 6 );
+    titleTextDrawer.getFontDrawerRef().setPoint( { background.width / 2, 10 }, TTextAlignment::centerAlignment );
     titleTextDrawer.setText( "Snake" );
 
-    TFontTTF ttfScoreTextPrinter( renderer, fontFile, fontSize );
     auto point = make_pair( activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth + 20, gameFieldBound.yStart );
-    ttfScoreTextPrinter.setPoint( point, TTextAlignment::leftAlignment );
-    TFontDrawer scoreTextDrawer( ttfScoreTextPrinter );
+    TFontDrawer scoreTextDrawer( renderer, fontFile, fontSize );
+    scoreTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
 
     TDrawer mainDrawer( renderer );
     mainDrawer.addPrimitive( background );

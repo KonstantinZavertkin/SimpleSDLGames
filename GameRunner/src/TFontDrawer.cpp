@@ -1,6 +1,7 @@
 #include "TFontDrawer.h"
 
-TFontDrawer::TFontDrawer( TFontTTF& fontRendererRef ) : fontRenderer( fontRendererRef )
+TFontDrawer::TFontDrawer( TRenderer& renderer, const string pathToTtf, const size_t fontSize )
+    : fontRenderer( renderer, pathToTtf, fontSize )
 {
 }
 

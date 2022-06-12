@@ -15,6 +15,12 @@ class TMainMenu
 
         vector<TFontDrawer*> textPrinters;
 
+        size_t currentSelectedItem = 0;
+        size_t itemsCount = 3;
+
+        TColorRGB colorSelected = { 0xFF, 0x00, 0xFF, 0xFF };
+        SDL_Color defaultColor = { 0, 0xFF, 0xFF, 0xFF };
+
         string fontFile;
         size_t fontSize = 0;
 
