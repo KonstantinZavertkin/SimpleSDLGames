@@ -2,6 +2,7 @@
 #define _TCELL_H_
 
 #include <string>
+#include "CommonTypes.hpp"
 
 namespace game_backend 
 {
@@ -16,18 +17,38 @@ namespace game_backend
             static const string backgroundStateKey;
             static const string eatStateKey;
             static const string newSectionStateKey;
+
+            static const string redColorStateKey;
+            static const string greenColorStateKey;
+            static const string blueColorStateKey;
+            static const string cyanColorStateKey;
+            static const string magentaColorStateKey;
+            static const string yellowColorStateKey;
+            static const string orangeColorStateKey;
+
+            static const string virtualFigure;
     };
 
     class TCell
     {
         public:
             TCell();
-            ~TCell();
+            virtual ~TCell();
 
             string currentState;
-            pair<int, int> moveDirection;          //!< 2-D vector of speed
-            pair<int, int> moveDirectionDelta;     //!< dx, dy for next step
-            pair<size_t, size_t> thisCoordinates;  //!< { lineIndex; columnIndex }
+            size_t ownersBlocksId = 0;
+            bool canBeMoved = false;
+    };
+
+    class TExtendedCell : public TCell
+    {
+        public:
+            TExtendedCell(){};
+            ~TExtendedCell(){};
+
+            TCoords moveDirection;          //!< 2-D vector of speed
+            TCoords moveDirectionDelta;     //!< dx, dy for next step
+            TCoords thisCoordinates;        //!< { lineIndex; columnIndex }
     };
 };
 

@@ -1,9 +1,15 @@
 #include "TTexture.h"
+#include "TRenderer.h"
 
 namespace io_submodule
 {
-    TTexture::TTexture( TRenderer& renderer, TSurface& surface )
+    TTexture::TTexture( TRenderer& rendererRef ) : renderer( rendererRef )
     {
+    }
+
+    TTexture::TTexture( TRenderer& rendererRef, TSurface& surfaceRef ) : renderer( rendererRef )
+    {
+        surface = std::move( surfaceRef );
         texturePtr = SDL_CreateTextureFromSurface( renderer.getRenderer(), surface.getSurface() );
 
         if ( texturePtr == nullptr )
@@ -17,6 +23,21 @@ namespace io_submodule
     {
         if ( texturePtr != nullptr )
             SDL_DestroyTexture( texturePtr );
+    }
+
+    void TTexture::updateSurface( TSurface& surfaceRef )
+    {
+        surface = std::move( surfaceRef );
+
+        if ( texturePtr != nullptr )
+            SDL_DestroyTexture( texturePtr );
+
+        texturePtr = SDL_CreateTextureFromSurface( renderer.getRenderer(), surface.getSurface() );
+    }
+
+    TSurface& TTexture::getSurface()
+    {
+        return surface;
     };
 
     SDL_Texture* TTexture::getTexturePtr()

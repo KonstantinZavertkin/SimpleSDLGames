@@ -3,12 +3,15 @@
 
 #include <iostream>
 #include "sdl2_include.h"
+#include "CommonTypes.hpp"
 #include "TWindow.h"
-//#include "TTexture.h"
-//#include "TSurface.h"
+#include "TTexture.h"
+#include "TSurface.h"
 
 namespace io_submodule
 {
+    class TTexture;
+
     class TRenderer
     {
         public:
@@ -16,6 +19,12 @@ namespace io_submodule
             ~TRenderer();
 
             SDL_Renderer* getRenderer();
+
+            void draw( TTexture& texture, TCoords point );
+            void draw( TRectangleDescription rectangleParams );
+
+            void resetScreen();
+            void updateScreen();
 
         private:
             SDL_Renderer* renderer = nullptr;

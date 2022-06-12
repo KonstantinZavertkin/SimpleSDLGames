@@ -26,7 +26,7 @@ namespace io_submodule
     {
         std::cout << "SDL subsystem initialization...";
 
-        if ( SDL_Init( SDL_INIT_EVERYTHING ) != 0 )
+        if ( SDL_Init( SDL_INIT_VIDEO ) != 0 )
         {
             std::string errorMessage = "Can't init SDL subsystem";
             throw std::runtime_error( errorMessage.c_str() );

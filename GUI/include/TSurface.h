@@ -10,16 +10,25 @@ namespace io_submodule
     class TSurface
     {
         public:
+
+            TSurface();
+            TSurface( SDL_Surface* newSurface );
             TSurface( const std::string pathToBmp );
+
+            TSurface( TSurface&& ) noexcept;
+            TSurface& operator=( TSurface&& ) noexcept;
+
             ~TSurface();
 
             SDL_Surface* getSurface();
+
+            int getSurfaceWidth() const;
 
         private:
             SDL_Surface* surfacePtr = nullptr;
 
             TSurface( const TSurface& ) = delete;
-            TSurface& operator=(const TSurface& ) = delete;
+            TSurface& operator=( const TSurface& ) = delete;
 
     };
 };

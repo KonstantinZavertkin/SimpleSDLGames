@@ -8,46 +8,24 @@ namespace game_backend
 
     TGameField::TGameField( size_t linesCount, size_t columnsCount )
     {
-        for ( size_t i = 0; i < linesCount; ++i )
+        fieldSize = make_pair( linesCount, columnsCount );
+        
+        for ( int i = 0; i < fieldSize.first; ++i )
         {
-            field.push_back( vector<TCell>() );
+            field.emplace_back();
 
-            for ( size_t j = 0; j < columnsCount; ++j )
+            for ( int j = 0; j < fieldSize.second; ++j )
             {
-                field[i].push_back( TCell() );
+                field[i].emplace_back();
                 auto& cell = field[i][j];
+                cell.ownersBlocksId = 0;
                 cell.currentState = TCellStates::backgroundStateKey;
-                cell.moveDirection = { 0, 0 };
-                cell.moveDirectionDelta = { 0, 0 };
-                cell.thisCoordinates = { i, j };
             }
         }
-
-        fieldSize = make_pair( linesCount, columnsCount );
     };
 
     TGameField::~TGameField()
     {};
-
-    void TGameField::checkFood()
-    {
-        // Is required?
-        bool isRequiredFood = true;
-
-        for ( auto line : field )
-        {
-            for ( auto cell : line )
-                if ( cell.currentState == TCellStates::eatStateKey )
-                    isRequiredFood = false;
-        }
-
-        if ( isRequiredFood )
-        {
-            auto x = rand() % field.size();
-            auto y = rand() % field[0].size();
-            field[x][y].currentState = TCellStates::eatStateKey;
-        }
-    }
 
     void TGameField::debugPrint()
     {
@@ -88,5 +66,42 @@ namespace game_backend
         }
 
         cout << endl;
-    };
+    }
+
+    void TGameField::scrollField( TCoords direction, optional<size_t> fromLine )
+    {
+        size_t lastLineIndex = field.size() - 1;
+
+        if ( fromLine )
+            lastLineIndex = fromLine.value();
+
+        for ( int i = lastLineIndex; i > 0; --i )
+        {
+            for ( size_t j = 0; j < fieldSize.second; ++j )
+            {
+                if ( !field[i][j].canBeMoved || ( field[i][j].currentState == TCellStates::backgroundStateKey ) )
+                {
+                    if ( !field[i - 1][j].canBeMoved )
+                    {
+                        field[i][j].canBeMoved = field[i - 1][j].canBeMoved;
+                        field[i][j].currentState = field[i - 1][j].currentState;
+                        field[i][j].ownersBlocksId = field[i - 1][j].ownersBlocksId;
+                    }
+                }
+            }
+        }
+    }
+
+    void TGameField::resetField()
+    {
+        for ( int i = 0; i < fieldSize.first; ++i )
+        {
+            for ( int j = 0; j < fieldSize.second; ++j )
+            {
+                auto& cell = field[i][j];
+                cell.ownersBlocksId = 0;
+                cell.currentState = TCellStates::backgroundStateKey;
+            }
+        }
+    }
 }

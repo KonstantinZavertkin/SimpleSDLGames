@@ -3,6 +3,7 @@
 
 #ifdef WINDOWS
 #include <SDL.h>
+#include <SDL_ttf.h>
 #else
 #include <SDL2/SDL.h>
 #endif
