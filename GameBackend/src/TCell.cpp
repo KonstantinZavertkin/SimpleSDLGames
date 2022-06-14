@@ -23,5 +23,49 @@ namespace game_backend
 
     TCell::TCell() : currentState( TCellStates::backgroundStateKey ){};
 
-    TCell::~TCell(){};
+    TCell::~TCell(){}
+
+    TMinesweeperCell::TMinesweeperCell()
+    {
+    }
+
+    bool TMinesweeperCell::isBomb()
+    {
+        return bomb;
+    }
+
+    bool TMinesweeperCell::isOpened()
+    {
+        return opened;
+    }
+
+    bool TMinesweeperCell::isFlag()
+    {
+        return flag;
+    }
+
+    int TMinesweeperCell::getNumOfBombsAround()
+    {
+        return amountOfBombsAround;
+    }
+
+    void TMinesweeperCell::putBomb()
+    {
+        bomb = true;
+    }
+
+    void TMinesweeperCell::changeFlag()
+    {
+        flag = !flag;
+    }
+
+    void TMinesweeperCell::setOpened()
+    {
+        opened = true;
+    }
+
+    void TMinesweeperCell::setNumOfBombsAround( int amount )
+    {
+        amountOfBombsAround = amount;
+    };
 };

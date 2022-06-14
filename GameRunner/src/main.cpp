@@ -9,6 +9,8 @@
 #include "TSnakeGameRunner.h"
 #include "TMainMenu.h"
 
+#include "TMinesweeperBackend.h"
+
 using namespace io_submodule;
 using namespace game_backend;
 
@@ -78,6 +80,76 @@ int main( int argc, char **argv )
     menu.background = background;
     menu.fontSize = fontSize;
     menu.fontFile = fontFile;
+
+    //---------------------
+
+    Field field;
+   field.createField( 20, 20, 40 );
+   TMinesweeperBackend minesweeper;
+   minesweeper.initializeField( 20, 20, 40 );
+   field = minesweeper.getField();
+   
+   for( int i = 0; i < 20; i++ )
+   {
+      cout << "| ";
+      for( int j = 0; j < 20; j++ )
+      {
+         if( field.isFlag( j, i ) )
+         {
+            cout << 'f' << ' ';
+         }
+         else
+         {
+            if( field.isBomb( j, i ) )
+            {
+               cout << 'x' << ' ';
+            }
+            else
+            {
+               cout << field.getValue( j, i ) << ' ';
+            }
+         }
+      }
+      cout << "|" << endl;
+   }
+   cout << endl;
+
+    minesweeper.performStep(0, 0, 'q');
+   field = minesweeper.getField();
+
+   minesweeper.performStep(1, 4, 'f');
+   field = minesweeper.getField();
+
+     minesweeper.performStep(1, 1, 'q');
+   field = minesweeper.getField();
+
+    //==================================
+    for( int i = 0; i < 20; i++ )
+   {
+      cout << "|";
+      for( int j = 0; j < 20; j++ )
+      {
+         if( field.isFlag( j, i ) )
+         {
+            cout << 'f' << '|';
+         }
+         else
+         {
+            if( field.isOpened( j, i ) )
+            {
+               cout << field.getValue( j, i ) << '|';
+            }
+            else
+            {
+               cout << '_' << '|';
+            }
+         }
+      }
+      cout << endl;
+   }
+   cout << endl;
+
+    //---------------------
 
     while ( !menu.exitEvent() )
     {
