@@ -26,7 +26,7 @@ namespace game_backend
         return gameOver;
     };
 
-    Field TMinesweeperBackend::getField()
+    Field& TMinesweeperBackend::getField()
     {
         return field;
     };

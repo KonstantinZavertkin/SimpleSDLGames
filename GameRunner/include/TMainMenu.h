@@ -18,7 +18,7 @@ class TMainMenu
         vector<TFontDrawer*> cursorDrivers;
 
         size_t currentSelectedItem = 0;
-        size_t itemsCount = 3;
+        size_t itemsCount = 4;
 
         TColorRGB colorSelected = { 0xFF, 0x00, 0xFF, 0xFF };
         TColorRGB defaultColor = { 0, 0xFF, 0xFF, 0xFF };

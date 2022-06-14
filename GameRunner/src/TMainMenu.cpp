@@ -28,7 +28,7 @@ size_t TMainMenu::show()
     cursorDrawer2.isVisible = false;
 
     TFontDrawer titleTextDrawer3( renderer, fontFile, fontSize );
-    titleTextDrawer3.getFontDrawerRef().setText( "Exit" );
+    titleTextDrawer3.getFontDrawerRef().setText( "Minesweeper" );
     titleTextDrawer3.getFontDrawerRef().setPoint( { background.width / 2 - 50, 260 }, TTextAlignment::leftAlignment );
 
     TFontDrawer cursorDrawer3( renderer, fontFile, fontSize );
@@ -37,21 +37,35 @@ size_t TMainMenu::show()
     cursorDrawer3.getFontDrawerRef().setColor( colorSelected );
     cursorDrawer3.isVisible = false;
 
+    TFontDrawer titleTextDrawerExit( renderer, fontFile, fontSize );
+    titleTextDrawerExit.getFontDrawerRef().setText( "Exit" );
+    titleTextDrawerExit.getFontDrawerRef().setPoint( { background.width / 2 - 50, 280 }, TTextAlignment::leftAlignment );
+
+    TFontDrawer cursorDrawerExit( renderer, fontFile, fontSize );
+    cursorDrawerExit.getFontDrawerRef().setText( ">" );
+    cursorDrawerExit.getFontDrawerRef().setPoint( { background.width / 2 - 70, 280 }, TTextAlignment::leftAlignment );
+    cursorDrawerExit.getFontDrawerRef().setColor( colorSelected );
+    cursorDrawerExit.isVisible = false;
+
     textDrivers.push_back( &titleTextDrawer1 );
     textDrivers.push_back( &titleTextDrawer2 );
     textDrivers.push_back( &titleTextDrawer3 );
+    textDrivers.push_back( &titleTextDrawerExit );
 
     cursorDrivers.push_back( &cursorDrawer1 );
     cursorDrivers.push_back( &cursorDrawer2 );
     cursorDrivers.push_back( &cursorDrawer3 );
+    cursorDrivers.push_back( &cursorDrawerExit );
 
     TDrawer mainDrawer( renderer );
     mainDrawer.addText( &titleTextDrawer1 );
     mainDrawer.addText( &titleTextDrawer2 );
     mainDrawer.addText( &titleTextDrawer3 );
+    mainDrawer.addText( &titleTextDrawerExit );
     mainDrawer.addText( &cursorDrawer1 );
     mainDrawer.addText( &cursorDrawer2 );
     mainDrawer.addText( &cursorDrawer3 );
+    mainDrawer.addText( &cursorDrawerExit );
     mainDrawer.addPrimitive( background );
 
     textDrivers[currentSelectedItem]->getFontDrawerRef().setColor( colorSelected );

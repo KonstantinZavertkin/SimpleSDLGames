@@ -42,9 +42,14 @@ void runSnakeNew( TRenderer& renderer, TRectangleDescription& activeGameField, T
     game.run();
 };
 
+void runMinesweeper( TRenderer& renderer, TRectangleDescription& activeGameField, TRectangleDescription& background, const string& fontFile, size_t fontSize )
+{
+    cout << "runMinesweeper" << endl;
+}
+
 int main( int argc, char **argv )
 {
-    std::srand( time( 0 ) );
+    //std::srand( time( 0 ) );
     TSdlWrapper::getInstance();
 
     //! Main window params
@@ -82,12 +87,10 @@ int main( int argc, char **argv )
     menu.fontFile = fontFile;
 
     //---------------------
-
-    Field field;
-   field.createField( 20, 20, 40 );
+    /*
    TMinesweeperBackend minesweeper;
    minesweeper.initializeField( 20, 20, 40 );
-   field = minesweeper.getField();
+   Field& field = minesweeper.getField();
    
    for( int i = 0; i < 20; i++ )
    {
@@ -117,11 +120,9 @@ int main( int argc, char **argv )
     minesweeper.performStep(0, 0, 'q');
    field = minesweeper.getField();
 
-   minesweeper.performStep(1, 4, 'f');
-   field = minesweeper.getField();
-
-     minesweeper.performStep(1, 1, 'q');
-   field = minesweeper.getField();
+     minesweeper.performStep(18, 6, 'q');
+    field = minesweeper.getField();
+   
 
     //==================================
     for( int i = 0; i < 20; i++ )
@@ -147,7 +148,7 @@ int main( int argc, char **argv )
       }
       cout << endl;
    }
-   cout << endl;
+   cout << endl;*/
 
     //---------------------
 
@@ -165,6 +166,12 @@ int main( int argc, char **argv )
         {
             activeGameField.xStart = xStartBias;
             runSnakeNew( renderer, activeGameField, background, fontFile, fontSize );
+        }
+
+        if ( selectedItem == 2 )
+        {
+            activeGameField.xStart = xStartBias;
+            runMinesweeper( renderer, activeGameField, background, fontFile, fontSize );
         }
     }
     
