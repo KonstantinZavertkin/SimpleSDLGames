@@ -2,6 +2,7 @@
 
 TMinesweeperGame::TMinesweeperGame( TCoords fieldSize ): gameField( fieldSize.first, fieldSize.second )
 {
+    this->fieldSize = fieldSize;
 }
 
 void TMinesweeperGame::gameThread()
@@ -17,45 +18,92 @@ void TMinesweeperGame::gameThread()
     }
 
     syncPoint.lock();
-    cout << "Minesweeper game thread done" << endl;
+    std::cout << "Minesweeper game thread done" << endl;
     syncPoint.unlock();
 }
 
 void TMinesweeperGame::ioThread()
 {
-    SDL_Event exitEvent;
+    SDL_Event event;
     bool pauseLocal = false;
     bool quitLocal = false;
 
     while ( !quitLocal )
     {
-        while ( SDL_PollEvent( &exitEvent ) != 0 )
+        while ( SDL_PollEvent( &event ) != 0 )
         {
-            if ( exitEvent.type == SDL_QUIT )
+            if ( event.type == SDL_QUIT )
             {
                 quitLocal = true;
             }
 
-            if ( exitEvent.type == SDL_KEYDOWN )
+            if ( event.type == SDL_KEYDOWN )
             {
-                auto keyValue = exitEvent.key.keysym.sym;
+                cout << minesweeper.isGameOver() << endl;
+            }
 
-                //syncPoint.lock();
+            if ( event.type == SDL_MOUSEBUTTONDOWN )
+            {
+                const auto x = event.button.x;
+                const auto y = event.button.y;
 
-                //syncPoint.unlock();
+                syncPoint.lock();
+
+                if ( const auto cellCoords = cellRectangles->getCellCoords( x, y ) )
+                {
+                    const auto [cx, cy] = *cellCoords;
+
+                    cout << cx << ", " << cy << endl;
+
+                    if ( event.button.button == SDL_BUTTON_LEFT )
+                        minesweeper.performStep( cy, cx, 'a' );
+
+                    if ( event.button.button == SDL_BUTTON_RIGHT )
+                        minesweeper.performStep( cy, cx, 'f' );
+                }
+
+                syncPoint.unlock();
             }
         }
 
         syncPoint.lock();
 
+        Field& mField = minesweeper.getField();
+
+        for ( int i = 0; i < fieldSize.first; ++i )
+        {
+            for ( int j = 0; j < fieldSize.second; ++j )
+            {
+                if ( mField.isOpened( i, j ) )
+                {
+                    if ( mField.isBomb( i, j ) )
+                    {
+                        if ( minesweeper.isGameOver() )
+                            gameField.field[i][j].currentState = "b";
+                        else
+                           gameField.field[i][j].currentState = "h";
+                    }
+                    else
+                       gameField.field[i][j].currentState = to_string( mField.getValue( i, j ) );
+                }
+                else
+                {
+                    if ( mField.isFlag( i, j ) )
+                       gameField.field[i][j].currentState = "f";
+                    else
+                       gameField.field[i][j].currentState = "h";
+                }
+            }
+        }
+
         quit = quitLocal;
-        
         mainDrawer->draw();
 
         syncPoint.unlock();
 
         SDL_Delay( 1 );
     }
+
     syncPoint.lock();
     cout << "Minesweeper io thread done" << endl;
     syncPoint.unlock();

@@ -47,6 +47,7 @@ void runMinesweeper( TRenderer& renderer, TRectangleDescription& activeGameField
 {
     TMinesweeperGameRunner game( renderer );
 
+    game.activeGameField = activeGameField;
     game.background = background;
 
     game.fontFile = fontFile;

@@ -41,5 +41,19 @@ namespace io_submodule
     TRectangleDescription TCellRectangles::getCellRectangle( const size_t x, const size_t y ) const
     {
         return cellsMap[x][y];
+    }
+
+    std::optional<TCoords> TCellRectangles::getCellCoords( size_t x, size_t y ) const
+    {
+        int relativeX = ( x - gameFieldSize.xStart ) / gameCellsParams.cellWidth;
+        int relativeY = ( y - gameFieldSize.yStart ) / gameCellsParams.cellHeight;
+
+        if ( relativeX < 0 || relativeX > gameCellsParams.xCellsCount - 1 )
+           return {};
+
+        if ( relativeY < 0 || relativeY > gameCellsParams.yCellsCount - 1 )
+           return {};
+
+        return TCoords{ relativeX, relativeY };
     };
 };

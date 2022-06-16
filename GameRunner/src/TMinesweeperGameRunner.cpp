@@ -25,17 +25,9 @@ void TMinesweeperGameRunner::run()
     mainFieldCellsGrid.setCellsFieldParams( activeGameField, cellsFieldParams );
     mainFieldCellsGrid.calcGrid();
 
-    TMinesweeperGame game( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount } );
+    TMinesweeperGame game( { cellsFieldParams.xCellsCount, cellsFieldParams.yCellsCount } );
 
-    TSurface surface0 = TSurface( "minesweeper_sprites.bmp" );
-    TTexture texture0 = TTexture( renderer, surface0 );
-    texture0.setTexturePart( { 0, 0 }, { 16, 16 } );
-
-    TSurface surface1 = TSurface( "minesweeper_sprites.bmp" );
-    TTexture texture1 = TTexture( renderer, surface1 );
-    texture1.setTexturePart( { 16, 0 }, { 16, 16 } );
-    texture1.setStartPoint( { 30, 30 } );
-    texture1.setScalingFactor( 2 );
+    game.minesweeper.initializeField( cellsFieldParams.xCellsCount, cellsFieldParams.yCellsCount, 40 );
 
     vector<TSurface> surfaces;
     vector<TTexture> textures;
@@ -52,23 +44,56 @@ void TMinesweeperGameRunner::run()
         textures[i].setTexturePart( { i * 16, 0 }, { 16, 16 } );
         textures[i].setStartPoint( { i * 20 + 60, 500 } );
     }
-    
-
-    //TGameField gameField;
 
     TTexturesFieldDrawer fieldDrawer( game.gameField, renderer, mainFieldCellsGrid );
     fieldDrawer.textures = &textures;
     fieldDrawer.textureSliceSize = { 16, 16 };
 
-    fieldDrawer.cellsMapper = []( const TCell& )
+    fieldDrawer.cellsMapper = []( const TCell& cell )
     {
+        constexpr int biasIndex = 7;
+
+        if ( cell.currentState == "h" )
+           return 0;
+
+        if ( cell.currentState == "f" )
+           return 3;
+
+        if ( cell.currentState == "b" )
+           return 2;
+
+        if ( cell.currentState == "0" )
+           return 1;
+
+        if ( cell.currentState == "1" )
+           return 1 + biasIndex;
+
+        if ( cell.currentState == "2" )
+           return 2 + biasIndex;
+
+        if ( cell.currentState == "3" )
+           return 3 + biasIndex;
+
+        if ( cell.currentState == "4" )
+           return 4 + biasIndex;
+
+        if ( cell.currentState == "5" )
+           return 5 + biasIndex;
+
+        if ( cell.currentState == "6" )
+           return 6 + biasIndex;
+
+        if ( cell.currentState == "7" )
+           return 7 + biasIndex;
+
+        if ( cell.currentState == "8" )
+           return 8 + biasIndex;
+
         return 0;
     };
 
     TDrawer mainDrawer( renderer );
-    //mainDrawer.addPrimitive( background );
-    mainDrawer.addTexture( &texture0 );
-    mainDrawer.addTexture( &texture1 );
+    mainDrawer.addPrimitive( background );
     mainDrawer.addField( &fieldDrawer );
 
     for ( size_t i = 0; i < 16; ++i )
@@ -77,6 +102,7 @@ void TMinesweeperGameRunner::run()
     }
 
     game.mainDrawer = &mainDrawer;
+    game.cellRectangles = &mainFieldCellsGrid;
 
     thread mainThr1( &TMinesweeperGame::gameThread, &game );
 

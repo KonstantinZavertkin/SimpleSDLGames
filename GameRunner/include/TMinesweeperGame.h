@@ -20,6 +20,9 @@ class TMinesweeperGame
 
         TDrawer* mainDrawer = nullptr;
         TFontDrawer* scorePrinter = nullptr;
+        TCellRectangles* cellRectangles = nullptr;
+
+        TCoords fieldSize;
 
     private:
         mutex syncPoint;

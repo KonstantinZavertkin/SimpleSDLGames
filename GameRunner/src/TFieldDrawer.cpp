@@ -119,8 +119,11 @@ void TTexturesFieldDrawer::drawField()
         for ( size_t j = 0; j < field[i].size(); ++j )
         {
             auto cr = cellRectangles.getCellRectangle( i, j );
+
+            const auto textureId = cellsMapper( field[i][j] );
+
             TCoords coords = { cr.xStart, cr.yStart };
-            renderer.draw( ( *textures )[0], coords );
+            renderer.draw( ( *textures )[textureId], coords );
         }
     }
 }
