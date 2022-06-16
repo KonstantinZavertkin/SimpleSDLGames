@@ -27,6 +27,11 @@ namespace game_backend
     bool TMinesweeperBackend::isGameOver()
     {
         return gameOver;
+    }
+
+    bool TMinesweeperBackend::isWin()
+    {
+        return field.isWholeFieldOpened();
     };
 
     Field& TMinesweeperBackend::getField()

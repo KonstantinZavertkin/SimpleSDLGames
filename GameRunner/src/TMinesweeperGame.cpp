@@ -53,8 +53,6 @@ void TMinesweeperGame::ioThread()
                 {
                     const auto [cx, cy] = *cellCoords;
 
-                    cout << cx << ", " << cy << endl;
-
                     if ( event.button.button == SDL_BUTTON_LEFT )
                         minesweeper.performStep( cy, cx, 'a' );
 
@@ -97,6 +95,19 @@ void TMinesweeperGame::ioThread()
         }
 
         quit = quitLocal;
+
+        if ( minesweeper.isGameOver() )
+        {
+            gameStatus->isVisible = true;
+            gameStatus->setText( "Game over" );
+        }
+
+        if ( minesweeper.isWin() )
+        {
+            gameStatus->isVisible = true;
+            gameStatus->setText( "You win!" );
+        }
+
         mainDrawer->draw();
 
         syncPoint.unlock();

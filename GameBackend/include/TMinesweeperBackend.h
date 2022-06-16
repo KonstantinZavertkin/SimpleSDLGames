@@ -13,6 +13,7 @@ namespace game_backend
             void initializeField( int sizeX, int sizeY, int amountOfBombs );
             void performStep( int x, int y, char action );
             bool isGameOver();
+            bool isWin();
             Field& getField();
 
         private:

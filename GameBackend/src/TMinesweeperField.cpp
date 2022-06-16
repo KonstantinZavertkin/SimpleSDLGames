@@ -51,6 +51,21 @@ namespace game_backend
     bool Field::isBombOpened() const
     {
         return bombOpened;
+    }
+
+    bool Field::isWholeFieldOpened()
+    {
+        int placedFlags = 0;
+
+        for ( auto& line : field )
+           for ( auto& cellRef : line )
+               if ( !cellRef.isOpened() && cellRef.isFlag() )
+                  ++placedFlags;
+
+        if ( placedFlags == amountOfBombs )
+           return true;
+
+        return false;
     };
 
     vector<vector<TMinesweeperCell>>& Field::getField()

@@ -48,7 +48,6 @@ void TMinesweeperGameRunner::run()
     TTexturesFieldDrawer fieldDrawer( game.gameField, renderer, mainFieldCellsGrid );
     fieldDrawer.textures = &textures;
     fieldDrawer.textureSliceSize = { 16, 16 };
-
     fieldDrawer.cellsMapper = []( const TCell& cell )
     {
         constexpr int biasIndex = 7;
@@ -92,9 +91,15 @@ void TMinesweeperGameRunner::run()
         return 0;
     };
 
+    TFontDrawer statusTextDrawer( renderer, fontFile, fontSize + 6 );
+    statusTextDrawer.getFontDrawerRef().setPoint( { 600, 10 }, TTextAlignment::centerAlignment );
+    statusTextDrawer.setText( "Uninitialized" );
+    statusTextDrawer.isVisible = false;
+
     TDrawer mainDrawer( renderer );
     mainDrawer.addPrimitive( background );
     mainDrawer.addField( &fieldDrawer );
+    mainDrawer.addText( &statusTextDrawer );
 
     for ( size_t i = 0; i < 16; ++i )
     {
@@ -103,6 +108,7 @@ void TMinesweeperGameRunner::run()
 
     game.mainDrawer = &mainDrawer;
     game.cellRectangles = &mainFieldCellsGrid;
+    game.gameStatus = &statusTextDrawer;
 
     thread mainThr1( &TMinesweeperGame::gameThread, &game );
 

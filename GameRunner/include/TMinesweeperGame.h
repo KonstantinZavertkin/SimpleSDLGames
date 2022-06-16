@@ -21,6 +21,7 @@ class TMinesweeperGame
         TDrawer* mainDrawer = nullptr;
         TFontDrawer* scorePrinter = nullptr;
         TCellRectangles* cellRectangles = nullptr;
+        TFontDrawer* gameStatus = nullptr;
 
         TCoords fieldSize;
 
