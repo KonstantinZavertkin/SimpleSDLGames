@@ -49,13 +49,11 @@ void TTetrisGameRunner::run()
 
     TTetrisGame tetris( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount } );
 
-    TFieldDrawer tetrisDrawer( tetris.tetrisBackend.gameField, renderer, mainFieldCellsGrid );
+    TPrimitivesFieldDrawer tetrisDrawer( tetris.tetrisBackend.gameField, renderer, mainFieldCellsGrid );
     tetrisDrawer.cellsMapper = tetrisCellsMapper;
-    tetrisDrawer.addStaticPrimitiveLast( gameFieldBound );
 
-    TFieldDrawer infoFieldDrawer( tetris.tetrisBackend.nextFigureField, renderer, infoFieldCellsGrid );
+    TPrimitivesFieldDrawer infoFieldDrawer( tetris.tetrisBackend.nextFigureField, renderer, infoFieldCellsGrid );
     infoFieldDrawer.cellsMapper = tetrisCellsMapper;
-    infoFieldDrawer.addStaticPrimitiveLast( infoFieldBound );
 
     auto point = make_pair( activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth + 20, gameFieldBound.yStart );
     TFontDrawer scoreTextDrawer( renderer, fontFile, fontSize );

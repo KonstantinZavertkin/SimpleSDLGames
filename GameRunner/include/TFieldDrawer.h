@@ -19,27 +19,46 @@ class TFieldDrawer
     public:
         TFieldDrawer( TGameField& gameField, TRenderer& drawer, TCellRectangles& cellRectangles );
 
-        ~TFieldDrawer();
+        virtual ~TFieldDrawer();
 
         //! Draw main game field
-        void drawFirst();
-        void drawField();
-        void drawLast();
-
-        void addStaticPrimitiveFirst( TRectangleDescription );
-        void addStaticPrimitiveLast( TRectangleDescription );
-
-        function<pair<TColorRGB, bool>( const TCell& cell )> cellsMapper;
+        virtual void drawField() = 0;
 
         TRenderer& renderer;
 
-    private:
+    protected:
         TGameField& gameField;
         
         TCellRectangles& cellRectangles;
+};
 
-        vector<TRectangleDescription> staticPrimitivesFirst;
-        vector<TRectangleDescription> staticPrimitivesLast;
+class TPrimitivesFieldDrawer : public TFieldDrawer
+{
+    public:
+        TPrimitivesFieldDrawer( TGameField& gameField, TRenderer& drawer, TCellRectangles& cellRectangles );
+
+        void drawField() override;
+
+        ~TPrimitivesFieldDrawer() override;
+
+        function<pair<TColorRGB, bool>( const TCell& cell )> cellsMapper;
+};
+
+class TTexturesFieldDrawer : public TFieldDrawer
+{
+    public:
+        TTexturesFieldDrawer( TGameField& gameField, TRenderer& drawer, TCellRectangles& cellRectangles );
+
+        void drawField() override;
+
+        ~TTexturesFieldDrawer() override;
+
+        function<int( const TCell& cell )> cellsMapper;
+        vector<TTexture>* textures = nullptr;
+
+        string pathToBmp;
+        TCoords textureSliceSize = { 0, 0 };
+        size_t scalingFactor = 1;
 };
 
 #endif

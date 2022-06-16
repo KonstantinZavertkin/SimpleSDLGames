@@ -10,6 +10,7 @@
 #include "TMainMenu.h"
 
 #include "TMinesweeperBackend.h"
+#include "TMinesweeperGameRunner.h"
 
 using namespace io_submodule;
 using namespace game_backend;
@@ -44,7 +45,15 @@ void runSnakeNew( TRenderer& renderer, TRectangleDescription& activeGameField, T
 
 void runMinesweeper( TRenderer& renderer, TRectangleDescription& activeGameField, TRectangleDescription& background, const string& fontFile, size_t fontSize )
 {
-    cout << "runMinesweeper" << endl;
+    TMinesweeperGameRunner game( renderer );
+
+    game.background = background;
+
+    game.fontFile = fontFile;
+    game.fontSize = fontSize;
+
+    game.init();
+    game.run();
 }
 
 int main( int argc, char **argv )

@@ -25,15 +25,37 @@ namespace io_submodule
         return renderer;
     }
 
+    void TRenderer::draw( TTexture& texture )
+    {
+        draw( texture, texture.getStartPoint() );
+    }
+
     void TRenderer::draw( TTexture& texture, TCoords point )
     {
+        const int scalingFactor = static_cast<int>( texture.getScalingFactor() );
+        SDL_Rect* dest = texture.getPart();
         SDL_Rect r;
         r.x = point.first;
         r.y = point.second;
-        r.h = texture.getSurface().getSurface()->h;
-        r.w = texture.getSurface().getSurface()->w;
 
-        SDL_RenderCopy( renderer, texture.getTexturePtr(), nullptr, &r );
+        if ( dest )
+        {
+            r.h = dest->h;
+            r.w = dest->w;
+
+            if ( scalingFactor > 1 )
+            {
+                r.h *= scalingFactor;
+                r.w *= scalingFactor;
+            }
+        }
+        else
+        {
+            r.h = texture.getSurface().getSurface()->h;
+            r.w = texture.getSurface().getSurface()->w;
+        }
+        
+        SDL_RenderCopy( renderer, texture.getTexturePtr(), dest, &r );
     }
 
     void TRenderer::draw( TRectangleDescription rectangleParams )

@@ -7,7 +7,7 @@
 #include "CommonTypes.hpp"
 
 TSnakeGame::TSnakeGame( TCoords fieldSize, size_t snakeLength )
-    : gameField(fieldSize.first, fieldSize.second), snake(gameField )
+    : gameField( fieldSize.first, fieldSize.second ), snake( gameField )
 {
     initSnakeLength = snakeLength;
     snake.initCellsChain({1, 1}, initSnakeLength);

@@ -1,5 +1,6 @@
 #ifndef _TMINESWEEPERGAMERUNNER_H_
 #define _TMINESWEEPERGAMERUNNER_H_
+
 #include "TRenderer.h"
 
 using namespace io_submodule;
@@ -13,6 +14,9 @@ class TMinesweeperGameRunner
         void run();
 
         TRectangleDescription background;
+
+        TCellsFieldParams cellsFieldParams;
+        TRectangleDescription activeGameField;
 
         std::string fontFile;
         size_t fontSize = 0;

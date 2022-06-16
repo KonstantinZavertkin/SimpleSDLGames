@@ -18,8 +18,8 @@ namespace io_submodule
 
             void addPrimitive( TRectangleDescription primitiveDescription );
             void addField( TFieldDrawer* fieldDrawerPtr );
+            void addTexture( TTexture* texturePtr );
             void addText( TFontDrawer* textPrinterPtr );
-
             TRenderer& getRendererRef();
 
             void draw();
@@ -29,6 +29,7 @@ namespace io_submodule
 
             vector<TRectangleDescription> staticPrimitives;
             vector<TFieldDrawer*> fieldDrawers;
+            vector<TTexture*> textures;
             vector<TFontDrawer*> textPrinters;
     };
 };
