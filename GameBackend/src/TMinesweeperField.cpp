@@ -55,14 +55,15 @@ namespace game_backend
 
     bool Field::isWholeFieldOpened()
     {
-        int placedFlags = 0;
+        const int cellsCount = sizeX * sizeY;
+        int openedCellsCount = 0;
 
         for ( auto& line : field )
            for ( auto& cellRef : line )
-               if ( !cellRef.isOpened() && cellRef.isFlag() )
-                  ++placedFlags;
+               if ( cellRef.isOpened() )
+                  ++openedCellsCount;
 
-        if ( placedFlags == amountOfBombs )
+        if ( openedCellsCount == cellsCount - amountOfBombs )
            return true;
 
         return false;
