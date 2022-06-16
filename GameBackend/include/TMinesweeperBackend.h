@@ -9,6 +9,7 @@ namespace game_backend
     class TMinesweeperBackend
     {
         public:
+            TMinesweeperBackend();
             void initializeField( int sizeX, int sizeY, int amountOfBombs );
             void performStep( int x, int y, char action );
             bool isGameOver();

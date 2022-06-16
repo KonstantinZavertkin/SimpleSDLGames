@@ -4,21 +4,24 @@
 
 namespace game_backend
 {
+    TMinesweeperBackend::TMinesweeperBackend() : stepAction( field )
+    {
+    }
+
     void TMinesweeperBackend::initializeField( int sizeX, int sizeY, int amountOfBombs )
     {
         gameOver = false;
-        Field field;
         field.createField( sizeX, sizeY, amountOfBombs );
-        this -> field = field;
-        TStepAction stepAction;
-        stepAction.initialStepAction( sizeX, sizeY, field );
-        this->stepAction = stepAction;
+        stepAction.initialStepAction( sizeX, sizeY );
     };
 
     void TMinesweeperBackend::performStep( int x, int y, char action )
     {
         stepAction.performAction( x, y, action );
         field = stepAction.getField();
+
+        if ( field.isBombOpened() )
+           gameOver = true;
     };
 
     bool TMinesweeperBackend::isGameOver()

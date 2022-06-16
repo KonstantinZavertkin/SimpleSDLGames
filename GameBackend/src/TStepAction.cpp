@@ -2,14 +2,13 @@
 #include "TMinesweeperField.h"
 namespace game_backend
 {
-    void TStepAction::initialStepAction( int sizeX, int sizeY, Field field )
+    void TStepAction::initialStepAction( int sizeX, int sizeY )
     {
-        this->field = field;
         this->sizeX = sizeX;
         this->sizeY = sizeY;
     };
 
-    Field TStepAction::getField()
+    Field& TStepAction::getField()
     {
         return field;
     };
@@ -19,7 +18,7 @@ namespace game_backend
         field.changeFlag( x, y );
     };
 
-    int TStepAction::getAmountOfFlagsInSquare(int x, int y )
+    int TStepAction::getAmountOfFlagsInSquare( int x, int y )
     {
         int localAmountOfType = 0;
 
@@ -64,6 +63,8 @@ namespace game_backend
 
     void TStepAction::openCells( int x, int y )
     {
+        field.setOpened( x, y );
+
         for( int j = ( y - 1 ); j <= ( y + 1 ); ++j )
         {
             for( int i = ( x - 1 ); i <= ( x + 1 ); ++i )
@@ -72,7 +73,7 @@ namespace game_backend
                 {
                     if( !( ( i == x ) && ( j == y ) ) )
                     {
-                        if( !field.isOpened( i, j ) && !field.isFlag( i, j ))
+                        if( !field.isOpened( i, j ) && !field.isFlag( i, j ) && !field.isBomb( i, j ) )
                         {
                             field.setOpened( i, j );
 
@@ -114,6 +115,10 @@ namespace game_backend
           }
        }*/
     };
+
+    TStepAction::TStepAction( Field& fieldArg ) : field( fieldArg )
+    {
+    }
 
     void TStepAction::performAction( int x, int y, char currentAction )
     {

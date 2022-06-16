@@ -19,6 +19,7 @@ namespace game_backend
             bool isOpened( int x, int y );
             bool isBomb( int x, int y );
             bool isFlag( int x, int y );
+            bool isBombOpened() const;
             vector<vector<TMinesweeperCell>>& getField();
 
         private:
@@ -26,6 +27,7 @@ namespace game_backend
             int sizeX = 0;
             int sizeY = 0;
             int amountOfBombs = 0;
+            bool bombOpened = false;
     };
 }
 

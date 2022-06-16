@@ -9,14 +9,15 @@ namespace game_backend
     class TStepAction
     {
         public:
-            void initialStepAction( int sizeX, int sizeY, Field field );
+            TStepAction( Field& field );
+            void initialStepAction( int sizeX, int sizeY );
             void performAction( int x, int y, char currentAction );
             void changeFlag( int x, int y );
             void openCells( int x, int y );
-            Field getField();
+            Field& getField();
 
         private:
-            Field field;
+            Field& field;
             int sizeX = 0;
             int sizeY = 0;
             char currentAction = '\0';

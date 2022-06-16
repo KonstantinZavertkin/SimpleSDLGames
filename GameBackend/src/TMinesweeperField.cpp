@@ -23,6 +23,9 @@ namespace game_backend
     void Field::setOpened( int x, int y )
     {
         field[y][x].setOpened();
+
+        if ( field[y][x].isBomb() )
+           bombOpened = true;
     };
 
     bool Field::isBomb( int x, int y )
@@ -43,6 +46,11 @@ namespace game_backend
     bool Field::isFlag( int x, int y )
     {
         return field[y][x].isFlag();
+    }
+
+    bool Field::isBombOpened() const
+    {
+        return bombOpened;
     };
 
     vector<vector<TMinesweeperCell>>& Field::getField()
