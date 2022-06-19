@@ -3,7 +3,7 @@
 #include "TTetrisGame.h"
 
 TTetrisGame::TTetrisGame( TCoords fieldSize )
-    : tetrisBackend( fieldSize )
+    : tetrisBackend(fieldSize), bestScoreStorage( pathToBestScoreFile )
 {
 };
 
@@ -31,6 +31,8 @@ void TTetrisGame::gameThread()
 
 void TTetrisGame::ioThread()
 {
+    bestScore = bestScoreStorage.getScore();
+
     SDL_Event exitEvent;
     SDL_Delay( 125 );
     bool pauseLocal = false;
@@ -123,13 +125,18 @@ void TTetrisGame::ioThread()
         syncPoint.lock();
 
         quitLocal = tetrisBackend.quit;
-        scorePrinter->setText( "Score: " + to_string( tetrisBackend.gameScore ) );
+        currentScore = tetrisBackend.gameScore;
+        scorePrinter->setText( "Score: " + to_string( currentScore ) );
+        bestScorePrinter->setText( "Best: " + to_string( bestScore ) );
         mainDrawer->draw();
 
         syncPoint.unlock();
 
         SDL_Delay( 1 );
     }
+
+    if ( currentScore > bestScore )
+       bestScoreStorage.setScore( currentScore );
 
     cout << "Tetris io thread done" << endl;
 };

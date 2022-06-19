@@ -24,7 +24,7 @@ void TTetrisGameRunner::init()
     gameFieldBound.isFilled = false;
     gameFieldBound.color = { 0xFF, 0xFF, 0xFF, 0xFF };
 
-    gameInfoField.xStart = activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth + 20;
+    gameInfoField.xStart = activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth + 60;
     gameInfoField.yStart = 120;
     gameInfoField.width = cellsInfoFieldParams.xCellsCount * cellsInfoFieldParams.cellWidth;
     gameInfoField.height = cellsInfoFieldParams.yCellsCount * cellsInfoFieldParams.cellHeight;
@@ -55,9 +55,19 @@ void TTetrisGameRunner::run()
     TPrimitivesFieldDrawer infoFieldDrawer( tetris.tetrisBackend.nextFigureField, renderer, infoFieldCellsGrid );
     infoFieldDrawer.cellsMapper = tetrisCellsMapper;
 
-    auto point = make_pair( activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth + 20, gameFieldBound.yStart );
+    auto point = make_pair( infoFieldBound.xStart, gameFieldBound.yStart );
+
+    TFontDrawer nextFigureTextDrawer( renderer, fontFile, fontSize );
+    nextFigureTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
+    nextFigureTextDrawer.setText( "Next figure:" );
+
+    point.second += 180;
     TFontDrawer scoreTextDrawer( renderer, fontFile, fontSize );
     scoreTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
+
+    point.second += 50;
+    TFontDrawer bestScoreTextDrawer( renderer, fontFile, fontSize );
+    bestScoreTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
 
     TFontDrawer titleTextDrawer( renderer, fontFile, fontSize + 6 );
     titleTextDrawer.getFontDrawerRef().setPoint( { background.width / 2, 10 }, TTextAlignment::centerAlignment );
@@ -71,9 +81,12 @@ void TTetrisGameRunner::run()
     mainDrawer.addField( &infoFieldDrawer );
     mainDrawer.addText( &scoreTextDrawer );
     mainDrawer.addText( &titleTextDrawer );
+    mainDrawer.addText( &bestScoreTextDrawer );
+    mainDrawer.addText( &nextFigureTextDrawer );
 
     tetris.mainDrawer = &mainDrawer;
     tetris.scorePrinter = &scoreTextDrawer;
+    tetris.bestScorePrinter = &bestScoreTextDrawer;
 
     thread mainThr2( &TTetrisGame::gameThread, &tetris );
 

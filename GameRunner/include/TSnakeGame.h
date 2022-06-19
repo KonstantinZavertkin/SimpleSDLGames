@@ -41,10 +41,13 @@ class TSnakeGame
         bool quit = false;
 
         deque<TCoords> rotationsQueue;
+
     private:
-        const string pathToBestScoreFile = "snake_best_score.txt";
         mutex syncPoint;
+        const string pathToBestScoreFile = "snake_best_score.txt";
         TScoreStorage bestScoreStorage;
+        unsigned bestScore = 0;
+        unsigned currentScore = 0;
 };
 
 #endif

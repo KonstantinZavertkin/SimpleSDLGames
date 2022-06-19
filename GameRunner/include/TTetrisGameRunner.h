@@ -23,7 +23,8 @@ class TTetrisGameRunner
 
         string fontFile;
         size_t fontSize = 0;
-        
+
+    private:
         TRenderer& renderer;
 };
 

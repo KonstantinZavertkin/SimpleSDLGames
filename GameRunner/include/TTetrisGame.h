@@ -13,6 +13,7 @@
 #include "TFieldDrawer.h"
 #include "TFontDrawer.h"
 #include "TTetrisBackend.h"
+#include "TScoreStorage.h"
 
 using namespace std;
 using namespace game_backend;
@@ -32,9 +33,14 @@ class TTetrisGame
 
         TDrawer* mainDrawer = nullptr;
         TFontDrawer* scorePrinter = nullptr;
+        TFontDrawer* bestScorePrinter = nullptr;
 
     private:
         mutex syncPoint;
+        const string pathToBestScoreFile = "tetris_best_score.txt";
+        TScoreStorage bestScoreStorage;
+        unsigned bestScore = 0;
+        unsigned currentScore = 0;
 };
 
 #endif

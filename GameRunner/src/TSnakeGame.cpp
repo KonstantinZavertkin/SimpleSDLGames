@@ -96,8 +96,8 @@ void TSnakeGame::gameThread()
 
 void TSnakeGame::ioThread()
 {
-    unsigned bestScore = bestScoreStorage.getScore();
-    unsigned currentScore = 0;
+    bestScore = bestScoreStorage.getScore();
+    currentScore = 0;
     SDL_Event exitEvent;
     bool pauseLocal = false;
     bool quitLocal = false;
