@@ -8,6 +8,7 @@
 #include "TCellsChain.h"
 #include "TDrawer.h"
 #include "TFieldDrawer.h"
+#include "TScoreStorage.h"
 
 using namespace std;
 
@@ -31,6 +32,7 @@ class TSnakeGame
 
         TDrawer* mainDrawer = nullptr;
         TFontDrawer* scorePrinter = nullptr;
+        TFontDrawer* bestScorePrinter = nullptr;
 
         size_t initSnakeLength = 0;
         size_t clockCounter = 0;
@@ -39,9 +41,10 @@ class TSnakeGame
         bool quit = false;
 
         deque<TCoords> rotationsQueue;
-
+    private:
+        const string pathToBestScoreFile = "snake_best_score.txt";
         mutex syncPoint;
-        
+        TScoreStorage bestScoreStorage;
 };
 
 #endif

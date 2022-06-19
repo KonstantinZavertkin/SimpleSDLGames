@@ -39,15 +39,21 @@ void TSnakeGameRunner::run()
     TFontDrawer scoreTextDrawer( renderer, fontFile, fontSize );
     scoreTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
 
+    point.second += 50;
+    TFontDrawer bestScoreTextDrawer( renderer, fontFile, fontSize );
+    bestScoreTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
+
     TDrawer mainDrawer( renderer );
     mainDrawer.addPrimitive( background );
     mainDrawer.addPrimitive( gameFieldBound );
     mainDrawer.addField( &snakeDrawer );
     mainDrawer.addText( &scoreTextDrawer );
     mainDrawer.addText( &titleTextDrawer );
+    mainDrawer.addText( &bestScoreTextDrawer );
 
     snakeGame.mainDrawer = &mainDrawer;
     snakeGame.scorePrinter = &scoreTextDrawer;
+    snakeGame.bestScorePrinter = &bestScoreTextDrawer;
 
     thread mainThr( &TSnakeGame::gameThread, &snakeGame );
 

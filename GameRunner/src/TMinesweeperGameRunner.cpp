@@ -96,14 +96,42 @@ void TMinesweeperGameRunner::run()
     statusTextDrawer.setText( "Uninitialized" );
     statusTextDrawer.isVisible = false;
 
+    TFontDrawer titleTextDrawer( renderer, fontFile, fontSize + 10 );
+    titleTextDrawer.setText( "Minesweeper" );
+    titleTextDrawer.getFontDrawerRef().setPoint( { 400, 10 }, TTextAlignment::centerAlignment );
+    titleTextDrawer.isVisible = true;
+
+    TFontDrawer flagsCountTextDrawer( renderer, fontFile, fontSize + 6 );
+    flagsCountTextDrawer.setText( "Flags: " );
+    flagsCountTextDrawer.getFontDrawerRef().setPoint( { 75, 550 }, TTextAlignment::leftAlignment );
+    flagsCountTextDrawer.isVisible = true;
+
+    TFontDrawer currentTimeTextDrawer( renderer, fontFile, fontSize + 6 );
+    currentTimeTextDrawer.setText( "Time: " );
+    currentTimeTextDrawer.getFontDrawerRef().setPoint( { 600, 550 }, TTextAlignment::leftAlignment );
+    currentTimeTextDrawer.isVisible = true;
+
+    TFontDrawer secondsTextDrawer( renderer, fontFile, fontSize + 6 );
+    secondsTextDrawer.setText( "0" );
+    secondsTextDrawer.getFontDrawerRef().setPoint( { 720, 550 }, TTextAlignment::rightAlignment );
+    secondsTextDrawer.isVisible = true;
+    
     TDrawer mainDrawer( renderer );
     mainDrawer.addPrimitive( background );
     mainDrawer.addField( &fieldDrawer );
     mainDrawer.addText( &statusTextDrawer );
+    mainDrawer.addText( &titleTextDrawer );
+    mainDrawer.addText( &flagsCountTextDrawer );
+    mainDrawer.addText( &currentTimeTextDrawer );
+    mainDrawer.addText( &secondsTextDrawer );
 
     game.mainDrawer = &mainDrawer;
     game.cellRectangles = &mainFieldCellsGrid;
     game.gameStatus = &statusTextDrawer;
+    game.gameTitle = &titleTextDrawer;
+    game.flagsCountDrawer = &flagsCountTextDrawer;
+    game.timeDrawer = &currentTimeTextDrawer;
+    game.secondsDrawer = &secondsTextDrawer;
 
     thread mainThr1( &TMinesweeperGame::gameThread, &game );
 

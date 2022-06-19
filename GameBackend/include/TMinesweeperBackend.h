@@ -15,6 +15,7 @@ namespace game_backend
             bool isGameOver();
             bool isWin();
             Field& getField();
+            size_t getFlagsCount();
 
         private:
             Field field;

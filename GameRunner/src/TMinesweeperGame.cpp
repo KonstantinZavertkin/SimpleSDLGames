@@ -37,11 +37,6 @@ void TMinesweeperGame::ioThread()
                 quitLocal = true;
             }
 
-            if ( event.type == SDL_KEYDOWN )
-            {
-                cout << minesweeper.isGameOver() << endl;
-            }
-
             if ( event.type == SDL_MOUSEBUTTONDOWN )
             {
                 const auto x = event.button.x;
@@ -51,6 +46,13 @@ void TMinesweeperGame::ioThread()
 
                 if ( const auto cellCoords = cellRectangles->getCellCoords( x, y ) )
                 {
+                    if ( !startTimeFlag )
+                    {
+                        startTimeFlag = true;
+                        startTime = time( nullptr );
+                        cout << "Init time" << endl;
+                    }
+
                     const auto [cx, cy] = *cellCoords;
 
                     if ( event.button.button == SDL_BUTTON_LEFT )
@@ -108,6 +110,17 @@ void TMinesweeperGame::ioThread()
             gameStatus->setText( "You win!" );
         }
 
+        if ( startTimeFlag )
+        {
+            const time_t currentTime = time( nullptr );
+            seconds = difftime( currentTime, startTime );
+            secondsDrawer->setText( to_string( static_cast<int>( seconds ) ) );
+            //secondsDrawer->getFontDrawerRef().setPoint( { 650, 550 }, TTextAlignment::rightAlignment );
+        }
+
+        timeDrawer->setText( "Time:" );
+        
+        flagsCountDrawer->setText( "Flags: " +  to_string( minesweeper.getFlagsCount() ) );
         mainDrawer->draw();
 
         syncPoint.unlock();

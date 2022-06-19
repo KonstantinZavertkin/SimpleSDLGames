@@ -7,10 +7,10 @@
 #include "CommonTypes.hpp"
 
 TSnakeGame::TSnakeGame( TCoords fieldSize, size_t snakeLength )
-    : gameField( fieldSize.first, fieldSize.second ), snake( gameField )
+    : gameField(fieldSize.first, fieldSize.second), snake(gameField), bestScoreStorage( pathToBestScoreFile )
 {
     initSnakeLength = snakeLength;
-    snake.initCellsChain( { 1, 1 }, initSnakeLength );
+    snake.initCellsChain({1, 1}, initSnakeLength);
 };
 
 TSnakeGame::~TSnakeGame()
@@ -96,6 +96,8 @@ void TSnakeGame::gameThread()
 
 void TSnakeGame::ioThread()
 {
+    unsigned bestScore = bestScoreStorage.getScore();
+    unsigned currentScore = 0;
     SDL_Event exitEvent;
     bool pauseLocal = false;
     bool quitLocal = false;
@@ -161,7 +163,9 @@ void TSnakeGame::ioThread()
 
         syncPoint.lock();
 
-        scorePrinter->setText( "Score: " + to_string( snake.snakeCells.size() - initSnakeLength ) );
+        currentScore = snake.snakeCells.size() - initSnakeLength;
+        scorePrinter->setText( "Score: " + to_string( currentScore ) );
+        bestScorePrinter->setText( "Best: " + to_string( bestScore ) );
 
         mainDrawer->draw();
 
@@ -172,6 +176,9 @@ void TSnakeGame::ioThread()
         
         SDL_Delay( 1 );
     }
+
+    if ( currentScore > bestScore )
+       bestScoreStorage.setScore( currentScore );
 
     cout << "ioThread done" << endl;
 };

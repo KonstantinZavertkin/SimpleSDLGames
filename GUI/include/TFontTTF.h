@@ -23,6 +23,7 @@ namespace io_submodule
             ~TFontTTF();
 
             void setPoint( TCoords point, TTextAlignment alignment );
+            void setAlignment( TTextAlignment alignment );
             void setColor( TColorRGB rgba );
             TCoords getPoint() const;
             void setText( const string& strToPrint );
@@ -36,9 +37,11 @@ namespace io_submodule
 
             TTF_Font* font = nullptr;
             TCoords point;
+            TCoords alignmentPoint;
             string strToPrint;
             SDL_Color color = { 0, 255, 255, 255 };
             bool flagToUpdateTexture = false;
+            TTextAlignment currentAlignment = TTextAlignment::leftAlignment;
 
             TSurface surface;
             TRenderer& renderer;

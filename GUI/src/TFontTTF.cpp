@@ -35,17 +35,26 @@ namespace io_submodule
         TTF_Quit();
     }
 
-    void TFontTTF::setPoint( TCoords pointArg, TTextAlignment alignment  )
+    void TFontTTF::setPoint( TCoords pointArg, TTextAlignment alignment )
     {
-        auto [x, y] = pointArg;
+        this->point = pointArg;
+        this->alignmentPoint = pointArg;
         
+        setAlignment( alignment );
+    }
+
+    void TFontTTF::setAlignment( TTextAlignment alignment )
+    {
+        auto [x, y] = point;
+
         if ( alignment == TTextAlignment::centerAlignment )
             x -= texture.getSurface().getSurfaceWidth() / 2;
 
         if ( alignment == TTextAlignment::rightAlignment )
             x -= texture.getSurface().getSurfaceWidth();
 
-        this->point = { x, y };
+        currentAlignment = alignment;
+        alignmentPoint = { x, y };
     }
 
     void TFontTTF::setColor( TColorRGB rgba )
@@ -71,13 +80,14 @@ namespace io_submodule
 
             surface = TSurface( TTF_RenderText_Blended( font, this->strToPrint.c_str(), color ) );
             texture.updateSurface( surface );
+            setAlignment( currentAlignment );
         }
     }
 
     void TFontTTF::drawText()
     {
         setText( strToPrint );
-        renderer.draw( texture, point );
+        renderer.draw( texture, alignmentPoint );
     }
 
     TSurface& TFontTTF::getTextSurface()

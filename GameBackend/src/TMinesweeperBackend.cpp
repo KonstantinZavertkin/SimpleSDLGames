@@ -37,5 +37,16 @@ namespace game_backend
     Field& TMinesweeperBackend::getField()
     {
         return field;
+    }
+
+    size_t TMinesweeperBackend::getFlagsCount()
+    {
+        size_t counter = 0;
+        for ( auto& line : field.getField() )
+           for ( auto& cell : line )
+              if ( cell.isFlag() )
+                 ++counter;
+
+        return counter;
     };
 }
