@@ -172,24 +172,14 @@ namespace game_backend
                 {
                     allBlocks.back().step();
 
-                    if ( checkFullLines() )
+                    if ( gameScoreDelta )
                     {
-                        currentTimeToSleep = scrollTimeToSleep;
-                        ++gameScoreDelta;
-                        ++figuresCounter;
-                        cout << "not scroll" << endl;
-                    }
-                    else
-                    {
-                        if ( gameScoreDelta )
-                        {
-                            if ( gameScoreDelta > 1 )
-                                gameScoreDelta = 1 << gameScoreDelta;
+                        if ( gameScoreDelta > 1 )
+                            gameScoreDelta = 1 << gameScoreDelta;
 
-                            gameScore += gameScoreDelta;
-                            gameScoreDelta = 0;
-                            ++figuresCounter;
-                        }
+                        gameScore += gameScoreDelta;
+                        gameScoreDelta = 0;
+                        ++figuresCounter;
                     }
                 }
             }
