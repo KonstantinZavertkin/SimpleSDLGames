@@ -23,7 +23,7 @@ void TTetrisGame::gameThread()
         tetrisBackend.gameStep();
         syncPoint.unlock();
 
-        SDL_Delay( tetrisBackend.timeToSleep );
+        SDL_Delay( tetrisBackend.getTimeToSleep() );
     }
     
     cout << "Tetris game thread done" << endl;
@@ -91,7 +91,7 @@ void TTetrisGame::ioThread()
 
                             if ( vectorNext == vectorUp )
                             {
-                                tetrisBackend.allBlocks.back().turn( {0, 0} );
+                                tetrisBackend.allBlocks.back().turn( { 0, 0 } );
                             }
                             else
                             {
@@ -121,13 +121,10 @@ void TTetrisGame::ioThread()
         }
 
         syncPoint.lock();
-        quitLocal = tetrisBackend.quit;
 
+        quitLocal = tetrisBackend.quit;
         scorePrinter->setText( "Score: " + to_string( tetrisBackend.gameScore ) );
-        
-        mainDrawer->getRendererRef().resetScreen();
         mainDrawer->draw();
-        mainDrawer->getRendererRef().updateScreen();
 
         syncPoint.unlock();
 

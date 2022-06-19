@@ -17,7 +17,7 @@ namespace game_backend
             TTetrisBackend( TCoords fieldSize );
             ~TTetrisBackend();
 
-            std::optional<size_t> checkFullLines();
+            std::optional<size_t> checkFullLines() const;
 
             void createFigure();
 
@@ -26,6 +26,8 @@ namespace game_backend
             void showBlockShadow();
 
             void gameStep();
+
+            size_t getTimeToSleep();
 
             TGameField gameField;
             TGameField nextFigureField;
@@ -41,8 +43,16 @@ namespace game_backend
             bool quit = false;
 
             size_t gameScore = 0;
+            bool isAccelerate = true;
+
+        private:
+            const size_t mainTimeToSleep = 500;
+            const size_t scrollTimeToSleep = mainTimeToSleep / 4;
             size_t gameScoreDelta = 0;
-            size_t timeToSleep = 500;
+            size_t realTimeToSleep = mainTimeToSleep;
+            size_t currentTimeToSleep = mainTimeToSleep;
+            size_t figuresCounter = 0;
+            size_t prevFiguresCounter = 0;
     };
 }
 

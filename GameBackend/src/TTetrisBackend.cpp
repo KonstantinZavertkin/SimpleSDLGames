@@ -1,6 +1,7 @@
 #include "TTetrisBackend.h"
 
 #include <algorithm>
+#include <iostream>
 
 namespace game_backend
 {
@@ -14,7 +15,7 @@ namespace game_backend
     {
     }
 
-    std::optional<size_t> TTetrisBackend::checkFullLines()
+    std::optional<size_t> TTetrisBackend::checkFullLines() const
     {
         optional<size_t> maybeLineIndex;
 
@@ -159,12 +160,13 @@ namespace game_backend
             if ( maybeFullLines )
             {
                 gameField.scrollField( { 1, 0 }, maybeFullLines );
-                timeToSleep = 100;
+                
+                currentTimeToSleep = scrollTimeToSleep;
                 ++gameScoreDelta;
             }
             else
             {
-                timeToSleep = 500;
+                currentTimeToSleep = realTimeToSleep;
 
                 if ( !allBlocks.empty() )
                 {
@@ -172,19 +174,44 @@ namespace game_backend
 
                     if ( checkFullLines() )
                     {
-                        timeToSleep = 100;
+                        currentTimeToSleep = scrollTimeToSleep;
                         ++gameScoreDelta;
+                        ++figuresCounter;
+                        cout << "not scroll" << endl;
                     }
                     else
                     {
                         if ( gameScoreDelta )
                         {
-                            gameScore += (1 << (gameScoreDelta - 1));
+                            if ( gameScoreDelta > 1 )
+                                gameScoreDelta = 1 << gameScoreDelta;
+
+                            gameScore += gameScoreDelta;
                             gameScoreDelta = 0;
+                            ++figuresCounter;
                         }
                     }
                 }
             }
         }
+    }
+
+    size_t TTetrisBackend::getTimeToSleep()
+    {
+        size_t valToReturn = currentTimeToSleep;
+
+        if ( isAccelerate )
+        {
+            if ( prevFiguresCounter != figuresCounter )
+            {
+                realTimeToSleep -= 10;
+                realTimeToSleep = max( 0, static_cast<int>( realTimeToSleep ) );
+                prevFiguresCounter = figuresCounter;
+            }
+
+            currentTimeToSleep = realTimeToSleep;
+        }
+
+        return valToReturn;
     }
 }
