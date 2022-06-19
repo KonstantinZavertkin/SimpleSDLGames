@@ -1,6 +1,7 @@
 #include "TMinesweeperGame.h"
 
-TMinesweeperGame::TMinesweeperGame( TCoords fieldSize ): gameField( fieldSize.first, fieldSize.second )
+TMinesweeperGame::TMinesweeperGame( TCoords fieldSize ) :
+    gameField( fieldSize.first, fieldSize.second ), bestScoreStorage( pathToBestScoreFile )
 {
     this->fieldSize = fieldSize;
 }
@@ -24,6 +25,11 @@ void TMinesweeperGame::gameThread()
 
 void TMinesweeperGame::ioThread()
 {
+    bestScore = bestScoreStorage.getScore();
+
+    if ( !bestScore )
+       bestScore = UINT_MAX;
+
     SDL_Event event;
     bool pauseLocal = false;
     bool quitLocal = false;
@@ -39,6 +45,9 @@ void TMinesweeperGame::ioThread()
 
             if ( event.type == SDL_MOUSEBUTTONDOWN )
             {
+                if ( minesweeper.isGameOver() || minesweeper.isWin() )
+                   continue;
+
                 const auto x = event.button.x;
                 const auto y = event.button.y;
 
@@ -50,7 +59,6 @@ void TMinesweeperGame::ioThread()
                     {
                         startTimeFlag = true;
                         startTime = time( nullptr );
-                        cout << "Init time" << endl;
                     }
 
                     const auto [cx, cy] = *cellCoords;
@@ -102,23 +110,36 @@ void TMinesweeperGame::ioThread()
         {
             gameStatus->isVisible = true;
             gameStatus->setText( "Game over" );
+            flagsCountDrawer->isVisible = false;
         }
 
         if ( minesweeper.isWin() )
         {
             gameStatus->isVisible = true;
             gameStatus->setText( "You win!" );
+            flagsCountDrawer->isVisible = false;
         }
 
         if ( startTimeFlag )
         {
-            const time_t currentTime = time( nullptr );
-            seconds = difftime( currentTime, startTime );
-            secondsDrawer->setText( to_string( static_cast<int>( seconds ) ) );
-            //secondsDrawer->getFontDrawerRef().setPoint( { 650, 550 }, TTextAlignment::rightAlignment );
+            if ( !minesweeper.isGameOver() && !minesweeper.isWin() )
+            {
+                const time_t currentTime = time( nullptr );
+                seconds = difftime( currentTime, startTime );
+                secondsDrawer->setText( to_string( static_cast<int>( seconds ) ) );
+            }
         }
 
         timeDrawer->setText( "Time:" );
+
+        currentScore = static_cast<unsigned>( seconds );
+
+        const string bestTimePrefix = "Best time:  ";
+
+        if ( bestScore != UINT_MAX )
+            bestTimeDrawer->setText( bestTimePrefix + to_string( bestScore ) );
+        else
+            bestTimeDrawer->setText( bestTimePrefix + "----" );
         
         flagsCountDrawer->setText( "Flags: " +  to_string( minesweeper.getFlagsCount() ) );
         mainDrawer->draw();
@@ -131,4 +152,8 @@ void TMinesweeperGame::ioThread()
     syncPoint.lock();
     cout << "Minesweeper io thread done" << endl;
     syncPoint.unlock();
+
+    if ( minesweeper.isWin() )
+        if ( currentScore < bestScore )
+            bestScoreStorage.setScore( currentScore );
 }

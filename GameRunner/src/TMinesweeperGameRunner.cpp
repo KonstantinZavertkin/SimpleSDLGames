@@ -91,8 +91,8 @@ void TMinesweeperGameRunner::run()
         return 0;
     };
 
-    TFontDrawer statusTextDrawer( renderer, fontFile, fontSize + 6 );
-    statusTextDrawer.getFontDrawerRef().setPoint( { 600, 10 }, TTextAlignment::centerAlignment );
+    TFontDrawer statusTextDrawer( renderer, fontFile, fontSize );
+    statusTextDrawer.getFontDrawerRef().setPoint( { 75, 550 }, TTextAlignment::leftAlignment );
     statusTextDrawer.setText( "Uninitialized" );
     statusTextDrawer.isVisible = false;
 
@@ -101,20 +101,24 @@ void TMinesweeperGameRunner::run()
     titleTextDrawer.getFontDrawerRef().setPoint( { 400, 10 }, TTextAlignment::centerAlignment );
     titleTextDrawer.isVisible = true;
 
-    TFontDrawer flagsCountTextDrawer( renderer, fontFile, fontSize + 6 );
+    TFontDrawer flagsCountTextDrawer( renderer, fontFile, fontSize );
     flagsCountTextDrawer.setText( "Flags: " );
     flagsCountTextDrawer.getFontDrawerRef().setPoint( { 75, 550 }, TTextAlignment::leftAlignment );
     flagsCountTextDrawer.isVisible = true;
 
-    TFontDrawer currentTimeTextDrawer( renderer, fontFile, fontSize + 6 );
+    TFontDrawer currentTimeTextDrawer( renderer, fontFile, fontSize );
     currentTimeTextDrawer.setText( "Time: " );
     currentTimeTextDrawer.getFontDrawerRef().setPoint( { 600, 550 }, TTextAlignment::leftAlignment );
     currentTimeTextDrawer.isVisible = true;
 
-    TFontDrawer secondsTextDrawer( renderer, fontFile, fontSize + 6 );
+    TFontDrawer secondsTextDrawer( renderer, fontFile, fontSize );
     secondsTextDrawer.setText( "0" );
     secondsTextDrawer.getFontDrawerRef().setPoint( { 720, 550 }, TTextAlignment::rightAlignment );
     secondsTextDrawer.isVisible = true;
+
+    TFontDrawer bestScoreTextDrawer( renderer, fontFile, fontSize );
+    bestScoreTextDrawer.setText( "Best time: " );
+    bestScoreTextDrawer.getFontDrawerRef().setPoint( { 350, 550 }, TTextAlignment::leftAlignment );
     
     TDrawer mainDrawer( renderer );
     mainDrawer.addPrimitive( background );
@@ -124,6 +128,7 @@ void TMinesweeperGameRunner::run()
     mainDrawer.addText( &flagsCountTextDrawer );
     mainDrawer.addText( &currentTimeTextDrawer );
     mainDrawer.addText( &secondsTextDrawer );
+    mainDrawer.addText( &bestScoreTextDrawer );
 
     game.mainDrawer = &mainDrawer;
     game.cellRectangles = &mainFieldCellsGrid;
@@ -132,6 +137,7 @@ void TMinesweeperGameRunner::run()
     game.flagsCountDrawer = &flagsCountTextDrawer;
     game.timeDrawer = &currentTimeTextDrawer;
     game.secondsDrawer = &secondsTextDrawer;
+    game.bestTimeDrawer = &bestScoreTextDrawer;
 
     thread mainThr1( &TMinesweeperGame::gameThread, &game );
 
