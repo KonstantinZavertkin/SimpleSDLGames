@@ -10,7 +10,7 @@ TSnakeGame::TSnakeGame( TCoords fieldSize, size_t snakeLength )
     : gameField( fieldSize.first, fieldSize.second ), snake( gameField )
 {
     initSnakeLength = snakeLength;
-    snake.initCellsChain({1, 1}, initSnakeLength);
+    snake.initCellsChain( { 1, 1 }, initSnakeLength );
 };
 
 TSnakeGame::~TSnakeGame()
@@ -74,21 +74,21 @@ void TSnakeGame::gameThread()
 
             performStep = false;
         }
-
-        if ( quitLocal )
-            quit = quitLocal;
         
         if ( quit )
         {
             quitLocal = quit;
-            cout << "Game over, score: " << snake.snakeCells.size() << endl;
+            cout << "Game over, score: " << snake.snakeCells.size() - initSnakeLength << endl;
         }
 
         syncPoint.unlock();
 
-        SDL_Delay( max( 0, 50 - static_cast<int>( snake.snakeCells.size() * 2 ) ) );
+        const auto stepsCount = static_cast<int>( snake.snakeCells.size() - initSnakeLength );
+        const auto timeDelay = max( 10, 50 - stepsCount );
 
-        clockCounter++;
+        SDL_Delay( timeDelay );
+
+        ++clockCounter;
     }
 
     cout << "gameThread done" << endl;
@@ -163,9 +163,7 @@ void TSnakeGame::ioThread()
 
         scorePrinter->setText( "Score: " + to_string( snake.snakeCells.size() - initSnakeLength ) );
 
-        mainDrawer->getRendererRef().resetScreen();
         mainDrawer->draw();
-        mainDrawer->getRendererRef().updateScreen();
 
         if ( quit )
             quitLocal = quit;
