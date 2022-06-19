@@ -159,7 +159,7 @@ namespace game_backend
 
             if ( maybeFullLines )
             {
-                gameField.scrollField( { 1, 0 }, maybeFullLines );
+                gameField.scrollField( {1, 0}, maybeFullLines );
                 
                 currentTimeToSleep = scrollTimeToSleep;
                 ++gameScoreDelta;

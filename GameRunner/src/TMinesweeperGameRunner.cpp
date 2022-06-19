@@ -14,9 +14,9 @@ TMinesweeperGameRunner::TMinesweeperGameRunner( TRenderer& rendererRef )
 void TMinesweeperGameRunner::init()
 {
     cellsFieldParams.xCellsCount = 20;
-    cellsFieldParams.yCellsCount = 20;
-    cellsFieldParams.cellHeight = 16;
-    cellsFieldParams.cellWidth = 16;
+    cellsFieldParams.yCellsCount = 15;
+    cellsFieldParams.cellHeight = 32;
+    cellsFieldParams.cellWidth = 32;
 }
 
 void TMinesweeperGameRunner::run()
@@ -25,9 +25,9 @@ void TMinesweeperGameRunner::run()
     mainFieldCellsGrid.setCellsFieldParams( activeGameField, cellsFieldParams );
     mainFieldCellsGrid.calcGrid();
 
-    TMinesweeperGame game( { cellsFieldParams.xCellsCount, cellsFieldParams.yCellsCount } );
+    TMinesweeperGame game( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount  } );
 
-    game.minesweeper.initializeField( cellsFieldParams.xCellsCount, cellsFieldParams.yCellsCount, 40 );
+    game.minesweeper.initializeField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount, 40 );
 
     vector<TSurface> surfaces;
     vector<TTexture> textures;
@@ -41,13 +41,13 @@ void TMinesweeperGameRunner::run()
     for ( size_t i = 0; i < 16; ++i )
     {
         textures[i].updateSurface( surfaces[i] );
-        textures[i].setTexturePart( { i * 16, 0 }, { 16, 16 } );
+        textures[i].setTexturePart( { i * 32, 0 }, { 32, 32 } );
         textures[i].setStartPoint( { i * 20 + 60, 500 } );
     }
 
     TTexturesFieldDrawer fieldDrawer( game.gameField, renderer, mainFieldCellsGrid );
     fieldDrawer.textures = &textures;
-    fieldDrawer.textureSliceSize = { 16, 16 };
+    fieldDrawer.textureSliceSize = { 32, 32 };
     fieldDrawer.cellsMapper = []( const TCell& cell )
     {
         constexpr int biasIndex = 7;
@@ -100,11 +100,6 @@ void TMinesweeperGameRunner::run()
     mainDrawer.addPrimitive( background );
     mainDrawer.addField( &fieldDrawer );
     mainDrawer.addText( &statusTextDrawer );
-
-    for ( size_t i = 0; i < 16; ++i )
-    {
-        mainDrawer.addTexture( &textures[i] );
-    }
 
     game.mainDrawer = &mainDrawer;
     game.cellRectangles = &mainFieldCellsGrid;

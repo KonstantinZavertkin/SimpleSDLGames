@@ -114,7 +114,7 @@ int main( int argc, char **argv )
 
         if ( selectedItem == 2 )
         {
-            activeGameField.xStart = xStartBias;
+            activeGameField.xStart = 75;
             runMinesweeper( renderer, activeGameField, background, fontFile, fontSize );
         }
     }
