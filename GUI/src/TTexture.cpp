@@ -19,7 +19,7 @@ namespace io_submodule
         }
     }
 
-    TTexture::TTexture( TTexture&& oldVar ) : renderer( oldVar.renderer )
+    TTexture::TTexture( TTexture&& oldVar ) noexcept : renderer( oldVar.renderer )
     {
         texturePtr = oldVar.texturePtr;
         oldVar.texturePtr = nullptr;
@@ -30,7 +30,7 @@ namespace io_submodule
         scalingFactor = oldVar.scalingFactor;
     }
 
-    TTexture& TTexture::operator=( TTexture&& oldVar )
+    TTexture& TTexture::operator=( TTexture&& oldVar ) noexcept
     {
         texturePtr = oldVar.texturePtr;
         oldVar.texturePtr = nullptr;

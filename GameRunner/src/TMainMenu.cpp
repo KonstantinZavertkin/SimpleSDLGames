@@ -7,11 +7,9 @@ TMainMenu::TMainMenu( TRenderer& rendererRef )
 
 size_t TMainMenu::show()
 {
-    size_t index = 0;
-    const vector<size_t> horizontalBorders = { 200, 225, 250, 275, 300 };
     const size_t horizontalBordersSize = horizontalBorders.size();
 
-    auto horizontalFocus = [&horizontalBorders, &horizontalBordersSize]( size_t yCoord )
+    auto horizontalFocus = [this, &horizontalBordersSize]( size_t yCoord )
     {
         auto result = -1;
 
@@ -25,51 +23,49 @@ size_t TMainMenu::show()
     TFontDrawer titleTextDrawer1( renderer, fontFile, fontSize );
     titleTextDrawer1.getFontDrawerRef().setText( "Tetris" );
     titleTextDrawer1.getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
+    textDrivers.push_back( &titleTextDrawer1 );
 
     TFontDrawer cursorDrawer1( renderer, fontFile, fontSize );
     cursorDrawer1.getFontDrawerRef().setText( ">" );
     cursorDrawer1.getFontDrawerRef().setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
     cursorDrawer1.getFontDrawerRef().setColor( colorSelected );
     cursorDrawer1.isVisible = false;
+    cursorDrivers.push_back( &cursorDrawer1 );
 
     TFontDrawer titleTextDrawer2( renderer, fontFile, fontSize );
     titleTextDrawer2.getFontDrawerRef().setText( "Snake" );
     titleTextDrawer2.getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
+    textDrivers.push_back( &titleTextDrawer2 );
 
     TFontDrawer cursorDrawer2( renderer, fontFile, fontSize );
     cursorDrawer2.getFontDrawerRef().setText( ">" );
     cursorDrawer2.getFontDrawerRef().setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
     cursorDrawer2.getFontDrawerRef().setColor( colorSelected );
     cursorDrawer2.isVisible = false;
+    cursorDrivers.push_back( &cursorDrawer2 );
 
     TFontDrawer titleTextDrawer3( renderer, fontFile, fontSize );
     titleTextDrawer3.getFontDrawerRef().setText( "Minesweeper" );
     titleTextDrawer3.getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
+    textDrivers.push_back( &titleTextDrawer3 );
 
     TFontDrawer cursorDrawer3( renderer, fontFile, fontSize );
     cursorDrawer3.getFontDrawerRef().setText( ">" );
     cursorDrawer3.getFontDrawerRef().setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
     cursorDrawer3.getFontDrawerRef().setColor( colorSelected );
     cursorDrawer3.isVisible = false;
+    cursorDrivers.push_back( &cursorDrawer3 );
 
     TFontDrawer titleTextDrawerExit( renderer, fontFile, fontSize );
     titleTextDrawerExit.getFontDrawerRef().setText( "Exit" );
     titleTextDrawerExit.getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
+    textDrivers.push_back( &titleTextDrawerExit );
 
     TFontDrawer cursorDrawerExit( renderer, fontFile, fontSize );
     cursorDrawerExit.getFontDrawerRef().setText( ">" );
     cursorDrawerExit.getFontDrawerRef().setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
     cursorDrawerExit.getFontDrawerRef().setColor( colorSelected );
     cursorDrawerExit.isVisible = false;
-
-    textDrivers.push_back( &titleTextDrawer1 );
-    textDrivers.push_back( &titleTextDrawer2 );
-    textDrivers.push_back( &titleTextDrawer3 );
-    textDrivers.push_back( &titleTextDrawerExit );
-
-    cursorDrivers.push_back( &cursorDrawer1 );
-    cursorDrivers.push_back( &cursorDrawer2 );
-    cursorDrivers.push_back( &cursorDrawer3 );
     cursorDrivers.push_back( &cursorDrawerExit );
 
     TDrawer mainDrawer( renderer );
@@ -187,4 +183,18 @@ size_t TMainMenu::show()
 bool TMainMenu::exitEvent() const
 {
     return exitFlag;
+}
+
+void TMainMenu::addItem( const string& text )
+{
+    const auto id = textDriversNew.size();
+    textDriversNew.emplace_back( renderer, fontFile, fontSize );
+    textDriversNew[id].getFontDrawerRef().setText( text );
+    textDriversNew[id].getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
+
+    cursorDriversNew.emplace_back( renderer, fontFile, fontSize );
+    cursorDriversNew[id].getFontDrawerRef().setText( ">" );
+    cursorDriversNew[id].getFontDrawerRef().setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
+    cursorDriversNew[id].getFontDrawerRef().setColor( colorSelected );
+    cursorDriversNew[id].isVisible = false;
 }

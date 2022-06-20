@@ -16,8 +16,8 @@ namespace io_submodule
             TTexture( TRenderer& renderer );
             TTexture( TRenderer& renderer, TSurface& surface );
 
-            TTexture( TTexture&& oldVar );
-            TTexture& operator=( TTexture&& oldVar );
+            TTexture( TTexture&& oldVar ) noexcept;
+            TTexture& operator=( TTexture&& oldVar ) noexcept;
 
             ~TTexture();
 

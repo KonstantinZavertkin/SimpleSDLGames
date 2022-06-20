@@ -35,6 +35,38 @@ namespace io_submodule
         TTF_Quit();
     }
 
+    TFontTTF::TFontTTF( TFontTTF&& oldObj ) :
+        surface( std::move( oldObj.surface ) ),
+        renderer( oldObj.renderer ),
+        texture( std::move( oldObj.texture ) )
+    {
+        font = oldObj.font;
+        oldObj.font = nullptr;
+
+        point = oldObj.point;
+        alignmentPoint = oldObj.alignmentPoint;
+        strToPrint = std::move( oldObj.strToPrint );
+        color = oldObj.color;
+        flagToUpdateTexture = oldObj.flagToUpdateTexture;
+        currentAlignment = oldObj.currentAlignment;
+    }
+
+    TFontTTF& TFontTTF::operator=( TFontTTF&& oldObj )
+    {
+        surface = std::move( oldObj.surface );
+        texture = std::move( oldObj.texture );
+        font = oldObj.font;
+        oldObj.font = nullptr;
+
+        point = oldObj.point;
+        alignmentPoint = oldObj.alignmentPoint;
+        strToPrint = std::move( oldObj.strToPrint );
+        color = oldObj.color;
+        flagToUpdateTexture = oldObj.flagToUpdateTexture;
+        currentAlignment = oldObj.currentAlignment;
+        return *this;
+    }
+
     void TFontTTF::setPoint( TCoords pointArg, TTextAlignment alignment )
     {
         this->point = pointArg;

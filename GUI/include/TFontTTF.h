@@ -22,6 +22,9 @@ namespace io_submodule
             TFontTTF( TRenderer& renderer, const string pathToTtf, const size_t fontSize );
             ~TFontTTF();
 
+            TFontTTF( TFontTTF&& oldObj );
+            TFontTTF& operator=( TFontTTF&& oldObj );
+
             void setPoint( TCoords point, TTextAlignment alignment );
             void setAlignment( TTextAlignment alignment );
             void setColor( TColorRGB rgba );

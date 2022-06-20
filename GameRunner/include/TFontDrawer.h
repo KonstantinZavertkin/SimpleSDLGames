@@ -11,6 +11,9 @@ class TFontDrawer
         TFontDrawer( TRenderer& renderer, const string pathToTtf, const size_t fontSize );
         ~TFontDrawer();
 
+        TFontDrawer( TFontDrawer&& old ) noexcept;
+        TFontDrawer& operator=( TFontDrawer&& oldVal ) noexcept;
+
         void setText( const string& textToPrint );
         void drawText();
 

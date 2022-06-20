@@ -9,6 +9,16 @@ TFontDrawer::~TFontDrawer()
 {
 }
 
+TFontDrawer::TFontDrawer( TFontDrawer&& old ) noexcept: fontRenderer( std::move( old.fontRenderer ) )
+{
+}
+
+TFontDrawer& TFontDrawer::operator=( TFontDrawer&& oldVal ) noexcept
+{
+    fontRenderer = std::move( oldVal.fontRenderer );
+    return *this;
+}
+
 void TFontDrawer::setText( const string& textToPrint )
 {
     fontRenderer.setText( textToPrint );

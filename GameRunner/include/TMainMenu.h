@@ -12,10 +12,16 @@ class TMainMenu
         size_t show();
         bool exitEvent() const;
 
+        void addItem( const string& text );
+
+
         TRectangleDescription background;
 
         vector<TFontDrawer*> textDrivers;
         vector<TFontDrawer*> cursorDrivers;
+
+        vector<TFontDrawer> textDriversNew;
+        vector<TFontDrawer> cursorDriversNew;
 
         size_t currentSelectedItem = 0;
         size_t itemsCount = 4;
@@ -29,6 +35,9 @@ class TMainMenu
         TRenderer& renderer;
 
         bool exitFlag = false;
+
+        size_t index = 0;
+        vector<size_t> horizontalBorders = { 200, 225, 250, 275, 300 };
 };
 
 #endif
