@@ -15,48 +15,6 @@
 using namespace io_submodule;
 using namespace game_backend;
 
-void runTetrisNew( TRenderer& renderer, TRectangleDescription& activeGameField, TRectangleDescription& background, const string& fontFile, size_t fontSize )
-{
-    TTetrisGameRunner game( renderer );
-
-    game.activeGameField = activeGameField;
-    game.background = background;
-
-    game.fontFile = fontFile;
-    game.fontSize = fontSize;
-
-    game.init();
-    game.run();
-};
-
-void runSnakeNew( TRenderer& renderer, TRectangleDescription& activeGameField, TRectangleDescription& background, const string& fontFile, size_t fontSize )
-{
-    TSnakeGameRunner game( renderer );
-
-    game.activeGameField = activeGameField;
-    game.background = background;
-
-    game.fontFile = fontFile;
-    game.fontSize = fontSize;
-
-    game.init();
-    game.run();
-};
-
-void runMinesweeper( TRenderer& renderer, TRectangleDescription& activeGameField, TRectangleDescription& background, const string& fontFile, size_t fontSize )
-{
-    TMinesweeperGameRunner game( renderer );
-
-    game.activeGameField = activeGameField;
-    game.background = background;
-
-    game.fontFile = fontFile;
-    game.fontSize = fontSize;
-
-    game.init();
-    game.run();
-}
-
 int main( int argc, char **argv )
 {
     //std::srand( time( 0 ) );
@@ -99,23 +57,36 @@ int main( int argc, char **argv )
     while ( !menu.exitEvent() )
     {
         const auto selectedItem = menu.show();
+        unique_ptr<IAbstractRunner> gameRunner = nullptr;
 
         if ( selectedItem == 0 )
         {
             activeGameField.xStart = 200;
-            runTetrisNew( renderer, activeGameField, background, fontFile, fontSize );
+            gameRunner = make_unique<TTetrisGameRunner>( renderer );
         }
 
         if ( selectedItem == 1 )
         {
             activeGameField.xStart = xStartBias;
-            runSnakeNew( renderer, activeGameField, background, fontFile, fontSize );
+            gameRunner = make_unique<TSnakeGameRunner>( renderer );
         }
 
         if ( selectedItem == 2 )
         {
             activeGameField.xStart = 75;
-            runMinesweeper( renderer, activeGameField, background, fontFile, fontSize );
+            gameRunner = make_unique<TMinesweeperGameRunner>( renderer );
+        }
+
+        if ( gameRunner )
+        {
+            gameRunner->activeGameField = activeGameField;
+            gameRunner->background = background;
+
+            gameRunner->fontFile = fontFile;
+            gameRunner->fontSize = fontSize;
+
+            gameRunner->init();
+            gameRunner->run();
         }
     }
     

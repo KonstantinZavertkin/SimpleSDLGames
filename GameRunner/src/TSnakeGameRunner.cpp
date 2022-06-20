@@ -1,7 +1,7 @@
 #include "TSnakeGameRunner.h"
 
 TSnakeGameRunner::TSnakeGameRunner( TRenderer& rendererVar )
-    : renderer( rendererVar )
+    : IAbstractRunner( rendererVar )
 {
 }
 
@@ -28,22 +28,22 @@ void TSnakeGameRunner::run()
 
     TSnakeGame snakeGame( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount }, 5 );
 
-    TPrimitivesFieldDrawer snakeDrawer( snakeGame.gameField, renderer, mainFieldCellsGrid );
+    TPrimitivesFieldDrawer snakeDrawer( snakeGame.gameField, rendererRef, mainFieldCellsGrid );
     snakeDrawer.cellsMapper = snakeCellsMapper;
 
-    TFontDrawer titleTextDrawer( renderer, fontFile, fontSize + 6 );
+    TFontDrawer titleTextDrawer( rendererRef, fontFile, fontSize + 6 );
     titleTextDrawer.getFontDrawerRef().setPoint( { background.width / 2, 10 }, TTextAlignment::centerAlignment );
     titleTextDrawer.setText( "Snake" );
 
     auto point = make_pair( activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth + 20, gameFieldBound.yStart );
-    TFontDrawer scoreTextDrawer( renderer, fontFile, fontSize );
+    TFontDrawer scoreTextDrawer( rendererRef, fontFile, fontSize );
     scoreTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
 
     point.second += 50;
-    TFontDrawer bestScoreTextDrawer( renderer, fontFile, fontSize );
+    TFontDrawer bestScoreTextDrawer( rendererRef, fontFile, fontSize );
     bestScoreTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
 
-    TDrawer mainDrawer( renderer );
+    TDrawer mainDrawer( rendererRef );
     mainDrawer.addPrimitive( background );
     mainDrawer.addPrimitive( gameFieldBound );
     mainDrawer.addField( &snakeDrawer );

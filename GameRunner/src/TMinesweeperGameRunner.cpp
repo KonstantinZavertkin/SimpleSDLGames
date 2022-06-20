@@ -7,7 +7,7 @@
 using namespace std;
 
 TMinesweeperGameRunner::TMinesweeperGameRunner( TRenderer& rendererRef )
-    : renderer( rendererRef )
+    : IAbstractRunner( rendererRef )
 {
 }
 
@@ -35,7 +35,7 @@ void TMinesweeperGameRunner::run()
     for ( size_t i = 0; i < 16; ++i )
     {
         surfaces.emplace_back( "minesweeper_sprites.bmp" );
-        textures.emplace_back( renderer );
+        textures.emplace_back( rendererRef );
     }
 
     for ( size_t i = 0; i < 16; ++i )
@@ -45,7 +45,7 @@ void TMinesweeperGameRunner::run()
         textures[i].setStartPoint( { i * 20 + 60, 500 } );
     }
 
-    TTexturesFieldDrawer fieldDrawer( game.gameField, renderer, mainFieldCellsGrid );
+    TTexturesFieldDrawer fieldDrawer( game.gameField, rendererRef, mainFieldCellsGrid );
     fieldDrawer.textures = &textures;
     fieldDrawer.textureSliceSize = { 32, 32 };
     fieldDrawer.cellsMapper = []( const TCell& cell )
@@ -91,36 +91,36 @@ void TMinesweeperGameRunner::run()
         return 0;
     };
 
-    TFontDrawer statusTextDrawer( renderer, fontFile, fontSize );
+    TFontDrawer statusTextDrawer( rendererRef, fontFile, fontSize );
     statusTextDrawer.getFontDrawerRef().setPoint( { 75, 550 }, TTextAlignment::leftAlignment );
     statusTextDrawer.setText( "Uninitialized" );
     statusTextDrawer.isVisible = false;
 
-    TFontDrawer titleTextDrawer( renderer, fontFile, fontSize + 10 );
+    TFontDrawer titleTextDrawer( rendererRef, fontFile, fontSize + 10 );
     titleTextDrawer.setText( "Minesweeper" );
     titleTextDrawer.getFontDrawerRef().setPoint( { 400, 10 }, TTextAlignment::centerAlignment );
     titleTextDrawer.isVisible = true;
 
-    TFontDrawer flagsCountTextDrawer( renderer, fontFile, fontSize );
+    TFontDrawer flagsCountTextDrawer( rendererRef, fontFile, fontSize );
     flagsCountTextDrawer.setText( "Flags: " );
     flagsCountTextDrawer.getFontDrawerRef().setPoint( { 75, 550 }, TTextAlignment::leftAlignment );
     flagsCountTextDrawer.isVisible = true;
 
-    TFontDrawer currentTimeTextDrawer( renderer, fontFile, fontSize );
+    TFontDrawer currentTimeTextDrawer( rendererRef, fontFile, fontSize );
     currentTimeTextDrawer.setText( "Time: " );
     currentTimeTextDrawer.getFontDrawerRef().setPoint( { 600, 550 }, TTextAlignment::leftAlignment );
     currentTimeTextDrawer.isVisible = true;
 
-    TFontDrawer secondsTextDrawer( renderer, fontFile, fontSize );
+    TFontDrawer secondsTextDrawer( rendererRef, fontFile, fontSize );
     secondsTextDrawer.setText( "0" );
     secondsTextDrawer.getFontDrawerRef().setPoint( { 720, 550 }, TTextAlignment::rightAlignment );
     secondsTextDrawer.isVisible = true;
 
-    TFontDrawer bestScoreTextDrawer( renderer, fontFile, fontSize );
+    TFontDrawer bestScoreTextDrawer( rendererRef, fontFile, fontSize );
     bestScoreTextDrawer.setText( "Best time: " );
     bestScoreTextDrawer.getFontDrawerRef().setPoint( { 350, 550 }, TTextAlignment::leftAlignment );
     
-    TDrawer mainDrawer( renderer );
+    TDrawer mainDrawer( rendererRef );
     mainDrawer.addPrimitive( background );
     mainDrawer.addField( &fieldDrawer );
     mainDrawer.addText( &statusTextDrawer );

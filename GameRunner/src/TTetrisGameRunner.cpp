@@ -1,7 +1,7 @@
 #include "TTetrisGameRunner.h"
 
 TTetrisGameRunner::TTetrisGameRunner( TRenderer& rendererArg )
-    : renderer( rendererArg )
+    : IAbstractRunner( rendererArg )
 {
 }
 
@@ -49,31 +49,31 @@ void TTetrisGameRunner::run()
 
     TTetrisGame tetris( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount } );
 
-    TPrimitivesFieldDrawer tetrisDrawer( tetris.tetrisBackend.gameField, renderer, mainFieldCellsGrid );
+    TPrimitivesFieldDrawer tetrisDrawer( tetris.tetrisBackend.gameField, rendererRef, mainFieldCellsGrid );
     tetrisDrawer.cellsMapper = tetrisCellsMapper;
 
-    TPrimitivesFieldDrawer infoFieldDrawer( tetris.tetrisBackend.nextFigureField, renderer, infoFieldCellsGrid );
+    TPrimitivesFieldDrawer infoFieldDrawer( tetris.tetrisBackend.nextFigureField, rendererRef, infoFieldCellsGrid );
     infoFieldDrawer.cellsMapper = tetrisCellsMapper;
 
     auto point = make_pair( infoFieldBound.xStart, gameFieldBound.yStart );
 
-    TFontDrawer nextFigureTextDrawer( renderer, fontFile, fontSize );
+    TFontDrawer nextFigureTextDrawer( rendererRef, fontFile, fontSize );
     nextFigureTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
     nextFigureTextDrawer.setText( "Next figure:" );
 
     point.second += 180;
-    TFontDrawer scoreTextDrawer( renderer, fontFile, fontSize );
+    TFontDrawer scoreTextDrawer( rendererRef, fontFile, fontSize );
     scoreTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
 
     point.second += 50;
-    TFontDrawer bestScoreTextDrawer( renderer, fontFile, fontSize );
+    TFontDrawer bestScoreTextDrawer( rendererRef, fontFile, fontSize );
     bestScoreTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
 
-    TFontDrawer titleTextDrawer( renderer, fontFile, fontSize + 6 );
+    TFontDrawer titleTextDrawer( rendererRef, fontFile, fontSize + 6 );
     titleTextDrawer.getFontDrawerRef().setPoint( { background.width / 2, 10 }, TTextAlignment::centerAlignment );
     titleTextDrawer.setText( "Tetris" ); 
     
-    TDrawer mainDrawer( renderer );
+    TDrawer mainDrawer( rendererRef );
     mainDrawer.addPrimitive( background );
     mainDrawer.addPrimitive( gameFieldBound );
     mainDrawer.addPrimitive( infoFieldBound );

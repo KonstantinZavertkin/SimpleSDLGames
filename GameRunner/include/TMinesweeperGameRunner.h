@@ -2,26 +2,21 @@
 #define _TMINESWEEPERGAMERUNNER_H_
 
 #include "TRenderer.h"
+#include "IAbstractRunner.h"
 
 using namespace io_submodule;
 
-class TMinesweeperGameRunner
+class TMinesweeperGameRunner : public IAbstractRunner
 {
     public:
         TMinesweeperGameRunner( TRenderer& rendererRef );
 
-        void init();
-        void run();
+        void init() override;
+        void run() override;
 
-        TRectangleDescription background;
+    private:
 
         TCellsFieldParams cellsFieldParams;
-        TRectangleDescription activeGameField;
-
-        std::string fontFile;
-        size_t fontSize = 0;
-        
-        TRenderer& renderer;
 };
 
 #endif // _TMINESWEEPERGAMERUNNER_H_
