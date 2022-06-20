@@ -93,7 +93,7 @@ int main( int argc, char **argv )
 
     TMainMenu menu( renderer );
     menu.background = background;
-    menu.fontSize = fontSize;
+    menu.fontSize = fontSize + 10;
     menu.fontFile = fontFile;
 
     while ( !menu.exitEvent() )
