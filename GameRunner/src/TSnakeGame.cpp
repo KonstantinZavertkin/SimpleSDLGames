@@ -74,6 +74,9 @@ void TSnakeGame::gameThread()
 
             performStep = false;
         }
+
+        if ( quitLocal )
+           quit = quitLocal;
         
         if ( quit )
         {
@@ -98,7 +101,7 @@ void TSnakeGame::ioThread()
 {
     bestScore = bestScoreStorage.getScore();
     currentScore = 0;
-    SDL_Event exitEvent;
+    SDL_Event ioEvent;
     bool pauseLocal = false;
     bool quitLocal = false;
 
@@ -107,9 +110,9 @@ void TSnakeGame::ioThread()
 
     while ( !quitLocal )
     {
-        while ( SDL_PollEvent( &exitEvent ) != 0 )
+        while ( SDL_PollEvent( &ioEvent ) != 0 )
         {
-            if ( exitEvent.type == SDL_QUIT )
+            if ( ioEvent.type == SDL_QUIT )
             {
                 quitLocal = true;
                 syncPoint.lock();
@@ -117,9 +120,9 @@ void TSnakeGame::ioThread()
                 syncPoint.unlock();
             }
 
-            if ( exitEvent.type == SDL_KEYDOWN )
+            if ( ioEvent.type == SDL_KEYDOWN )
             {
-                auto keyValue = exitEvent.key.keysym.sym;
+                auto keyValue = ioEvent.key.keysym.sym;
 
                 if ( keyValue != SDLK_SPACE )
                 {
@@ -170,7 +173,11 @@ void TSnakeGame::ioThread()
         mainDrawer->draw();
 
         if ( quit )
-            quitLocal = quit;
+        {
+            quitLocal = true;
+            cout << "quit" << endl;
+        }
+            
 
         syncPoint.unlock();
         
@@ -179,6 +186,4 @@ void TSnakeGame::ioThread()
 
     if ( currentScore > bestScore )
        bestScoreStorage.setScore( currentScore );
-
-    cout << "ioThread done" << endl;
 };

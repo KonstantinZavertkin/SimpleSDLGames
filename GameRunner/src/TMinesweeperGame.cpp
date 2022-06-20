@@ -17,10 +17,6 @@ void TMinesweeperGame::gameThread()
         syncPoint.unlock();
         SDL_Delay( 1 );
     }
-
-    syncPoint.lock();
-    std::cout << "Minesweeper game thread done" << endl;
-    syncPoint.unlock();
 }
 
 void TMinesweeperGame::ioThread()
@@ -31,7 +27,6 @@ void TMinesweeperGame::ioThread()
        bestScore = UINT_MAX;
 
     SDL_Event event;
-    bool pauseLocal = false;
     bool quitLocal = false;
 
     while ( !quitLocal )
@@ -39,9 +34,7 @@ void TMinesweeperGame::ioThread()
         while ( SDL_PollEvent( &event ) != 0 )
         {
             if ( event.type == SDL_QUIT )
-            {
                 quitLocal = true;
-            }
 
             if ( event.type == SDL_MOUSEBUTTONDOWN )
             {
@@ -148,10 +141,6 @@ void TMinesweeperGame::ioThread()
 
         SDL_Delay( 1 );
     }
-
-    syncPoint.lock();
-    cout << "Minesweeper io thread done" << endl;
-    syncPoint.unlock();
 
     if ( minesweeper.isWin() )
         if ( currentScore < bestScore )
