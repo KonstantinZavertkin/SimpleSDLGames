@@ -59,6 +59,7 @@ int main( int argc, char **argv )
         menu.addItem( "Snake" );
         menu.addItem( "Minesweeper" );
         menu.addItem( "Exit" );
+        menu.setUpDrawer();
 
         while ( !menu.exitEvent() )
         {

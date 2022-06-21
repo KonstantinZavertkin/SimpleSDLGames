@@ -25,7 +25,7 @@ namespace io_submodule
         }
     }
 
-    TFontTTF::TFontTTF( TFontTTF&& oldObj ) :
+    TFontTTF::TFontTTF( TFontTTF&& oldObj ) noexcept :
         surface( std::move( oldObj.surface ) ),
         renderer( oldObj.renderer ),
         texture( std::move( oldObj.texture ) )
@@ -41,7 +41,7 @@ namespace io_submodule
         currentAlignment = oldObj.currentAlignment;
     }
 
-    TFontTTF& TFontTTF::operator=( TFontTTF&& oldObj )
+    TFontTTF& TFontTTF::operator=( TFontTTF&& oldObj ) noexcept
     {
         surface = std::move( oldObj.surface );
         texture = std::move( oldObj.texture );

@@ -18,6 +18,8 @@ namespace io_submodule
 
             TTexture( TTexture&& oldVar ) noexcept;
             TTexture& operator=( TTexture&& oldVar ) noexcept;
+            TTexture( const TTexture& ) = delete;
+            TTexture& operator=( const TTexture& ) = delete;
 
             ~TTexture();
 
@@ -35,6 +37,7 @@ namespace io_submodule
             SDL_Texture* getTexturePtr();
 
         private:
+            
             TRenderer& renderer;
             SDL_Texture* texturePtr = nullptr;
             std::unique_ptr<SDL_Rect> part = nullptr;
@@ -42,9 +45,6 @@ namespace io_submodule
             TSurface surface;
             TCoords startPoint = { 0, 0 };
             size_t scalingFactor = 1;
-
-            TTexture( const TTexture& ) = delete;
-            TTexture& operator=( const TTexture& ) = delete;
     };
 }
 

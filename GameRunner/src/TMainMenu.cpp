@@ -1,7 +1,7 @@
 #include "TMainMenu.h"
 
 TMainMenu::TMainMenu( TRenderer& rendererRef )
-    : renderer( rendererRef )
+    : renderer( rendererRef ), mainDrawer( rendererRef )
 {
 }
 
@@ -20,29 +20,21 @@ size_t TMainMenu::show()
         return result;
     };
 
-    index = 0;
-
-    TDrawer mainDrawer( renderer );
-    mainDrawer.addText( &textDriversNew[index++] );
-    mainDrawer.addText( &textDriversNew[index++] );
-    mainDrawer.addText( &textDriversNew[index++] );
-    mainDrawer.addText( &textDriversNew[index++] );
-
-    index = 0;
-    mainDrawer.addText( &cursorDriversNew[index++] );
-    mainDrawer.addText( &cursorDriversNew[index++] );
-    mainDrawer.addText( &cursorDriversNew[index++] );
-    mainDrawer.addText( &cursorDriversNew[index++] );
     mainDrawer.addPrimitive( background );
 
-    for ( auto& ptrToDrawer: cursorDriversNew )
+    for ( auto& ptrToDrawer: textDrawers )
+        ptrToDrawer.isVisible = true;
+
+    for ( auto& drawerRef : focusedTextDrawers )
+       drawerRef.isVisible = false;
+
+    for ( auto& ptrToDrawer: cursorDrawers )
         ptrToDrawer.isVisible = false;
 
-    for ( auto& ptrToDrawer: textDriversNew )
-        ptrToDrawer.getFontDrawerRef().setColor( defaultColor );
-
-    textDriversNew[currentSelectedItem].getFontDrawerRef().setColor( colorSelected );
-    cursorDriversNew[currentSelectedItem].isVisible = true;
+    currentSelectedItem %= itemsCount;
+    textDrawers[currentSelectedItem].isVisible = false;
+    focusedTextDrawers[currentSelectedItem].isVisible = true;
+    cursorDrawers[currentSelectedItem].isVisible = true;
 
     SDL_Event ioEvent;
     bool quitLocal = false;
@@ -66,16 +58,20 @@ size_t TMainMenu::show()
 
                 if ( lineId >= 0 )
                 {
-                    for ( auto& ptrToDrawer: cursorDriversNew )
-                        ptrToDrawer.isVisible = false;
+                    for ( auto& ptrToDrawer: textDrawers )
+                        ptrToDrawer.isVisible = true;
 
-                    for ( auto& ptrToDrawer: textDriversNew )
-                        ptrToDrawer.getFontDrawerRef().setColor( defaultColor );
+                    for ( auto& drawerRef : focusedTextDrawers )
+                       drawerRef.isVisible = false;
+
+                    for ( auto& ptrToDrawer: cursorDrawers )
+                        ptrToDrawer.isVisible = false;
 
                     currentSelectedItem = lineId;
                     currentSelectedItem %= itemsCount;
-                    textDriversNew[currentSelectedItem].getFontDrawerRef().setColor( colorSelected );
-                    cursorDriversNew[currentSelectedItem].isVisible = true;
+                    textDrawers[currentSelectedItem].isVisible = false;
+                    focusedTextDrawers[currentSelectedItem].isVisible = true;
+                    cursorDrawers[currentSelectedItem].isVisible = true;
                 }
             }
 
@@ -101,12 +97,6 @@ size_t TMainMenu::show()
             {
                 auto keyValue = ioEvent.key.keysym.sym;
 
-                for ( auto& ptrToDrawer: cursorDriversNew )
-                    ptrToDrawer.isVisible = false;
-
-                for ( auto& ptrToDrawer: textDriversNew )
-                    ptrToDrawer.getFontDrawerRef().setColor( defaultColor );
-
                 if ( keyValue == SDLK_DOWN )
                    ++currentSelectedItem;
 
@@ -120,11 +110,20 @@ size_t TMainMenu::show()
 
                 if ( keyValue == SDLK_RETURN )
                    quitLocal = true;
-                   
-                currentSelectedItem %= itemsCount;
 
-                textDriversNew[currentSelectedItem].getFontDrawerRef().setColor( colorSelected );
-                cursorDriversNew[currentSelectedItem].isVisible = true;
+                for ( auto& ptrToDrawer: textDrawers )
+                    ptrToDrawer.isVisible = true;
+
+                for ( auto& drawerRef : focusedTextDrawers )
+                   drawerRef.isVisible = false;
+
+                for ( auto& ptrToDrawer: cursorDrawers )
+                    ptrToDrawer.isVisible = false;
+
+                currentSelectedItem %= itemsCount;
+                textDrawers[currentSelectedItem].isVisible = false;
+                focusedTextDrawers[currentSelectedItem].isVisible = true;
+                cursorDrawers[currentSelectedItem].isVisible = true;
             }
         }
 
@@ -149,14 +148,33 @@ bool TMainMenu::exitEvent() const
 
 void TMainMenu::addItem( const string& text )
 {
-    const auto id = textDriversNew.size();
-    textDriversNew.push_back( TFontDrawer( renderer, fontFile, fontSize ) );
-    textDriversNew[id].getFontDrawerRef().setText( text );
-    textDriversNew[id].getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
+    ++itemsCount;
+    const auto id = textDrawers.size();
+    textDrawers.emplace_back( renderer, fontFile, fontSize );
+    textDrawers[id].getFontDrawerRef().setText( text );
+    textDrawers[id].getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
 
-    cursorDriversNew.push_back( TFontDrawer( renderer, fontFile, fontSize ) );
-    cursorDriversNew[id].getFontDrawerRef().setText( ">" );
-    cursorDriversNew[id].getFontDrawerRef().setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
-    cursorDriversNew[id].getFontDrawerRef().setColor( colorSelected );
-    cursorDriversNew[id].isVisible = false;
+    focusedTextDrawers.emplace_back( renderer, fontFile, fontSize );
+    focusedTextDrawers[id].getFontDrawerRef().setText( text );
+    focusedTextDrawers[id].getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
+    focusedTextDrawers[id].getFontDrawerRef().setColor( colorSelected );
+    focusedTextDrawers[id].isVisible = false;
+
+    cursorDrawers.emplace_back( renderer, fontFile, fontSize );
+    cursorDrawers[id].getFontDrawerRef().setText( ">" );
+    cursorDrawers[id].getFontDrawerRef().setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
+    cursorDrawers[id].getFontDrawerRef().setColor( colorSelected );
+    cursorDrawers[id].isVisible = false;
+}
+
+void TMainMenu::setUpDrawer()
+{
+    for ( auto& ref : textDrawers )
+        mainDrawer.addText( &ref );
+
+    for ( auto& ref : focusedTextDrawers )
+        mainDrawer.addText( &ref );
+
+    for ( auto& ref : cursorDrawers )
+        mainDrawer.addText( &ref );
 }

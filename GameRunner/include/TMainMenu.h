@@ -13,15 +13,16 @@ class TMainMenu
         bool exitEvent() const;
 
         void addItem( const string& text );
-
+        void setUpDrawer();
 
         TRectangleDescription background;
 
-        vector<TFontDrawer> textDriversNew;
-        vector<TFontDrawer> cursorDriversNew;
+        vector<TFontDrawer> textDrawers;
+        vector<TFontDrawer> cursorDrawers;
+        vector<TFontDrawer> focusedTextDrawers;
 
         size_t currentSelectedItem = 0;
-        size_t itemsCount = 4;
+        size_t itemsCount = 0;
 
         TColorRGB colorSelected = { 0xFF, 0x00, 0xFF, 0xFF };
         TColorRGB defaultColor = { 0, 0xFF, 0xFF, 0xFF };
@@ -30,6 +31,7 @@ class TMainMenu
         size_t fontSize = 0;
 
         TRenderer& renderer;
+        TDrawer mainDrawer;
 
         bool exitFlag = false;
 
