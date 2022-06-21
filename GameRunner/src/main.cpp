@@ -49,47 +49,53 @@ int main( int argc, char **argv )
     activeGameField.xStart = xStartBias;
     activeGameField.yStart = yStartBias;
 
-    TMainMenu menu( renderer );
-    menu.background = background;
-    menu.fontSize = fontSize + 10;
-    menu.fontFile = fontFile;
-
-    while ( !menu.exitEvent() )
     {
-        const auto selectedItem = menu.show();
-        unique_ptr<IAbstractRunner> gameRunner = nullptr;
+        TMainMenu menu( renderer );
+        menu.background = background;
+        menu.fontSize = fontSize + 10;
+        menu.fontFile = fontFile;
 
-        if ( selectedItem == 0 )
+        menu.addItem( "Tetris" );
+        menu.addItem( "Snake" );
+        menu.addItem( "Minesweeper" );
+        menu.addItem( "Exit" );
+
+        while ( !menu.exitEvent() )
         {
-            activeGameField.xStart = 200;
-            gameRunner = make_unique<TTetrisGameRunner>( renderer );
-        }
+            const auto selectedItem = menu.show();
+            unique_ptr<IAbstractRunner> gameRunner = nullptr;
 
-        if ( selectedItem == 1 )
-        {
-            activeGameField.xStart = xStartBias;
-            gameRunner = make_unique<TSnakeGameRunner>( renderer );
-        }
+            if ( selectedItem == 0 )
+            {
+                activeGameField.xStart = 200;
+                gameRunner = make_unique<TTetrisGameRunner>( renderer );
+            }
 
-        if ( selectedItem == 2 )
-        {
-            activeGameField.xStart = 75;
-            gameRunner = make_unique<TMinesweeperGameRunner>( renderer );
-        }
+            if ( selectedItem == 1 )
+            {
+                activeGameField.xStart = xStartBias;
+                gameRunner = make_unique<TSnakeGameRunner>( renderer );
+            }
 
-        if ( gameRunner )
-        {
-            gameRunner->activeGameField = activeGameField;
-            gameRunner->background = background;
+            if ( selectedItem == 2 )
+            {
+                activeGameField.xStart = 75;
+                gameRunner = make_unique<TMinesweeperGameRunner>( renderer );
+            }
 
-            gameRunner->fontFile = fontFile;
-            gameRunner->fontSize = fontSize;
+            if ( gameRunner )
+            {
+                gameRunner->activeGameField = activeGameField;
+                gameRunner->background = background;
 
-            gameRunner->init();
-            gameRunner->run();
+                gameRunner->fontFile = fontFile;
+                gameRunner->fontSize = fontSize;
+
+                gameRunner->init();
+                gameRunner->run();
+            }
         }
     }
-    
     TSdlWrapper::deteteInstance();
 
     return 0;

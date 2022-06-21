@@ -20,67 +20,29 @@ size_t TMainMenu::show()
         return result;
     };
 
-    TFontDrawer titleTextDrawer1( renderer, fontFile, fontSize );
-    titleTextDrawer1.getFontDrawerRef().setText( "Tetris" );
-    titleTextDrawer1.getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
-    textDrivers.push_back( &titleTextDrawer1 );
-
-    TFontDrawer cursorDrawer1( renderer, fontFile, fontSize );
-    cursorDrawer1.getFontDrawerRef().setText( ">" );
-    cursorDrawer1.getFontDrawerRef().setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
-    cursorDrawer1.getFontDrawerRef().setColor( colorSelected );
-    cursorDrawer1.isVisible = false;
-    cursorDrivers.push_back( &cursorDrawer1 );
-
-    TFontDrawer titleTextDrawer2( renderer, fontFile, fontSize );
-    titleTextDrawer2.getFontDrawerRef().setText( "Snake" );
-    titleTextDrawer2.getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
-    textDrivers.push_back( &titleTextDrawer2 );
-
-    TFontDrawer cursorDrawer2( renderer, fontFile, fontSize );
-    cursorDrawer2.getFontDrawerRef().setText( ">" );
-    cursorDrawer2.getFontDrawerRef().setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
-    cursorDrawer2.getFontDrawerRef().setColor( colorSelected );
-    cursorDrawer2.isVisible = false;
-    cursorDrivers.push_back( &cursorDrawer2 );
-
-    TFontDrawer titleTextDrawer3( renderer, fontFile, fontSize );
-    titleTextDrawer3.getFontDrawerRef().setText( "Minesweeper" );
-    titleTextDrawer3.getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
-    textDrivers.push_back( &titleTextDrawer3 );
-
-    TFontDrawer cursorDrawer3( renderer, fontFile, fontSize );
-    cursorDrawer3.getFontDrawerRef().setText( ">" );
-    cursorDrawer3.getFontDrawerRef().setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
-    cursorDrawer3.getFontDrawerRef().setColor( colorSelected );
-    cursorDrawer3.isVisible = false;
-    cursorDrivers.push_back( &cursorDrawer3 );
-
-    TFontDrawer titleTextDrawerExit( renderer, fontFile, fontSize );
-    titleTextDrawerExit.getFontDrawerRef().setText( "Exit" );
-    titleTextDrawerExit.getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
-    textDrivers.push_back( &titleTextDrawerExit );
-
-    TFontDrawer cursorDrawerExit( renderer, fontFile, fontSize );
-    cursorDrawerExit.getFontDrawerRef().setText( ">" );
-    cursorDrawerExit.getFontDrawerRef().setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
-    cursorDrawerExit.getFontDrawerRef().setColor( colorSelected );
-    cursorDrawerExit.isVisible = false;
-    cursorDrivers.push_back( &cursorDrawerExit );
+    index = 0;
 
     TDrawer mainDrawer( renderer );
-    mainDrawer.addText( &titleTextDrawer1 );
-    mainDrawer.addText( &titleTextDrawer2 );
-    mainDrawer.addText( &titleTextDrawer3 );
-    mainDrawer.addText( &titleTextDrawerExit );
-    mainDrawer.addText( &cursorDrawer1 );
-    mainDrawer.addText( &cursorDrawer2 );
-    mainDrawer.addText( &cursorDrawer3 );
-    mainDrawer.addText( &cursorDrawerExit );
+    mainDrawer.addText( &textDriversNew[index++] );
+    mainDrawer.addText( &textDriversNew[index++] );
+    mainDrawer.addText( &textDriversNew[index++] );
+    mainDrawer.addText( &textDriversNew[index++] );
+
+    index = 0;
+    mainDrawer.addText( &cursorDriversNew[index++] );
+    mainDrawer.addText( &cursorDriversNew[index++] );
+    mainDrawer.addText( &cursorDriversNew[index++] );
+    mainDrawer.addText( &cursorDriversNew[index++] );
     mainDrawer.addPrimitive( background );
 
-    textDrivers[currentSelectedItem]->getFontDrawerRef().setColor( colorSelected );
-    cursorDrivers[currentSelectedItem]->isVisible = true;
+    for ( auto& ptrToDrawer: cursorDriversNew )
+        ptrToDrawer.isVisible = false;
+
+    for ( auto& ptrToDrawer: textDriversNew )
+        ptrToDrawer.getFontDrawerRef().setColor( defaultColor );
+
+    textDriversNew[currentSelectedItem].getFontDrawerRef().setColor( colorSelected );
+    cursorDriversNew[currentSelectedItem].isVisible = true;
 
     SDL_Event ioEvent;
     bool quitLocal = false;
@@ -104,16 +66,16 @@ size_t TMainMenu::show()
 
                 if ( lineId >= 0 )
                 {
-                    for ( auto ptrToDrawer: cursorDrivers )
-                        ptrToDrawer->isVisible = false;
+                    for ( auto& ptrToDrawer: cursorDriversNew )
+                        ptrToDrawer.isVisible = false;
 
-                    for ( auto ptrToDrawer: textDrivers )
-                        ptrToDrawer->getFontDrawerRef().setColor( defaultColor );
+                    for ( auto& ptrToDrawer: textDriversNew )
+                        ptrToDrawer.getFontDrawerRef().setColor( defaultColor );
 
                     currentSelectedItem = lineId;
                     currentSelectedItem %= itemsCount;
-                    textDrivers[currentSelectedItem]->getFontDrawerRef().setColor( colorSelected );
-                    cursorDrivers[currentSelectedItem]->isVisible = true;
+                    textDriversNew[currentSelectedItem].getFontDrawerRef().setColor( colorSelected );
+                    cursorDriversNew[currentSelectedItem].isVisible = true;
                 }
             }
 
@@ -139,11 +101,11 @@ size_t TMainMenu::show()
             {
                 auto keyValue = ioEvent.key.keysym.sym;
 
-                for ( auto ptrToDrawer: cursorDrivers )
-                   ptrToDrawer->isVisible = false;
+                for ( auto& ptrToDrawer: cursorDriversNew )
+                    ptrToDrawer.isVisible = false;
 
-                for ( auto ptrToDrawer: textDrivers )
-                   ptrToDrawer->getFontDrawerRef().setColor( defaultColor );
+                for ( auto& ptrToDrawer: textDriversNew )
+                    ptrToDrawer.getFontDrawerRef().setColor( defaultColor );
 
                 if ( keyValue == SDLK_DOWN )
                    ++currentSelectedItem;
@@ -161,8 +123,8 @@ size_t TMainMenu::show()
                    
                 currentSelectedItem %= itemsCount;
 
-                textDrivers[currentSelectedItem]->getFontDrawerRef().setColor( colorSelected );
-                cursorDrivers[currentSelectedItem]->isVisible = true;
+                textDriversNew[currentSelectedItem].getFontDrawerRef().setColor( colorSelected );
+                cursorDriversNew[currentSelectedItem].isVisible = true;
             }
         }
 
@@ -188,11 +150,11 @@ bool TMainMenu::exitEvent() const
 void TMainMenu::addItem( const string& text )
 {
     const auto id = textDriversNew.size();
-    textDriversNew.emplace_back( renderer, fontFile, fontSize );
+    textDriversNew.push_back( TFontDrawer( renderer, fontFile, fontSize ) );
     textDriversNew[id].getFontDrawerRef().setText( text );
     textDriversNew[id].getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
 
-    cursorDriversNew.emplace_back( renderer, fontFile, fontSize );
+    cursorDriversNew.push_back( TFontDrawer( renderer, fontFile, fontSize ) );
     cursorDriversNew[id].getFontDrawerRef().setText( ">" );
     cursorDriversNew[id].getFontDrawerRef().setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
     cursorDriversNew[id].getFontDrawerRef().setColor( colorSelected );

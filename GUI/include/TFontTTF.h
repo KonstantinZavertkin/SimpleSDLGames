@@ -43,6 +43,7 @@ namespace io_submodule
             TCoords alignmentPoint;
             string strToPrint;
             SDL_Color color = { 0, 255, 255, 255 };
+            SDL_Color colorPrev = { 0, 255, 255, 255 };
             bool flagToUpdateTexture = false;
             TTextAlignment currentAlignment = TTextAlignment::leftAlignment;
 

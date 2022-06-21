@@ -7,14 +7,6 @@ namespace io_submodule
     {
         point = {};
 
-        int ttfInitCode = TTF_Init();
-
-        if ( ttfInitCode != 0 )
-        {
-            const string errorMsg = string( "TTF_OpenFont: " + string( TTF_GetError() ) );
-            throw std::runtime_error( errorMsg );
-        }
-
         font = TTF_OpenFont( pathToTtf.c_str(), fontSize );
 
         if ( font == nullptr )
@@ -31,8 +23,6 @@ namespace io_submodule
             TTF_CloseFont( font );
             font = nullptr;
         }
-
-        TTF_Quit();
     }
 
     TFontTTF::TFontTTF( TFontTTF&& oldObj ) :
@@ -95,7 +85,6 @@ namespace io_submodule
         color.g = rgba.g;
         color.b = rgba.b;
         color.a = rgba.alpha;
-        flagToUpdateTexture = true;
     }
 
     TCoords TFontTTF::getPoint() const
@@ -110,7 +99,8 @@ namespace io_submodule
             flagToUpdateTexture = false;
             this->strToPrint = strToPrintVar;
 
-            surface = TSurface( TTF_RenderText_Blended( font, this->strToPrint.c_str(), color ) );
+            SDL_Surface* surf = TTF_RenderText_Blended( font, this->strToPrint.c_str(), color );
+            surface = TSurface( surf );
             texture.updateSurface( surface );
             setAlignment( currentAlignment );
         }
@@ -118,6 +108,15 @@ namespace io_submodule
 
     void TFontTTF::drawText()
     {
+        if ( color.r != colorPrev.r ||
+             color.g != colorPrev.g ||
+             color.b != colorPrev.b ||
+             color.a != colorPrev.a)
+        {
+            colorPrev = color;
+            flagToUpdateTexture = true;
+        }
+
         setText( strToPrint );
         renderer.draw( texture, alignmentPoint );
     }

@@ -30,7 +30,15 @@ namespace io_submodule
         {
             std::string errorMessage = "Can't init SDL subsystem";
             throw std::runtime_error( errorMessage.c_str() );
-        };
+        }
+
+        int ttfInitCode = TTF_Init();
+
+        if ( ttfInitCode != 0 )
+        {
+            const std::string errorMsg = std::string( "TTF_OpenFont: " + std::string( TTF_GetError() ) );
+            throw std::runtime_error( errorMsg );
+        }
         
         std::cout << "Done" << std::endl;
     };
@@ -40,6 +48,7 @@ namespace io_submodule
         std::cout << "SDL subsystem shut down...";
 
         SDL_Quit();
+        TTF_Quit();
         
         std::cout << "Done" << std::endl;
     };

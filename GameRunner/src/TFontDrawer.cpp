@@ -11,11 +11,13 @@ TFontDrawer::~TFontDrawer()
 
 TFontDrawer::TFontDrawer( TFontDrawer&& old ) noexcept: fontRenderer( std::move( old.fontRenderer ) )
 {
+    isVisible = old.isVisible;
 }
 
-TFontDrawer& TFontDrawer::operator=( TFontDrawer&& oldVal ) noexcept
+TFontDrawer& TFontDrawer::operator=( TFontDrawer&& old ) noexcept
 {
-    fontRenderer = std::move( oldVal.fontRenderer );
+    fontRenderer = std::move( old.fontRenderer );
+    isVisible = old.isVisible;
     return *this;
 }
 

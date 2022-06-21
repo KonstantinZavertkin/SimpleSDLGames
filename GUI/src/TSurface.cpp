@@ -27,7 +27,10 @@ namespace io_submodule
     TSurface::~TSurface()
     {
         if ( surfacePtr == nullptr )
+        {
             SDL_FreeSurface( surfacePtr );
+        }
+            
     }
 
     TSurface::TSurface( TSurface&& oldVar ) noexcept

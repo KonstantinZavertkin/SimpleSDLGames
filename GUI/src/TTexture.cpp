@@ -46,7 +46,9 @@ namespace io_submodule
     TTexture::~TTexture()
     {
         if ( texturePtr != nullptr )
+        {
             SDL_DestroyTexture( texturePtr );
+        }
     }
 
     void TTexture::updateSurface( TSurface& surfaceRef )
@@ -54,7 +56,9 @@ namespace io_submodule
         surface = std::move( surfaceRef );
 
         if ( texturePtr != nullptr )
+        {
             SDL_DestroyTexture( texturePtr );
+        }
 
         texturePtr = SDL_CreateTextureFromSurface( renderer.getRenderer(), surface.getSurface() );
     }

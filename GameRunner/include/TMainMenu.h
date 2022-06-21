@@ -17,9 +17,6 @@ class TMainMenu
 
         TRectangleDescription background;
 
-        vector<TFontDrawer*> textDrivers;
-        vector<TFontDrawer*> cursorDrivers;
-
         vector<TFontDrawer> textDriversNew;
         vector<TFontDrawer> cursorDriversNew;
 
