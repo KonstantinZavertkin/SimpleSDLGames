@@ -10,14 +10,9 @@ namespace io_submodule
     class TSdlWrapper
     {
         public:
-            static TSdlWrapper* getInstance();
-            static void deteteInstance();
-
-        private:
-            static TSdlWrapper* instance;
-
             TSdlWrapper();
             ~TSdlWrapper();
+        private:
             TSdlWrapper( const TSdlWrapper& ) = delete;
             TSdlWrapper operator=( const TSdlWrapper& ) = delete;
 

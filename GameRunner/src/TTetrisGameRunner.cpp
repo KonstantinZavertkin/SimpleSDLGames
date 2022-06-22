@@ -1,4 +1,5 @@
 #include "TTetrisGameRunner.h"
+#include "TMainMenu.h"
 
 TTetrisGameRunner::TTetrisGameRunner( TRenderer& rendererArg )
     : IAbstractRunner( rendererArg )
@@ -84,9 +85,19 @@ void TTetrisGameRunner::run()
     mainDrawer.addText( &bestScoreTextDrawer );
     mainDrawer.addText( &nextFigureTextDrawer );
 
+    TMainMenu pauseMenu( rendererRef );
+    pauseMenu.background = background;
+    pauseMenu.fontSize = fontSize + 10;
+    pauseMenu.fontFile = fontFile;
+    pauseMenu.generateHorizontalBorders( 200, 260, 2 );
+    pauseMenu.addItem( "Resume" );
+    pauseMenu.addItem( "Exit" );
+    pauseMenu.setUpDrawer();
+
     tetris.mainDrawer = &mainDrawer;
     tetris.scorePrinter = &scoreTextDrawer;
     tetris.bestScorePrinter = &bestScoreTextDrawer;
+    tetris.pauseMenu = &pauseMenu;
 
     thread mainThr2( &TTetrisGame::gameThread, &tetris );
 

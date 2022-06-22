@@ -3,7 +3,7 @@
 #include "TTetrisGame.h"
 
 TTetrisGame::TTetrisGame( TCoords fieldSize )
-    : tetrisBackend(fieldSize), bestScoreStorage( pathToBestScoreFile )
+    : tetrisBackend( fieldSize ), bestScoreStorage( pathToBestScoreFile )
 {
 };
 
@@ -77,7 +77,17 @@ void TTetrisGame::ioThread()
                         figureFallSignal = true;
                 }
                 else
-                    pauseLocal = !pauseLocal;
+                {
+                    syncPoint.lock();
+
+                    if ( pauseMenu->show() != 0 )
+                    {
+                        quitLocal = true;
+                        tetrisBackend.quit = quitLocal;
+                    }
+
+                    syncPoint.unlock();
+                }
 
                 syncPoint.lock();
 
@@ -128,7 +138,9 @@ void TTetrisGame::ioThread()
         currentScore = tetrisBackend.gameScore;
         scorePrinter->setText( "Score: " + to_string( currentScore ) );
         bestScorePrinter->setText( "Best: " + to_string( bestScore ) );
-        mainDrawer->draw();
+
+        if ( !quitLocal )
+            mainDrawer->draw();
 
         syncPoint.unlock();
 

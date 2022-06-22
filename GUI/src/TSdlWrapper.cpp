@@ -4,24 +4,6 @@
 
 namespace io_submodule
 {
-    TSdlWrapper* TSdlWrapper::instance = nullptr;
-
-    TSdlWrapper* TSdlWrapper::getInstance()
-    {
-        if ( !instance )
-            return instance = new TSdlWrapper();;
-
-        return instance;
-    };
-
-    void TSdlWrapper::deteteInstance()
-    {
-        if ( instance )
-            delete instance;
-
-        instance = nullptr;
-    };
-
     TSdlWrapper::TSdlWrapper()
     {
         std::cout << "SDL subsystem initialization...";

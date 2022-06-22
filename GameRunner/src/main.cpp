@@ -18,7 +18,7 @@ using namespace game_backend;
 int main( int argc, char **argv )
 {
     //std::srand( time( 0 ) );
-    TSdlWrapper::getInstance();
+    TSdlWrapper initSDL2;
 
     //! Main window params
     size_t wholeWidth = 800;
@@ -40,7 +40,7 @@ int main( int argc, char **argv )
     background.color = { 0, 0, 0, 0xFF };
 
     //! Create window, renderer and renderer
-    TWindow wnd( "Main", background );
+    TWindow wnd( "SimpleSDL2Games", background );
     TRenderer renderer( wnd );
 
     //! Area for main field
@@ -49,55 +49,54 @@ int main( int argc, char **argv )
     activeGameField.xStart = xStartBias;
     activeGameField.yStart = yStartBias;
 
+    TMainMenu menu( renderer );
+    menu.background = background;
+    menu.fontSize = fontSize + 10;
+    menu.fontFile = fontFile;
+
+    menu.generateHorizontalBorders( 200, 300, 4 );
+
+    menu.addItem( "Tetris" );
+    menu.addItem( "Snake" );
+    menu.addItem( "Minesweeper" );
+    menu.addItem( "Exit" );
+    menu.setUpDrawer();
+
+    while ( !menu.exitEvent() )
     {
-        TMainMenu menu( renderer );
-        menu.background = background;
-        menu.fontSize = fontSize + 10;
-        menu.fontFile = fontFile;
+        const auto selectedItem = menu.show();
+        unique_ptr<IAbstractRunner> gameRunner = nullptr;
 
-        menu.addItem( "Tetris" );
-        menu.addItem( "Snake" );
-        menu.addItem( "Minesweeper" );
-        menu.addItem( "Exit" );
-        menu.setUpDrawer();
-
-        while ( !menu.exitEvent() )
+        if ( selectedItem == 0 )
         {
-            const auto selectedItem = menu.show();
-            unique_ptr<IAbstractRunner> gameRunner = nullptr;
+            activeGameField.xStart = 200;
+            gameRunner = make_unique<TTetrisGameRunner>( renderer );
+        }
 
-            if ( selectedItem == 0 )
-            {
-                activeGameField.xStart = 200;
-                gameRunner = make_unique<TTetrisGameRunner>( renderer );
-            }
+        if ( selectedItem == 1 )
+        {
+            activeGameField.xStart = xStartBias;
+            gameRunner = make_unique<TSnakeGameRunner>( renderer );
+        }
 
-            if ( selectedItem == 1 )
-            {
-                activeGameField.xStart = xStartBias;
-                gameRunner = make_unique<TSnakeGameRunner>( renderer );
-            }
+        if ( selectedItem == 2 )
+        {
+            activeGameField.xStart = 75;
+            gameRunner = make_unique<TMinesweeperGameRunner>( renderer );
+        }
 
-            if ( selectedItem == 2 )
-            {
-                activeGameField.xStart = 75;
-                gameRunner = make_unique<TMinesweeperGameRunner>( renderer );
-            }
+        if ( gameRunner )
+        {
+            gameRunner->activeGameField = activeGameField;
+            gameRunner->background = background;
 
-            if ( gameRunner )
-            {
-                gameRunner->activeGameField = activeGameField;
-                gameRunner->background = background;
+            gameRunner->fontFile = fontFile;
+            gameRunner->fontSize = fontSize;
 
-                gameRunner->fontFile = fontFile;
-                gameRunner->fontSize = fontSize;
-
-                gameRunner->init();
-                gameRunner->run();
-            }
+            gameRunner->init();
+            gameRunner->run();
         }
     }
-    TSdlWrapper::deteteInstance();
 
     return 0;
 };

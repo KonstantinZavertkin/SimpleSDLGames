@@ -7,7 +7,7 @@ namespace io_submodule
         auto w = rectStruct.width;
         auto h = rectStruct.height;
 
-        windowPtr = SDL_CreateWindow( "Main window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_SHOWN );
+        windowPtr = SDL_CreateWindow( name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_SHOWN );
 
         if ( windowPtr == nullptr )
         {

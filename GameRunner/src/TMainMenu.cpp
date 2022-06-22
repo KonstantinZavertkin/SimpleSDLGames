@@ -146,6 +146,15 @@ bool TMainMenu::exitEvent() const
     return exitFlag;
 }
 
+void TMainMenu::generateHorizontalBorders( size_t startY, size_t stopY, size_t count )
+{
+    horizontalBorders = vector<size_t>();
+    const auto stepSize = ( stopY - startY ) / count;
+
+    for ( size_t i = 0; i < count + 1; ++i )
+       horizontalBorders.push_back( startY + i * stepSize );
+}
+
 void TMainMenu::addItem( const string& text )
 {
     ++itemsCount;

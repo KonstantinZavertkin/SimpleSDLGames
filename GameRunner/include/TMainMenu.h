@@ -12,6 +12,8 @@ class TMainMenu
         size_t show();
         bool exitEvent() const;
 
+        void generateHorizontalBorders( size_t startY, size_t stopY, size_t count );
+
         void addItem( const string& text );
         void setUpDrawer();
 
@@ -36,7 +38,7 @@ class TMainMenu
         bool exitFlag = false;
 
         size_t index = 0;
-        vector<size_t> horizontalBorders = { 200, 225, 250, 275, 300 };
+        vector<size_t> horizontalBorders = {};
 };
 
 #endif
