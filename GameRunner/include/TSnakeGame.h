@@ -8,6 +8,7 @@
 #include "TCellsChain.h"
 #include "TDrawer.h"
 #include "TFieldDrawer.h"
+#include "TMainMenu.h"
 #include "TScoreStorage.h"
 
 using namespace std;
@@ -33,6 +34,7 @@ class TSnakeGame
         TDrawer* mainDrawer = nullptr;
         TFontDrawer* scorePrinter = nullptr;
         TFontDrawer* bestScorePrinter = nullptr;
+        TMainMenu* pauseMenu = nullptr;
 
         size_t initSnakeLength = 0;
         size_t clockCounter = 0;
