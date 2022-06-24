@@ -9,7 +9,7 @@
 #include "TDrawer.h"
 #include "TFieldDrawer.h"
 #include "TMainMenu.h"
-#include "TScoreStorage.h"
+#include "TSnakeBackend.h"
 
 using namespace std;
 
@@ -21,35 +21,27 @@ class TSnakeGame
         TSnakeGame( TCoords fieldSize, size_t snakeLength );
         ~TSnakeGame();
 
-        bool step();
-        void turn( TCoords rotateVector );
-        void checkFood();
-
         void gameThread();
         void ioThread();
 
-        TGameField gameField;
-        TCellsChain snake;
+        TSnakeBackend snakeBackend;
 
         TDrawer* mainDrawer = nullptr;
         TFontDrawer* scorePrinter = nullptr;
         TFontDrawer* bestScorePrinter = nullptr;
         TMainMenu* pauseMenu = nullptr;
 
-        size_t initSnakeLength = 0;
+        
         size_t clockCounter = 0;
         bool performStep = true;
         bool pauseGame = false;
         bool quit = false;
 
-        deque<TCoords> rotationsQueue;
+        
 
     private:
         mutex syncPoint;
-        const string pathToBestScoreFile = "snake_best_score.txt";
-        TScoreStorage bestScoreStorage;
-        unsigned bestScore = 0;
-        unsigned currentScore = 0;
+        
 };
 
 #endif

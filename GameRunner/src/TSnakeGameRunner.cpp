@@ -30,7 +30,7 @@ void TSnakeGameRunner::run()
 
     TSnakeGame snakeGame( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount }, 5 );
 
-    TPrimitivesFieldDrawer snakeDrawer( snakeGame.gameField, rendererRef, mainFieldCellsGrid );
+    TPrimitivesFieldDrawer snakeDrawer( snakeGame.snakeBackend.gameField, rendererRef, mainFieldCellsGrid );
     snakeDrawer.cellsMapper = snakeCellsMapper;
 
     TFontDrawer titleTextDrawer( rendererRef, fontFile, fontSize + 6 );

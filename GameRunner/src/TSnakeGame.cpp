@@ -7,47 +7,14 @@
 #include "CommonTypes.hpp"
 
 TSnakeGame::TSnakeGame( TCoords fieldSize, size_t snakeLength )
-    : gameField(fieldSize.first, fieldSize.second), snake(gameField), bestScoreStorage( pathToBestScoreFile )
+    : snakeBackend( fieldSize, snakeLength )
 {
-    initSnakeLength = snakeLength;
-    snake.initCellsChain({1, 1}, initSnakeLength);
 };
 
 TSnakeGame::~TSnakeGame()
 {
 };
 
-bool TSnakeGame::step()
-{
-    snake.step();
-    checkFood();
-    return snake.isGameOver();
-};
-
-void TSnakeGame::turn( TCoords rotateVector )
-{
-    snake.turn( rotateVector );
-};
-
-void TSnakeGame::checkFood()
-{
-    // Is required?
-    bool isRequiredFood = true;
-
-    for ( auto line : gameField.field )
-    {
-        for ( auto cell : line )
-            if ( cell.currentState == TCellStates::eatStateKey )
-                isRequiredFood = false;
-    }
-
-    if ( isRequiredFood )
-    {
-        auto x = rand() % gameField.field.size();
-        auto y = rand() % gameField.field[0].size();
-        gameField.field[x][y].currentState = TCellStates::eatStateKey;
-    }
-};
 
 void TSnakeGame::gameThread()
 {
@@ -63,14 +30,14 @@ void TSnakeGame::gameThread()
 
         if ( performStep )
         {
-            if ( !rotationsQueue.empty() )
+            if ( !snakeBackend.rotationsQueue.empty() )
             {
-                turn( rotationsQueue.front() );
-                rotationsQueue.pop_front();
+                snakeBackend.turn( snakeBackend.rotationsQueue.front() );
+                snakeBackend.rotationsQueue.pop_front();
             }
 
             if ( !pauseGame )
-                quitLocal = step();
+                quitLocal = snakeBackend.step();
 
             performStep = false;
         }
@@ -83,7 +50,7 @@ void TSnakeGame::gameThread()
 
         syncPoint.unlock();
 
-        const auto stepsCount = static_cast<int>( snake.snakeCells.size() - initSnakeLength );
+        const auto stepsCount = static_cast<int>( snakeBackend.snake.snakeCells.size() - snakeBackend.initSnakeLength );
         const auto timeDelay = max( 10, 50 - stepsCount );
 
         SDL_Delay( timeDelay );
@@ -94,8 +61,8 @@ void TSnakeGame::gameThread()
 
 void TSnakeGame::ioThread()
 {
-    bestScore = bestScoreStorage.getScore();
-    currentScore = 0;
+    snakeBackend.bestScore = snakeBackend.bestScoreStorage.getScore();
+    snakeBackend.currentScore = 0;
     SDL_Event ioEvent;
     bool pauseLocal = false;
     bool quitLocal = false;
@@ -157,10 +124,10 @@ void TSnakeGame::ioThread()
                         performStep = true;
                     else
                     {
-                        rotationsQueue.push_back( vectorNext );
+                        snakeBackend.rotationsQueue.push_back( vectorNext );
 
-                        while ( rotationsQueue.size() > 2 )
-                            rotationsQueue.pop_front();
+                        while ( snakeBackend.rotationsQueue.size() > 2 )
+                            snakeBackend.rotationsQueue.pop_front();
 
                         vectorLast = vectorNext;
                     }
@@ -172,9 +139,9 @@ void TSnakeGame::ioThread()
 
         syncPoint.lock();
 
-        currentScore = snake.snakeCells.size() - initSnakeLength;
-        scorePrinter->setText( "Score: " + to_string( currentScore ) );
-        bestScorePrinter->setText( "Best: " + to_string( bestScore ) );
+        snakeBackend.currentScore = snakeBackend.snake.snakeCells.size() - snakeBackend.initSnakeLength;
+        scorePrinter->setText( "Score: " + to_string( snakeBackend.currentScore ) );
+        bestScorePrinter->setText( "Best: " + to_string( snakeBackend.bestScore ) );
 
         if ( !quitLocal )
             mainDrawer->draw();
@@ -187,6 +154,6 @@ void TSnakeGame::ioThread()
         SDL_Delay( 1 );
     }
 
-    if ( currentScore > bestScore )
-       bestScoreStorage.setScore( currentScore );
+    if ( snakeBackend.currentScore > snakeBackend.bestScore )
+       snakeBackend.bestScoreStorage.setScore( snakeBackend.currentScore );
 };
