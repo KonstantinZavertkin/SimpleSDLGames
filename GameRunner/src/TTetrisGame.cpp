@@ -25,8 +25,6 @@ void TTetrisGame::gameThread()
 
         SDL_Delay( tetrisBackend.getTimeToSleep() );
     }
-    
-    cout << "Tetris game thread done" << endl;
 };
 
 void TTetrisGame::ioThread()
@@ -142,13 +140,11 @@ void TTetrisGame::ioThread()
         if ( !quitLocal )
             mainDrawer->draw();
 
+        if ( currentScore > bestScore )
+           bestScoreStorage.setScore( currentScore );
+
         syncPoint.unlock();
 
         SDL_Delay( 1 );
     }
-
-    if ( currentScore > bestScore )
-       bestScoreStorage.setScore( currentScore );
-
-    cout << "Tetris io thread done" << endl;
 };

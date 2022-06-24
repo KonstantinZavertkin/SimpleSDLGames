@@ -54,11 +54,18 @@ int main( int argc, char **argv )
     menu.fontSize = fontSize + 10;
     menu.fontFile = fontFile;
 
+    TFontDrawer title( renderer, fontFile, fontSize + 10 );
+    title.getFontDrawerRef().setText( "Select game:" );
+    title.getFontDrawerRef().setColor( { 0xFF, 0xFF, 00, 0xFF } );
+    title.getFontDrawerRef().setPoint( { 140, 200 }, TTextAlignment::leftAlignment );
+
+    menu.addLabel( std::move( title ) );
+
     menu.generateHorizontalBorders( 200, 300, 4 );
 
+    menu.addItem( "Minesweeper" );
     menu.addItem( "Tetris" );
     menu.addItem( "Snake" );
-    menu.addItem( "Minesweeper" );
     menu.addItem( "Exit" );
     menu.setUpDrawer();
 
@@ -69,20 +76,20 @@ int main( int argc, char **argv )
 
         if ( selectedItem == 0 )
         {
-            activeGameField.xStart = 200;
-            gameRunner = make_unique<TTetrisGameRunner>( renderer );
+            activeGameField.xStart = 75;
+            gameRunner = make_unique<TMinesweeperGameRunner>( renderer );
         }
 
         if ( selectedItem == 1 )
         {
-            activeGameField.xStart = xStartBias;
-            gameRunner = make_unique<TSnakeGameRunner>( renderer );
+            activeGameField.xStart = 200;
+            gameRunner = make_unique<TTetrisGameRunner>( renderer );
         }
 
         if ( selectedItem == 2 )
         {
-            activeGameField.xStart = 75;
-            gameRunner = make_unique<TMinesweeperGameRunner>( renderer );
+            activeGameField.xStart = xStartBias;
+            gameRunner = make_unique<TSnakeGameRunner>( renderer );
         }
 
         if ( gameRunner )

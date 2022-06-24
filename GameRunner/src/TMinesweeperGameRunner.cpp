@@ -3,6 +3,7 @@
 #include "TMinesweeperGameRunner.h"
 #include "TMinesweeperGame.h"
 #include "TFieldDrawer.h"
+#include "TMainMenu.h"
 
 using namespace std;
 
@@ -130,6 +131,15 @@ void TMinesweeperGameRunner::run()
     mainDrawer.addText( &secondsTextDrawer );
     mainDrawer.addText( &bestScoreTextDrawer );
 
+    TMainMenu pauseMenu( rendererRef );
+    pauseMenu.background = background;
+    pauseMenu.fontSize = fontSize + 10;
+    pauseMenu.fontFile = fontFile;
+    pauseMenu.generateHorizontalBorders( 200, 260, 2 );
+    pauseMenu.addItem( "Resume" );
+    pauseMenu.addItem( "Exit" );
+    pauseMenu.setUpDrawer();
+
     game.mainDrawer = &mainDrawer;
     game.cellRectangles = &mainFieldCellsGrid;
     game.gameStatus = &statusTextDrawer;
@@ -138,6 +148,7 @@ void TMinesweeperGameRunner::run()
     game.timeDrawer = &currentTimeTextDrawer;
     game.secondsDrawer = &secondsTextDrawer;
     game.bestTimeDrawer = &bestScoreTextDrawer;
+    game.pauseMenu = &pauseMenu;
 
     thread mainThr1( &TMinesweeperGame::gameThread, &game );
 

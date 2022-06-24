@@ -36,6 +36,27 @@ void TMinesweeperGame::ioThread()
             if ( event.type == SDL_QUIT )
                 quitLocal = true;
 
+            if ( event.type == SDL_KEYDOWN )
+            {
+                const auto keyValue = event.key.keysym.sym;
+
+                if ( keyValue == SDLK_ESCAPE )
+                {
+                    syncPoint.lock();
+                    const time_t timeBeforePause = time( nullptr );
+                    
+                    if ( pauseMenu->show() != 0 )
+                        quitLocal = true;
+
+                    const time_t timeAfterPause = time( nullptr );
+
+                    if ( startTimeFlag )
+                        secondsPause += difftime( timeAfterPause, timeBeforePause );
+
+                    syncPoint.unlock();
+                }
+            }
+
             if ( event.type == SDL_MOUSEBUTTONDOWN )
             {
                 if ( minesweeper.isGameOver() || minesweeper.isWin() )
@@ -118,7 +139,7 @@ void TMinesweeperGame::ioThread()
             if ( !minesweeper.isGameOver() && !minesweeper.isWin() )
             {
                 const time_t currentTime = time( nullptr );
-                seconds = difftime( currentTime, startTime );
+                seconds = difftime( currentTime, startTime ) - secondsPause;
                 secondsDrawer->setText( to_string( static_cast<int>( seconds ) ) );
             }
         }
@@ -135,7 +156,9 @@ void TMinesweeperGame::ioThread()
             bestTimeDrawer->setText( bestTimePrefix + "----" );
         
         flagsCountDrawer->setText( "Flags: " +  to_string( minesweeper.getFlagsCount() ) );
-        mainDrawer->draw();
+
+        if ( !quitLocal )
+            mainDrawer->draw();
 
         syncPoint.unlock();
 

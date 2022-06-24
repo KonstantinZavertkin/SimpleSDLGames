@@ -94,14 +94,41 @@ void TTetrisGameRunner::run()
     pauseMenu.addItem( "Exit" );
     pauseMenu.setUpDrawer();
 
+    TMainMenu gameOverMenu( rendererRef );
+    gameOverMenu.background = background;
+    gameOverMenu.fontSize = fontSize + 10;
+    gameOverMenu.fontFile = fontFile;
+    gameOverMenu.generateHorizontalBorders( 200, 260, 2 );
+    gameOverMenu.addItem( "Retry" );
+    gameOverMenu.addItem( "Exit" );
+    gameOverMenu.setUpDrawer();
+
     tetris.mainDrawer = &mainDrawer;
     tetris.scorePrinter = &scoreTextDrawer;
     tetris.bestScorePrinter = &bestScoreTextDrawer;
     tetris.pauseMenu = &pauseMenu;
+    tetris.gameOverMenu = &gameOverMenu;
 
-    thread mainThr2( &TTetrisGame::gameThread, &tetris );
+    bool runGame = true;
 
-    tetris.ioThread();
+    while ( runGame )
+    {
+        thread mainThr( &TTetrisGame::gameThread, &tetris );
 
-    mainThr2.join();
+        tetris.ioThread();
+        mainThr.join();
+
+        runGame = false;
+
+        if ( tetris.tetrisBackend.gameOver )
+        {
+            const auto ans = tetris.gameOverMenu->show();
+
+            if ( ans == 0 )
+            {
+                tetris.tetrisBackend.reset();
+                runGame = true;
+            }
+        }
+    }
 }

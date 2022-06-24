@@ -5,6 +5,7 @@
 #include <ctime>
 #include "TMinesweeperBackend.h"
 #include "TDrawer.h"
+#include "TMainMenu.h"
 #include "TScoreStorage.h"
 
 using namespace game_backend;
@@ -29,6 +30,7 @@ class TMinesweeperGame
         TFontDrawer* timeDrawer = nullptr;
         TFontDrawer* secondsDrawer = nullptr;
         TFontDrawer* bestTimeDrawer = nullptr;
+        TMainMenu* pauseMenu = nullptr;
 
         TCoords fieldSize;
 
@@ -37,6 +39,7 @@ class TMinesweeperGame
         bool quit = false;
         time_t startTime = 0;
         double seconds = 0;
+        double secondsPause = 0;
         bool startTimeFlag = false;
 
         const string pathToBestScoreFile = "minesweeper_best_time.txt";

@@ -29,6 +29,8 @@ namespace game_backend
 
             size_t getTimeToSleep();
 
+            void reset();
+
             TGameField gameField;
             TGameField nextFigureField;
 
@@ -41,6 +43,7 @@ namespace game_backend
             size_t nextFigureId = 0;
             bool pauseGame = false;
             bool quit = false;
+            bool gameOver = false;
 
             size_t gameScore = 0;
             bool isAccelerate = true;
@@ -53,6 +56,7 @@ namespace game_backend
             size_t currentTimeToSleep = mainTimeToSleep;
             size_t figuresCounter = 0;
             size_t prevFiguresCounter = 0;
+            TCoords fieldSize;
     };
 }
 

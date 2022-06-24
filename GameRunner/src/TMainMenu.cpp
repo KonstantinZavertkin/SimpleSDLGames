@@ -155,6 +155,11 @@ void TMainMenu::generateHorizontalBorders( size_t startY, size_t stopY, size_t c
        horizontalBorders.push_back( startY + i * stepSize );
 }
 
+void TMainMenu::addLabel( TFontDrawer&& fontDrawer )
+{
+    labelsDrawers.push_back( std::move( fontDrawer ) );
+}
+
 void TMainMenu::addItem( const string& text )
 {
     ++itemsCount;
@@ -174,10 +179,15 @@ void TMainMenu::addItem( const string& text )
     cursorDrawers[id].getFontDrawerRef().setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
     cursorDrawers[id].getFontDrawerRef().setColor( colorSelected );
     cursorDrawers[id].isVisible = false;
+
+    itemType.push_back( TItemType::selectableItem );
 }
 
 void TMainMenu::setUpDrawer()
 {
+    for ( auto& ref : labelsDrawers )
+       mainDrawer.addText( &ref );
+
     for ( auto& ref : textDrawers )
         mainDrawer.addText( &ref );
 

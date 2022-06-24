@@ -6,10 +6,9 @@
 namespace game_backend
 {
     TTetrisBackend::TTetrisBackend( TCoords fieldSize )
-        : gameField( fieldSize.first, fieldSize.second ), nextFigureField( 4, 4 )
+        : gameField( fieldSize.first, fieldSize.second ), nextFigureField( 4, 4 ), fieldSize( fieldSize )
     {
     }
-
 
     TTetrisBackend::~TTetrisBackend()
     {
@@ -116,7 +115,10 @@ namespace game_backend
         allBlocks.push_back( block );
 
         if ( block.isGameOver() )
+        {
             quit = true;
+            gameOver = true;
+        }
     }
 
     void TTetrisBackend::createFigureIfRequired()
@@ -203,5 +205,28 @@ namespace game_backend
         }
 
         return valToReturn;
+    }
+
+    void TTetrisBackend::reset()
+    {
+        allBlocks = {};
+        virtualBlock = {};
+        figureId = 0;
+        currentFigureId = 0;
+        nextFigureId = 0;
+        pauseGame = false;
+        quit = false;
+        gameOver = false;
+
+        gameScore = 0;
+        isAccelerate = true;
+        gameScoreDelta = 0;
+        realTimeToSleep = mainTimeToSleep;
+        currentTimeToSleep = mainTimeToSleep;
+        figuresCounter = 0;
+        prevFiguresCounter = 0;
+
+        gameField = TGameField( fieldSize.first, fieldSize.second );
+        nextFigureField = TGameField( 4, 4 );
     }
 }
