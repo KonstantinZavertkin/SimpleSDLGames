@@ -94,6 +94,11 @@ void TTetrisGameRunner::run()
     pauseMenu.addItem( "Exit" );
     pauseMenu.setUpDrawer();
 
+    TFontDrawer gameOver( rendererRef, fontFile, fontSize + 10 );
+    gameOver.getFontDrawerRef().setText( "Game over " );
+    gameOver.getFontDrawerRef().setColor( { 0xFF, 0xFF, 00, 0xFF } );
+    gameOver.getFontDrawerRef().setPoint( { background.width / 2 - 70, 160 }, TTextAlignment::leftAlignment );
+
     TMainMenu gameOverMenu( rendererRef );
     gameOverMenu.background = background;
     gameOverMenu.fontSize = fontSize + 10;
@@ -101,13 +106,13 @@ void TTetrisGameRunner::run()
     gameOverMenu.generateHorizontalBorders( 200, 260, 2 );
     gameOverMenu.addItem( "Retry" );
     gameOverMenu.addItem( "Exit" );
+    gameOverMenu.addLabel( std::move( gameOver ) );
     gameOverMenu.setUpDrawer();
 
     tetris.mainDrawer = &mainDrawer;
     tetris.scorePrinter = &scoreTextDrawer;
     tetris.bestScorePrinter = &bestScoreTextDrawer;
     tetris.pauseMenu = &pauseMenu;
-    tetris.gameOverMenu = &gameOverMenu;
 
     bool runGame = true;
 
@@ -122,7 +127,7 @@ void TTetrisGameRunner::run()
 
         if ( tetris.tetrisBackend.gameOver )
         {
-            const auto ans = tetris.gameOverMenu->show();
+            const auto ans = gameOverMenu.show();
 
             if ( ans == 0 )
             {

@@ -79,10 +79,7 @@ void TSnakeGame::gameThread()
            quit = quitLocal;
         
         if ( quit )
-        {
             quitLocal = quit;
-            cout << "Game over, score: " << snake.snakeCells.size() - initSnakeLength << endl;
-        }
 
         syncPoint.unlock();
 

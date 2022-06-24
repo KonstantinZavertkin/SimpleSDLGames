@@ -36,7 +36,6 @@ class TTetrisGame
         TFontDrawer* scorePrinter = nullptr;
         TFontDrawer* bestScorePrinter = nullptr;
         TMainMenu* pauseMenu = nullptr;
-        TMainMenu* gameOverMenu = nullptr;
 
     private:
         
