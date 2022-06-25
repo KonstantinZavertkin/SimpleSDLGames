@@ -15,7 +15,9 @@ namespace game_backend
             void turn( TCoords rotateVector );
             void checkFood();
             bool stepGame();
+            void reset();
 
+            TCoords fieldSize;
             TGameField gameField;
             TCellsChain snake;
 

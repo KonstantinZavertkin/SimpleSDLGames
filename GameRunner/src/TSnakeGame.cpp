@@ -25,17 +25,13 @@ void TSnakeGame::gameThread()
         if ( !snakeBackend.quitEvent )
         {
             syncPoint.lock();
-
             quitLocal = snakeBackend.stepGame();
-
             syncPoint.unlock();
 
             SDL_Delay( snakeBackend.timeDelay );
         }
         else
-        {
             quitLocal = true;
-        }
     }
 };
 

@@ -5,6 +5,7 @@
 game_backend::TSnakeBackend::TSnakeBackend( TCoords fieldSize, size_t snakeLength )
     : gameField( fieldSize.first, fieldSize.second ), snake( gameField ), bestScoreStorage( pathToBestScoreFile )
 {
+    this->fieldSize = fieldSize;
     initSnakeLength = snakeLength;
     snake.initCellsChain({1, 1}, initSnakeLength);
 }
@@ -68,4 +69,13 @@ bool game_backend::TSnakeBackend::stepGame()
        quitEvent = true;
 
     return gameOver;
+}
+
+void game_backend::TSnakeBackend::reset()
+{
+    gameOver = false;
+    quitEvent = false;
+    gameField = TGameField( fieldSize.first, fieldSize.second );
+    snake.gameField = gameField;
+    snake.initCellsChain( {1, 1}, initSnakeLength );
 }

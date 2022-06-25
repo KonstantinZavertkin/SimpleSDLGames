@@ -31,11 +31,6 @@ class TSnakeGame
         TFontDrawer* bestScorePrinter = nullptr;
         TMainMenu* pauseMenu = nullptr;
 
-        
-        
-
-        
-
     private:
         mutex syncPoint;
         

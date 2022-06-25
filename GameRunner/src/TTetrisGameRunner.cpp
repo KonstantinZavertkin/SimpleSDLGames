@@ -48,12 +48,12 @@ void TTetrisGameRunner::run()
     infoFieldCellsGrid.setCellsFieldParams( gameInfoField, cellsInfoFieldParams );
     infoFieldCellsGrid.calcGrid();
 
-    TTetrisGame tetris( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount } );
+    TTetrisGame gameObject( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount } );
 
-    TPrimitivesFieldDrawer tetrisDrawer( tetris.tetrisBackend.gameField, rendererRef, mainFieldCellsGrid );
+    TPrimitivesFieldDrawer tetrisDrawer( gameObject.tetrisBackend.gameField, rendererRef, mainFieldCellsGrid );
     tetrisDrawer.cellsMapper = tetrisCellsMapper;
 
-    TPrimitivesFieldDrawer infoFieldDrawer( tetris.tetrisBackend.nextFigureField, rendererRef, infoFieldCellsGrid );
+    TPrimitivesFieldDrawer infoFieldDrawer( gameObject.tetrisBackend.nextFigureField, rendererRef, infoFieldCellsGrid );
     infoFieldDrawer.cellsMapper = tetrisCellsMapper;
 
     auto point = make_pair( infoFieldBound.xStart, gameFieldBound.yStart );
@@ -109,29 +109,29 @@ void TTetrisGameRunner::run()
     gameOverMenu.addLabel( std::move( gameOver ) );
     gameOverMenu.setUpDrawer();
 
-    tetris.mainDrawer = &mainDrawer;
-    tetris.scorePrinter = &scoreTextDrawer;
-    tetris.bestScorePrinter = &bestScoreTextDrawer;
-    tetris.pauseMenu = &pauseMenu;
+    gameObject.mainDrawer = &mainDrawer;
+    gameObject.scorePrinter = &scoreTextDrawer;
+    gameObject.bestScorePrinter = &bestScoreTextDrawer;
+    gameObject.pauseMenu = &pauseMenu;
 
     bool runGame = true;
 
     while ( runGame )
     {
-        thread mainThr( &TTetrisGame::gameThread, &tetris );
+        thread mainThr( &TTetrisGame::gameThread, &gameObject );
 
-        tetris.ioThread();
+        gameObject.ioThread();
         mainThr.join();
 
         runGame = false;
 
-        if ( tetris.tetrisBackend.gameOver )
+        if ( gameObject.tetrisBackend.gameOver )
         {
             const auto ans = gameOverMenu.show();
 
             if ( ans == 0 )
             {
-                tetris.tetrisBackend.reset();
+                gameObject.tetrisBackend.reset();
                 runGame = true;
             }
         }

@@ -28,9 +28,9 @@ void TSnakeGameRunner::run()
     mainFieldCellsGrid.setCellsFieldParams( activeGameField, cellsFieldParams );
     mainFieldCellsGrid.calcGrid();
 
-    TSnakeGame snakeGame( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount }, 5 );
+    TSnakeGame gameObject( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount }, 5 );
 
-    TPrimitivesFieldDrawer snakeDrawer( snakeGame.snakeBackend.gameField, rendererRef, mainFieldCellsGrid );
+    TPrimitivesFieldDrawer snakeDrawer( gameObject.snakeBackend.gameField, rendererRef, mainFieldCellsGrid );
     snakeDrawer.cellsMapper = snakeCellsMapper;
 
     TFontDrawer titleTextDrawer( rendererRef, fontFile, fontSize + 6 );
@@ -62,14 +62,46 @@ void TSnakeGameRunner::run()
     pauseMenu.addItem( "Exit" );
     pauseMenu.setUpDrawer();
 
-    snakeGame.mainDrawer = &mainDrawer;
-    snakeGame.scorePrinter = &scoreTextDrawer;
-    snakeGame.bestScorePrinter = &bestScoreTextDrawer;
-    snakeGame.pauseMenu = &pauseMenu;
+    TFontDrawer gameOver( rendererRef, fontFile, fontSize + 10 );
+    gameOver.getFontDrawerRef().setText( "Game over " );
+    gameOver.getFontDrawerRef().setColor( { 0xFF, 0xFF, 00, 0xFF } );
+    gameOver.getFontDrawerRef().setPoint( { background.width / 2 - 70, 160 }, TTextAlignment::leftAlignment );
 
-    thread mainThr( &TSnakeGame::gameThread, &snakeGame );
+    TMainMenu gameOverMenu( rendererRef );
+    gameOverMenu.background = background;
+    gameOverMenu.fontSize = fontSize + 10;
+    gameOverMenu.fontFile = fontFile;
+    gameOverMenu.generateHorizontalBorders( 200, 260, 2 );
+    gameOverMenu.addItem( "Retry" );
+    gameOverMenu.addItem( "Exit" );
+    gameOverMenu.addLabel( std::move( gameOver ) );
+    gameOverMenu.setUpDrawer();
 
-    snakeGame.ioThread();
+    gameObject.mainDrawer = &mainDrawer;
+    gameObject.scorePrinter = &scoreTextDrawer;
+    gameObject.bestScorePrinter = &bestScoreTextDrawer;
+    gameObject.pauseMenu = &pauseMenu;
 
-    mainThr.join();
+    bool runGame = true;
+
+    while ( runGame )
+    {
+        thread mainThr( &TSnakeGame::gameThread, &gameObject );
+
+        gameObject.ioThread();
+        mainThr.join();
+
+        runGame = false;
+
+        if ( gameObject.snakeBackend.gameOver )
+        {
+            const auto ans = gameOverMenu.show();
+
+            if ( ans == 0 )
+            {
+                gameObject.snakeBackend.reset();
+                runGame = true;
+            }
+        }
+    }
 }
