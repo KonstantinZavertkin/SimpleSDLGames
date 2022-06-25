@@ -2,7 +2,7 @@
 #define _TSNAKEBACKEND_H_
 #include "TCellsChain.h"
 #include "TGameField.h"
-#include "include/TScoreStorage.h"
+#include "TScoreStorage.h"
 
 namespace game_backend
 {
@@ -14,6 +14,7 @@ namespace game_backend
             bool step();
             void turn( TCoords rotateVector );
             void checkFood();
+            bool stepGame();
 
             TGameField gameField;
             TCellsChain snake;
@@ -21,6 +22,13 @@ namespace game_backend
             deque<TCoords> rotationsQueue;
 
             size_t initSnakeLength = 0;
+            bool performStep = true;
+            size_t clockCounter = 0;
+            int timeDelay = 0;
+        
+            bool pauseGame = false;
+            bool gameOver = false;
+            bool quitEvent = false;
         
             const string pathToBestScoreFile = "snake_best_score.txt";
             TScoreStorage bestScoreStorage;

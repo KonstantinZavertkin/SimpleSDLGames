@@ -26,7 +26,7 @@ int main( int argc, char **argv )
     size_t xStartBias = 50;
     size_t yStartBias = 50;
 
-    string fontFile = "Samson.ttf";
+    string fontFile = "./resources/font/Samson.ttf";
     int fontSize = 22;
     
     //! Main window params

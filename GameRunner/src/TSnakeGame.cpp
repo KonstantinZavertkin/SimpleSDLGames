@@ -15,47 +15,27 @@ TSnakeGame::~TSnakeGame()
 {
 };
 
-
 void TSnakeGame::gameThread()
 {
     bool quitLocal = false;
-    performStep = true;
+    snakeBackend.performStep = true;
 
     while ( !quitLocal )
     {
-        syncPoint.lock();
-
-        if ( ( clockCounter % 4 ) == 0 )
-            performStep = true;
-
-        if ( performStep )
+        if ( !snakeBackend.quitEvent )
         {
-            if ( !snakeBackend.rotationsQueue.empty() )
-            {
-                snakeBackend.turn( snakeBackend.rotationsQueue.front() );
-                snakeBackend.rotationsQueue.pop_front();
-            }
+            syncPoint.lock();
 
-            if ( !pauseGame )
-                quitLocal = snakeBackend.step();
+            quitLocal = snakeBackend.stepGame();
 
-            performStep = false;
+            syncPoint.unlock();
+
+            SDL_Delay( snakeBackend.timeDelay );
         }
-
-        if ( quitLocal )
-           quit = quitLocal;
-        
-        if ( quit )
-            quitLocal = quit;
-
-        syncPoint.unlock();
-
-        const auto stepsCount = static_cast<int>( snakeBackend.snake.snakeCells.size() - snakeBackend.initSnakeLength );
-        const auto timeDelay = max( 10, 50 - stepsCount );
-
-        SDL_Delay( timeDelay );
-
-        ++clockCounter;
+        else
+        {
+            quitLocal = true;
+        }
     }
 };
 
@@ -78,7 +58,8 @@ void TSnakeGame::ioThread()
             {
                 quitLocal = true;
                 syncPoint.lock();
-                quit = quitLocal;
+                snakeBackend.quitEvent = quitLocal;
+                snakeBackend.timeDelay = 0;
                 syncPoint.unlock();
             }
 
@@ -107,7 +88,7 @@ void TSnakeGame::ioThread()
                     if ( pauseMenu->show() != 0 )
                     {
                         quitLocal = true;
-                        quit = quitLocal;
+                        snakeBackend.quitEvent = quitLocal;
                     }
 
                     syncPoint.unlock();
@@ -116,12 +97,12 @@ void TSnakeGame::ioThread()
 
                 syncPoint.lock();
 
-                pauseGame = pauseLocal;
+                snakeBackend.pauseGame = pauseLocal;
 
                 if ( !pauseLocal )
                 {
                     if ( vectorNext == vectorLast )
-                        performStep = true;
+                        snakeBackend.performStep = true;
                     else
                     {
                         snakeBackend.rotationsQueue.push_back( vectorNext );
@@ -146,7 +127,7 @@ void TSnakeGame::ioThread()
         if ( !quitLocal )
             mainDrawer->draw();
 
-        if ( quit )
+        if ( snakeBackend.quitEvent )
             quitLocal = true;
 
         syncPoint.unlock();

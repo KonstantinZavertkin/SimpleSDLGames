@@ -1,5 +1,7 @@
 #include "TSnakeBackend.h"
 
+#include <algorithm>
+
 game_backend::TSnakeBackend::TSnakeBackend( TCoords fieldSize, size_t snakeLength )
     : gameField( fieldSize.first, fieldSize.second ), snake( gameField ), bestScoreStorage( pathToBestScoreFile )
 {
@@ -37,4 +39,33 @@ void game_backend::TSnakeBackend::checkFood()
         auto y = rand() % gameField.field[0].size();
         gameField.field[x][y].currentState = TCellStates::eatStateKey;
     }
+}
+
+bool game_backend::TSnakeBackend::stepGame()
+{
+    if ( ( clockCounter % 4 ) == 0 )
+        performStep = true;
+
+    if ( performStep )
+    {
+        if ( !rotationsQueue.empty() )
+        {
+            turn( rotationsQueue.front() );
+            rotationsQueue.pop_front();
+        }
+
+        if ( !pauseGame )
+            gameOver = step();
+
+        performStep = false;
+    }
+
+    const auto stepsCount = static_cast<int>( snake.snakeCells.size() - initSnakeLength );
+    timeDelay = max( 10, 50 - stepsCount );
+    ++clockCounter;
+
+    if ( gameOver )
+       quitEvent = true;
+
+    return gameOver;
 }

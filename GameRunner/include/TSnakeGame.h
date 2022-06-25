@@ -32,10 +32,7 @@ class TSnakeGame
         TMainMenu* pauseMenu = nullptr;
 
         
-        size_t clockCounter = 0;
-        bool performStep = true;
-        bool pauseGame = false;
-        bool quit = false;
+        
 
         
 
