@@ -6,8 +6,8 @@
 
 enum class TItemType
 {
-    notSelectableItem = 0,
-    selectableItem
+    autoPosition = 0,
+    freePosition
 };
 
 class TMainMenu
@@ -47,7 +47,6 @@ class TMainMenu
 
         size_t index = 0;
         vector<size_t> horizontalBorders = {};
-        vector<TItemType> itemType;
 };
 
 #endif

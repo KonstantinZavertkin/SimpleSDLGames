@@ -34,16 +34,16 @@ void TSnakeGameRunner::run()
     snakeDrawer.cellsMapper = snakeCellsMapper;
 
     TFontDrawer titleTextDrawer( rendererRef, fontFile, fontSize + 6 );
-    titleTextDrawer.getFontDrawerRef().setPoint( { background.width / 2, 10 }, TTextAlignment::centerAlignment );
+    titleTextDrawer.setPoint( { background.width / 2, 10 }, TTextAlignment::centerAlignment );
     titleTextDrawer.setText( "Snake" );
 
     auto point = make_pair( activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth + 20, gameFieldBound.yStart );
     TFontDrawer scoreTextDrawer( rendererRef, fontFile, fontSize );
-    scoreTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
+    scoreTextDrawer.setPoint( point, TTextAlignment::leftAlignment );
 
     point.second += 50;
     TFontDrawer bestScoreTextDrawer( rendererRef, fontFile, fontSize );
-    bestScoreTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
+    bestScoreTextDrawer.setPoint( point, TTextAlignment::leftAlignment );
 
     TDrawer mainDrawer( rendererRef );
     mainDrawer.addPrimitive( background );
@@ -63,9 +63,9 @@ void TSnakeGameRunner::run()
     pauseMenu.setUpDrawer();
 
     TFontDrawer gameOver( rendererRef, fontFile, fontSize + 10 );
-    gameOver.getFontDrawerRef().setText( "Game over " );
-    gameOver.getFontDrawerRef().setColor( { 0xFF, 0xFF, 00, 0xFF } );
-    gameOver.getFontDrawerRef().setPoint( { background.width / 2 - 70, 160 }, TTextAlignment::leftAlignment );
+    gameOver.setText( "Game over " );
+    gameOver.setColor( { 0xFF, 0xFF, 00, 0xFF } );
+    gameOver.setPoint( { background.width / 2 - 70, 160 }, TTextAlignment::leftAlignment );
 
     TMainMenu gameOverMenu( rendererRef );
     gameOverMenu.background = background;

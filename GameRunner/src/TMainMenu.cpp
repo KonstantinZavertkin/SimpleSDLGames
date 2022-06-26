@@ -165,22 +165,20 @@ void TMainMenu::addItem( const string& text )
     ++itemsCount;
     const auto id = textDrawers.size();
     textDrawers.emplace_back( renderer, fontFile, fontSize );
-    textDrawers[id].getFontDrawerRef().setText( text );
-    textDrawers[id].getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
+    textDrawers[id].setText( text );
+    textDrawers[id].setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
 
     focusedTextDrawers.emplace_back( renderer, fontFile, fontSize );
-    focusedTextDrawers[id].getFontDrawerRef().setText( text );
-    focusedTextDrawers[id].getFontDrawerRef().setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
-    focusedTextDrawers[id].getFontDrawerRef().setColor( colorSelected );
+    focusedTextDrawers[id].setText( text );
+    focusedTextDrawers[id].setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
+    focusedTextDrawers[id].setColor( colorSelected );
     focusedTextDrawers[id].isVisible = false;
 
     cursorDrawers.emplace_back( renderer, fontFile, fontSize );
-    cursorDrawers[id].getFontDrawerRef().setText( ">" );
-    cursorDrawers[id].getFontDrawerRef().setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
-    cursorDrawers[id].getFontDrawerRef().setColor( colorSelected );
+    cursorDrawers[id].setText( ">" );
+    cursorDrawers[id].setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
+    cursorDrawers[id].setColor( colorSelected );
     cursorDrawers[id].isVisible = false;
-
-    itemType.push_back( TItemType::selectableItem );
 }
 
 void TMainMenu::setUpDrawer()

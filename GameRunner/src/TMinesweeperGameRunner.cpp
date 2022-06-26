@@ -93,33 +93,33 @@ void TMinesweeperGameRunner::run()
     };
 
     TFontDrawer statusTextDrawer( rendererRef, fontFile, fontSize );
-    statusTextDrawer.getFontDrawerRef().setPoint( { 75, 550 }, TTextAlignment::leftAlignment );
+    statusTextDrawer.setPoint( { 75, 550 }, TTextAlignment::leftAlignment );
     statusTextDrawer.setText( "Uninitialized" );
     statusTextDrawer.isVisible = false;
 
     TFontDrawer titleTextDrawer( rendererRef, fontFile, fontSize + 10 );
     titleTextDrawer.setText( "Minesweeper" );
-    titleTextDrawer.getFontDrawerRef().setPoint( { 400, 10 }, TTextAlignment::centerAlignment );
+    titleTextDrawer.setPoint( { 400, 10 }, TTextAlignment::centerAlignment );
     titleTextDrawer.isVisible = true;
 
     TFontDrawer flagsCountTextDrawer( rendererRef, fontFile, fontSize );
     flagsCountTextDrawer.setText( "Flags: " );
-    flagsCountTextDrawer.getFontDrawerRef().setPoint( { 75, 550 }, TTextAlignment::leftAlignment );
+    flagsCountTextDrawer.setPoint( { 75, 550 }, TTextAlignment::leftAlignment );
     flagsCountTextDrawer.isVisible = true;
 
     TFontDrawer currentTimeTextDrawer( rendererRef, fontFile, fontSize );
     currentTimeTextDrawer.setText( "Time: " );
-    currentTimeTextDrawer.getFontDrawerRef().setPoint( { 600, 550 }, TTextAlignment::leftAlignment );
+    currentTimeTextDrawer.setPoint( { 600, 550 }, TTextAlignment::leftAlignment );
     currentTimeTextDrawer.isVisible = true;
 
     TFontDrawer secondsTextDrawer( rendererRef, fontFile, fontSize );
     secondsTextDrawer.setText( "0" );
-    secondsTextDrawer.getFontDrawerRef().setPoint( { 720, 550 }, TTextAlignment::rightAlignment );
+    secondsTextDrawer.setPoint( { 720, 550 }, TTextAlignment::rightAlignment );
     secondsTextDrawer.isVisible = true;
 
     TFontDrawer bestScoreTextDrawer( rendererRef, fontFile, fontSize );
     bestScoreTextDrawer.setText( "Best time: " );
-    bestScoreTextDrawer.getFontDrawerRef().setPoint( { 350, 550 }, TTextAlignment::leftAlignment );
+    bestScoreTextDrawer.setPoint( { 350, 550 }, TTextAlignment::leftAlignment );
     
     TDrawer mainDrawer( rendererRef );
     mainDrawer.addPrimitive( background );
@@ -141,9 +141,9 @@ void TMinesweeperGameRunner::run()
     pauseMenu.setUpDrawer();
 
     TFontDrawer gameOver( rendererRef, fontFile, fontSize + 10 );
-    gameOver.getFontDrawerRef().setText( "Game over " );
-    gameOver.getFontDrawerRef().setColor( { 0xFF, 0xFF, 00, 0xFF } );
-    gameOver.getFontDrawerRef().setPoint( { background.width / 2 - 70, 160 }, TTextAlignment::leftAlignment );
+    gameOver.setText( "Game over " );
+    gameOver.setColor( { 0xFF, 0xFF, 00, 0xFF } );
+    gameOver.setPoint( { background.width / 2 - 70, 160 }, TTextAlignment::leftAlignment );
 
     TMainMenu gameOverMenu( rendererRef );
     gameOverMenu.background = background;
@@ -158,9 +158,9 @@ void TMinesweeperGameRunner::run()
     vector<string> items = { "40", "60", "80", "Exit" };
 
     TFontDrawer startMenuCaption( rendererRef, fontFile, fontSize + 10 );
-    startMenuCaption.getFontDrawerRef().setText( "Select bombs count:" );
-    startMenuCaption.getFontDrawerRef().setColor( { 0xFF, 0xFF, 00, 0xFF } );
-    startMenuCaption.getFontDrawerRef().setPoint( { background.width / 2 - 70, 160 }, TTextAlignment::leftAlignment );
+    startMenuCaption.setText( "Select bombs count:" );
+    startMenuCaption.setColor( { 0xFF, 0xFF, 00, 0xFF } );
+    startMenuCaption.setPoint( { background.width / 2 - 70, 160 }, TTextAlignment::leftAlignment );
 
     TMainMenu startMenu( rendererRef );
     startMenu.background = background;

@@ -55,9 +55,9 @@ int main( int argc, char **argv )
     menu.fontFile = fontFile;
 
     TFontDrawer title( renderer, fontFile, fontSize + 10 );
-    title.getFontDrawerRef().setText( "Select game:" );
-    title.getFontDrawerRef().setColor( { 0xFF, 0xFF, 00, 0xFF } );
-    title.getFontDrawerRef().setPoint( { 140, 200 }, TTextAlignment::leftAlignment );
+    title.setText( "Select game:" );
+    title.setColor( { 0xFF, 0xFF, 00, 0xFF } );
+    title.setPoint( { 140, 200 }, TTextAlignment::leftAlignment );
 
     menu.addLabel( std::move( title ) );
 

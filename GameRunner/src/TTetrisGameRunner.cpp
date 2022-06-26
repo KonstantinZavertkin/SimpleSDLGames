@@ -59,19 +59,19 @@ void TTetrisGameRunner::run()
     auto point = make_pair( infoFieldBound.xStart, gameFieldBound.yStart );
 
     TFontDrawer nextFigureTextDrawer( rendererRef, fontFile, fontSize );
-    nextFigureTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
+    nextFigureTextDrawer.setPoint( point, TTextAlignment::leftAlignment );
     nextFigureTextDrawer.setText( "Next figure:" );
 
     point.second += 180;
     TFontDrawer scoreTextDrawer( rendererRef, fontFile, fontSize );
-    scoreTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
+    scoreTextDrawer.setPoint( point, TTextAlignment::leftAlignment );
 
     point.second += 50;
     TFontDrawer bestScoreTextDrawer( rendererRef, fontFile, fontSize );
-    bestScoreTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
+    bestScoreTextDrawer.setPoint( point, TTextAlignment::leftAlignment );
 
     TFontDrawer titleTextDrawer( rendererRef, fontFile, fontSize + 6 );
-    titleTextDrawer.getFontDrawerRef().setPoint( { background.width / 2, 10 }, TTextAlignment::centerAlignment );
+    titleTextDrawer.setPoint( { background.width / 2, 10 }, TTextAlignment::centerAlignment );
     titleTextDrawer.setText( "Tetris" ); 
     
     TDrawer mainDrawer( rendererRef );
@@ -95,9 +95,9 @@ void TTetrisGameRunner::run()
     pauseMenu.setUpDrawer();
 
     TFontDrawer gameOver( rendererRef, fontFile, fontSize + 10 );
-    gameOver.getFontDrawerRef().setText( "Game over " );
-    gameOver.getFontDrawerRef().setColor( { 0xFF, 0xFF, 00, 0xFF } );
-    gameOver.getFontDrawerRef().setPoint( { background.width / 2 - 70, 160 }, TTextAlignment::leftAlignment );
+    gameOver.setText( "Game over " );
+    gameOver.setColor( { 0xFF, 0xFF, 00, 0xFF } );
+    gameOver.setPoint( { background.width / 2 - 70, 160 }, TTextAlignment::leftAlignment );
 
     TMainMenu gameOverMenu( rendererRef );
     gameOverMenu.background = background;
