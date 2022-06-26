@@ -19,7 +19,8 @@ void TFontDrawer::setColor( const TColorRGB& colorRgb )
     fontRenderer.setColor( colorRgb );
 }
 
-TFontDrawer::TFontDrawer( TFontDrawer&& old ) noexcept: fontRenderer( std::move( old.fontRenderer ) )
+TFontDrawer::TFontDrawer( TFontDrawer&& old ) noexcept
+    : fontRenderer( std::move( old.fontRenderer ) )
 {
     isVisible = old.isVisible;
 }
@@ -40,9 +41,4 @@ void TFontDrawer::drawText()
 {
     if ( isVisible )
         fontRenderer.drawText();
-}
-
-TFontTTF& TFontDrawer::getFontDrawerRef()
-{
-    return fontRenderer;
 }

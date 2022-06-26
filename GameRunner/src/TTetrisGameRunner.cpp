@@ -90,6 +90,7 @@ void TTetrisGameRunner::run()
     pauseMenu.fontSize = fontSize + 10;
     pauseMenu.fontFile = fontFile;
     pauseMenu.generateHorizontalBorders( 200, 260, 2 );
+    pauseMenu.addLabelUnderItems( "Pause" );
     pauseMenu.addItem( "Resume" );
     pauseMenu.addItem( "Exit" );
     pauseMenu.setUpDrawer();

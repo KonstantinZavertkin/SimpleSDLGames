@@ -148,11 +148,22 @@ bool TMainMenu::exitEvent() const
 
 void TMainMenu::generateHorizontalBorders( size_t startY, size_t stopY, size_t count )
 {
+    itemsGridStartY = startY;
     horizontalBorders = vector<size_t>();
-    const auto stepSize = ( stopY - startY ) / count;
+    itemsLineHeight = ( stopY - startY ) / count;
 
     for ( size_t i = 0; i < count + 1; ++i )
-       horizontalBorders.push_back( startY + i * stepSize );
+       horizontalBorders.push_back( startY + i * itemsLineHeight );
+}
+
+void TMainMenu::addLabelUnderItems( const string& text )
+{
+    TFontDrawer label( renderer, fontFile, fontSize );
+    label.setText( text );
+    label.setColor( { 0xFF, 0xFF, 00, 0xFF } );
+    label.setPoint( { background.width / 2 - 50, itemsGridStartY - itemsLineHeight - 10 }, TTextAlignment::leftAlignment );
+
+    labelsDrawers.push_back( std::move( label ) );
 }
 
 void TMainMenu::addLabel( TFontDrawer&& fontDrawer )

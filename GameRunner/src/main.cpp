@@ -59,10 +59,8 @@ int main( int argc, char **argv )
     title.setColor( { 0xFF, 0xFF, 00, 0xFF } );
     title.setPoint( { 140, 200 }, TTextAlignment::leftAlignment );
 
-    menu.addLabel( std::move( title ) );
-
     menu.generateHorizontalBorders( 200, 300, 4 );
-
+    menu.addLabel( std::move( title ) );
     menu.addItem( "Minesweeper" );
     menu.addItem( "Tetris" );
     menu.addItem( "Snake" );
