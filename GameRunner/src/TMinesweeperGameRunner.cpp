@@ -135,11 +135,11 @@ void TMinesweeperGameRunner::run()
     pauseMenu.background = background;
     pauseMenu.fontSize = fontSize + 10;
     pauseMenu.fontFile = fontFile;
-    pauseMenu.generateHorizontalBorders( 200, 260, 2 );
+    pauseMenu.initGridParams( 200 , 0, 30 );
     pauseMenu.addLabelUnderItems( "Pause" );
     pauseMenu.addItem( "Resume" );
     pauseMenu.addItem( "Exit" );
-    pauseMenu.setUpDrawer();
+    pauseMenu.setUp();
 
     TFontDrawer gameOver( rendererRef, fontFile, fontSize + 10 );
     gameOver.setText( "Game over " );
@@ -150,11 +150,11 @@ void TMinesweeperGameRunner::run()
     gameOverMenu.background = background;
     gameOverMenu.fontSize = fontSize + 10;
     gameOverMenu.fontFile = fontFile;
-    gameOverMenu.generateHorizontalBorders( 200, 260, 2 );
+    gameOverMenu.initGridParams( 200 , 0, 30 );
     gameOverMenu.addItem( "Retry" );
     gameOverMenu.addItem( "Exit" );
     gameOverMenu.addLabel( std::move( gameOver ) );
-    gameOverMenu.setUpDrawer();
+    gameOverMenu.setUp();
 
     vector<string> items = { "40", "60", "80", "Exit" };
 
@@ -167,13 +167,13 @@ void TMinesweeperGameRunner::run()
     startMenu.background = background;
     startMenu.fontSize = fontSize + 10;
     startMenu.fontFile = fontFile;
-    startMenu.generateHorizontalBorders( 200, 320, 4 );
+    startMenu.initGridParams( 200, 0 , 30 );
 
     for ( const auto& item : items )
        startMenu.addItem( item );
 
     startMenu.addLabel( std::move( startMenuCaption ) );
-    startMenu.setUpDrawer();
+    startMenu.setUp();
 
     gameObject.mainDrawer = &mainDrawer;
     gameObject.cellRectangles = &mainFieldCellsGrid;

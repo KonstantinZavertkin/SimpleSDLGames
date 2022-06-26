@@ -146,14 +146,11 @@ bool TMainMenu::exitEvent() const
     return exitFlag;
 }
 
-void TMainMenu::generateHorizontalBorders( size_t startY, size_t stopY, size_t count )
+void TMainMenu::initGridParams( size_t startY, size_t startX, size_t height )
 {
     itemsGridStartY = startY;
-    horizontalBorders = vector<size_t>();
-    itemsLineHeight = ( stopY - startY ) / count;
-
-    for ( size_t i = 0; i < count + 1; ++i )
-       horizontalBorders.push_back( startY + i * itemsLineHeight );
+    itemsGridStartX = startX;
+    itemsLineHeight = height;
 }
 
 void TMainMenu::addLabelUnderItems( const string& text )
@@ -173,27 +170,34 @@ void TMainMenu::addLabel( TFontDrawer&& fontDrawer )
 
 void TMainMenu::addItem( const string& text )
 {
-    ++itemsCount;
+    const auto gridVal = itemsGridStartY + itemsCount * itemsLineHeight;
+    horizontalBorders.push_back( gridVal );
     const auto id = textDrawers.size();
+
     textDrawers.emplace_back( renderer, fontFile, fontSize );
     textDrawers[id].setText( text );
-    textDrawers[id].setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
+    textDrawers[id].setPoint( { background.width / 2 - itemsBias, gridVal }, TTextAlignment::leftAlignment );
 
     focusedTextDrawers.emplace_back( renderer, fontFile, fontSize );
     focusedTextDrawers[id].setText( text );
-    focusedTextDrawers[id].setPoint( { background.width / 2 - 50, horizontalBorders[index] }, TTextAlignment::leftAlignment );
+    focusedTextDrawers[id].setPoint( { background.width / 2 - itemsBias, gridVal }, TTextAlignment::leftAlignment );
     focusedTextDrawers[id].setColor( colorSelected );
     focusedTextDrawers[id].isVisible = false;
 
     cursorDrawers.emplace_back( renderer, fontFile, fontSize );
     cursorDrawers[id].setText( ">" );
-    cursorDrawers[id].setPoint( { background.width / 2 - 70, horizontalBorders[index++] }, TTextAlignment::leftAlignment );
+    cursorDrawers[id].setPoint( { background.width / 2 - cursorBias, gridVal }, TTextAlignment::leftAlignment );
     cursorDrawers[id].setColor( colorSelected );
     cursorDrawers[id].isVisible = false;
+
+    ++itemsCount;
 }
 
-void TMainMenu::setUpDrawer()
+void TMainMenu::setUp()
 {
+    const auto gridVal = itemsGridStartY + itemsCount * itemsLineHeight;
+    horizontalBorders.push_back( gridVal );
+
     for ( auto& ref : labelsDrawers )
        mainDrawer.addText( &ref );
 

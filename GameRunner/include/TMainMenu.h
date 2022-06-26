@@ -18,12 +18,13 @@ class TMainMenu
         size_t show();
         bool exitEvent() const;
 
-        void generateHorizontalBorders( size_t startY, size_t stopY, size_t count );
+        //void generateHorizontalBorders( size_t startY, size_t startX, size_t height );
+        void initGridParams( size_t startY, size_t startX, size_t height );
 
         void addLabelUnderItems( const string& text );
         void addLabel( TFontDrawer&& fontDrawer );
         void addItem( const string& text );
-        void setUpDrawer();
+        void setUp();
 
         TRectangleDescription background;
 
@@ -43,7 +44,7 @@ class TMainMenu
 
         bool exitFlag = false;
 
-        size_t index = 0;
+        //size_t index = 0;
         vector<size_t> horizontalBorders = {};
 
     private:
@@ -52,6 +53,9 @@ class TMainMenu
         size_t itemsLineHeight = 0;
         size_t itemsCount = 0;
         size_t currentSelectedItem = 0;
+
+        size_t cursorBias = 70;
+        size_t itemsBias = 50;
 };
 
 #endif

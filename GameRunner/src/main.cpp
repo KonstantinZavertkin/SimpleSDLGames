@@ -59,13 +59,13 @@ int main( int argc, char **argv )
     title.setColor( { 0xFF, 0xFF, 00, 0xFF } );
     title.setPoint( { 140, 200 }, TTextAlignment::leftAlignment );
 
-    menu.generateHorizontalBorders( 200, 300, 4 );
+    menu.initGridParams( 200 , 0, 30 );
     menu.addLabel( std::move( title ) );
     menu.addItem( "Minesweeper" );
     menu.addItem( "Tetris" );
     menu.addItem( "Snake" );
     menu.addItem( "Exit" );
-    menu.setUpDrawer();
+    menu.setUp();
 
     while ( !menu.exitEvent() )
     {
