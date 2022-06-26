@@ -26,7 +26,7 @@ namespace game_backend
         {
             for( int i = ( x - 1 ); i <= ( x + 1 ); ++i )
             {
-                if( ( i >= 0 ) && ( i < sizeY ) && ( j >= 0 ) && ( j < sizeX ) )
+                if( ( i >= 0 ) && ( i < sizeX ) && ( j >= 0 ) && ( j < sizeY ) )
                 {
                     if( field.isFlag( i, j ) )
                     {

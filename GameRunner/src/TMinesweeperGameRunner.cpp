@@ -26,16 +26,16 @@ void TMinesweeperGameRunner::run()
     mainFieldCellsGrid.setCellsFieldParams( activeGameField, cellsFieldParams );
     mainFieldCellsGrid.calcGrid();
 
-    TMinesweeperGame game( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount  } );
+    TMinesweeperGame gameObject( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount  } );
 
-    game.minesweeper.initializeField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount, 40 );
+    //gameObject.minesweeper.initializeField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount, 40 );
 
     vector<TSurface> surfaces;
     vector<TTexture> textures;
 
     for ( size_t i = 0; i < 16; ++i )
     {
-        surfaces.emplace_back( "minesweeper_sprites.bmp" );
+        surfaces.emplace_back( "./resources/minesweeper_sprites.bmp" );
         textures.emplace_back( rendererRef );
     }
 
@@ -46,7 +46,7 @@ void TMinesweeperGameRunner::run()
         textures[i].setStartPoint( { i * 20 + 60, 500 } );
     }
 
-    TTexturesFieldDrawer fieldDrawer( game.gameField, rendererRef, mainFieldCellsGrid );
+    TTexturesFieldDrawer fieldDrawer( gameObject.gameField, rendererRef, mainFieldCellsGrid );
     fieldDrawer.textures = &textures;
     fieldDrawer.textureSliceSize = { 32, 32 };
     fieldDrawer.cellsMapper = []( const TCell& cell )
@@ -140,19 +140,80 @@ void TMinesweeperGameRunner::run()
     pauseMenu.addItem( "Exit" );
     pauseMenu.setUpDrawer();
 
-    game.mainDrawer = &mainDrawer;
-    game.cellRectangles = &mainFieldCellsGrid;
-    game.gameStatus = &statusTextDrawer;
-    game.gameTitle = &titleTextDrawer;
-    game.flagsCountDrawer = &flagsCountTextDrawer;
-    game.timeDrawer = &currentTimeTextDrawer;
-    game.secondsDrawer = &secondsTextDrawer;
-    game.bestTimeDrawer = &bestScoreTextDrawer;
-    game.pauseMenu = &pauseMenu;
+    TFontDrawer gameOver( rendererRef, fontFile, fontSize + 10 );
+    gameOver.getFontDrawerRef().setText( "Game over " );
+    gameOver.getFontDrawerRef().setColor( { 0xFF, 0xFF, 00, 0xFF } );
+    gameOver.getFontDrawerRef().setPoint( { background.width / 2 - 70, 160 }, TTextAlignment::leftAlignment );
 
-    thread mainThr1( &TMinesweeperGame::gameThread, &game );
+    TMainMenu gameOverMenu( rendererRef );
+    gameOverMenu.background = background;
+    gameOverMenu.fontSize = fontSize + 10;
+    gameOverMenu.fontFile = fontFile;
+    gameOverMenu.generateHorizontalBorders( 200, 260, 2 );
+    gameOverMenu.addItem( "Retry" );
+    gameOverMenu.addItem( "Exit" );
+    gameOverMenu.addLabel( std::move( gameOver ) );
+    gameOverMenu.setUpDrawer();
 
-    game.ioThread();
+    vector<string> items = { "40", "60", "80", "Exit" };
 
-    mainThr1.join();
+    TFontDrawer startMenuCaption( rendererRef, fontFile, fontSize + 10 );
+    startMenuCaption.getFontDrawerRef().setText( "Select bombs count:" );
+    startMenuCaption.getFontDrawerRef().setColor( { 0xFF, 0xFF, 00, 0xFF } );
+    startMenuCaption.getFontDrawerRef().setPoint( { background.width / 2 - 70, 160 }, TTextAlignment::leftAlignment );
+
+    TMainMenu startMenu( rendererRef );
+    startMenu.background = background;
+    startMenu.fontSize = fontSize + 10;
+    startMenu.fontFile = fontFile;
+    startMenu.generateHorizontalBorders( 200, 320, 4 );
+
+    for ( const auto& item : items )
+       startMenu.addItem( item );
+
+    startMenu.addLabel( std::move( startMenuCaption ) );
+    startMenu.setUpDrawer();
+
+    gameObject.mainDrawer = &mainDrawer;
+    gameObject.cellRectangles = &mainFieldCellsGrid;
+    gameObject.gameStatus = &statusTextDrawer;
+    gameObject.gameTitle = &titleTextDrawer;
+    gameObject.flagsCountDrawer = &flagsCountTextDrawer;
+    gameObject.timeDrawer = &currentTimeTextDrawer;
+    gameObject.secondsDrawer = &secondsTextDrawer;
+    gameObject.bestTimeDrawer = &bestScoreTextDrawer;
+    gameObject.pauseMenu = &pauseMenu;
+
+    bool runGame = true;
+
+    while ( runGame )
+    {
+        const auto itemValue = startMenu.show();
+
+        if ( itemValue < items.size() )
+        {
+            const auto bombsCount = std::stoi( items[itemValue] );
+            gameObject.minesweeper.initializeField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount, bombsCount );
+
+            thread mainThr( &TMinesweeperGame::gameThread, &gameObject );
+
+            gameObject.ioThread();
+            mainThr.join();
+
+            runGame = false;
+
+            if ( gameObject.minesweeper.isGameOver() )
+            {
+                const auto ans = gameOverMenu.show();
+
+                if ( ans == 0 )
+                {
+                    gameObject.minesweeper.initializeField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount, 40 );
+                    runGame = true;
+                }
+            }
+        }
+        else
+           runGame = false;
+    }
 }

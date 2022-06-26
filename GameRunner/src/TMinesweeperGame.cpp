@@ -42,6 +42,12 @@ void TMinesweeperGame::ioThread()
 
                 if ( keyValue == SDLK_ESCAPE )
                 {
+                    if ( minesweeper.isGameOver() )
+                    {
+                        quitLocal = true;
+                        continue;
+                    }
+
                     syncPoint.lock();
                     const time_t timeBeforePause = time( nullptr );
                     

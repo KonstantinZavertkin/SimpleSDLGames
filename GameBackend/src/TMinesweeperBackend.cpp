@@ -6,7 +6,7 @@ namespace game_backend
 {
     TMinesweeperBackend::TMinesweeperBackend() : stepAction( field )
     {
-    }
+    };
 
     void TMinesweeperBackend::initializeField( int sizeX, int sizeY, int amountOfBombs )
     {
@@ -27,7 +27,7 @@ namespace game_backend
     bool TMinesweeperBackend::isGameOver()
     {
         return gameOver;
-    }
+    };
 
     bool TMinesweeperBackend::isWin()
     {
@@ -37,7 +37,7 @@ namespace game_backend
     Field& TMinesweeperBackend::getField()
     {
         return field;
-    }
+    };
 
     size_t TMinesweeperBackend::getFlagsCount()
     {

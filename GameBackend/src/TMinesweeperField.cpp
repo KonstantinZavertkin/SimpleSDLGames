@@ -7,6 +7,7 @@ namespace game_backend
         this->sizeX = sizeX;
         this->sizeY = sizeY;
         this->amountOfBombs = amountOfBombs;
+        bombOpened = false;
 
         FieldGenerator generatedField( sizeX, sizeY, amountOfBombs );
         generatedField.prepareArray();
