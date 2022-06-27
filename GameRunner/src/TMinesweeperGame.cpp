@@ -21,6 +21,8 @@ void TMinesweeperGame::gameThread()
 
 void TMinesweeperGame::ioThread()
 {
+    gameStatus->isVisible = false;
+    flagsCountDrawer->isVisible = true;
     bestScore = bestScoreStorage.getScore();
 
     if ( !bestScore )

@@ -93,19 +93,7 @@ namespace game_backend
         }
         else
         {
-            int flagsCount = 0;
-
-            for( int j = ( y - 1 ); j <= ( y + 1 ); ++j )
-            {
-                for( int i = ( x - 1 ); i <= ( x + 1 ); ++i )
-                {
-                    if( ( i >= 0 ) && ( i < sizeX ) && ( j >= 0 ) && ( j < sizeY ) )
-                    {
-                        if ( field.isFlag( i, j) )
-                        ++flagsCount;
-                    }
-                }
-            }
+            const int flagsCount = getAmountOfFlagsInSquare( x, y );
 
             if ( bombsAround == flagsCount )
             {
