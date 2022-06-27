@@ -5,12 +5,11 @@ project(SimpleSDL2Games VERSION 0.1 LANGUAGES C CXX)
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     # The SDL2 library is distributed without configuration file for cmake on Windows
     # For this reason find_package command is not used. 
-    # You must specify SDL2_DIR manually. SDL2_INCLUDE_DIRS and SDL2_LIBRARIES are set automatically 
+    # You must specify SDL2_INCLUDE_DIRS and SDL2_LIBRARIES, SDL2_TTF_INCLUDE_DIRS and SDL2_TTF_LIBRARIES_DIRS manually
     # https://stackoverflow.com/questions/28395833/using-sdl2-with-cmake
-    #set(SDL2_DIR "" CACHE PATH "The directory containing the SDL2 library")
     set(SDL2_INCLUDE_DIRS "" CACHE PATH "The directory containing the SDL2 headers (include directory)")
     set(SDL2_LIBRARIES_DIRS "" CACHE PATH "The directory containing the SDL2 libraries (.lib and .dll files)")
-	
+
     set(SDL2_TTF_INCLUDE_DIRS "" CACHE PATH "The directory containing the SDL_ttf headers (include directory)")
     set(SDL2_TTF_LIBRARIES_DIRS "" CACHE PATH "The directory containing the SDL_ttf libraries (.lib and .dll files)")
 
@@ -84,7 +83,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
 	
 	# Post-build event for msvs to copy resources
     add_custom_command(TARGET GameRunner POST_BUILD 
-        COMMAND xcopy /y /e "$(SolutionDir)\\..\\resources\\font\\" "$(SolutionDir)$(Configuration)\\*.*"
+        COMMAND xcopy /y /e "$(SolutionDir)\\..\\resources\\" "$(SolutionDir)$(Configuration)\\resources\\*.*"
     )
     
     # set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT GameRunner)
