@@ -7,24 +7,17 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     # For this reason find_package command is not used. 
     # You must specify SDL2_DIR manually. SDL2_INCLUDE_DIRS and SDL2_LIBRARIES are set automatically 
     # https://stackoverflow.com/questions/28395833/using-sdl2-with-cmake
-    set(SDL2_DIR "" CACHE PATH "The directory containing the SDL2 library")
-    set(SDL2_INCLUDE_DIRS "${SDL2_DIR}/include")
-    
-    set(SDL2_TTF_DIR "" CACHE PATH "The directory containing the SDL_ttf library")
-    set(SDL2_TTF_INCLUDE_DIRS "${SDL2_TTF_DIR}/include")
+    #set(SDL2_DIR "" CACHE PATH "The directory containing the SDL2 library")
+    set(SDL2_INCLUDE_DIRS "" CACHE PATH "The directory containing the SDL2 headers (include directory)")
+    set(SDL2_LIBRARIES_DIRS "" CACHE PATH "The directory containing the SDL2 libraries (.lib and .dll files)")
+	
+    set(SDL2_TTF_INCLUDE_DIRS "" CACHE PATH "The directory containing the SDL_ttf headers (include directory)")
+    set(SDL2_TTF_LIBRARIES_DIRS "" CACHE PATH "The directory containing the SDL_ttf libraries (.lib and .dll files)")
 
-    # Support both 32 and 64 bit builds
-    if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
-      set(SDL2_LIBRARIES "${SDL2_DIR}/lib/x64/SDL2.lib;${SDL2_DIR}/lib/x64/SDL2main.lib")
-      set(SDL2_LIBRARIES_DLL ${SDL2_DIR}/lib/x64/)
-      set(SDL2_TTF_LIBRARIES "${SDL2_TTF_DIR}/lib/x64/SDL2_ttf.lib")
-      set(SDL2_TTF_LIBRARIES_DLL ${SDL2_TTF_DIR}/lib/x64/)
-    else ()
-      set(SDL2_LIBRARIES "${SDL2_DIR}/lib/x86/SDL2.lib;${SDL2_DIR}/lib/x86/SDL2main.lib")
-      set(SDL2_LIBRARIES_DLL ${SDL2_DIR}/lib/x86/)
-      set(SDL2_TTF_LIBRARIES "${SDL2_TTF_DIR}/lib/x86/SDL2_ttf.lib")
-      set(SDL2_TTF_LIBRARIES_DLL ${SDL2_TTF_DIR}/lib/x86/)
-    endif ()
+    set(SDL2_LIBRARIES "${SDL2_LIBRARIES_DIRS}/SDL2.lib;${SDL2_LIBRARIES_DIRS}/SDL2main.lib")
+    set(SDL2_LIBRARIES_DLL ${SDL2_LIBRARIES_DIRS}/)
+    set(SDL2_TTF_LIBRARIES "${SDL2_TTF_LIBRARIES_DIRS}/SDL2_ttf.lib")
+    set(SDL2_TTF_LIBRARIES_DLL ${SDL2_TTF_LIBRARIES_DIRS}/)
 
     string(STRIP "${SDL2_LIBRARIES}" SDL2_LIBRARIES)
     
