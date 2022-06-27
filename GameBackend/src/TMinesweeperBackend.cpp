@@ -21,7 +21,10 @@ namespace game_backend
         field = stepAction.getField();
 
         if ( field.isBombOpened() )
-           gameOver = true;
+        {
+            field.openAllBombs();
+            gameOver = true;
+        }
     };
 
     bool TMinesweeperBackend::isGameOver()

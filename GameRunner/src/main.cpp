@@ -17,7 +17,7 @@ using namespace game_backend;
 
 int main( int argc, char **argv )
 {
-    std::srand( time( 0 ) );
+    //std::srand( time( 0 ) );
     TSdlWrapper initSDL2;
 
     //! Main window params

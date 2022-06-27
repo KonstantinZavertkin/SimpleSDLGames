@@ -65,55 +65,73 @@ namespace game_backend
     {
         field.setOpened( x, y );
 
-        for( int j = ( y - 1 ); j <= ( y + 1 ); ++j )
-        {
-            for( int i = ( x - 1 ); i <= ( x + 1 ); ++i )
-            {
-                if( ( i >= 0 ) && ( i < sizeX ) && ( j >= 0 ) && ( j < sizeY ) )
-                {
-                    if( !( ( i == x ) && ( j == y ) ) )
-                    {
-                        if( !field.isOpened( i, j ) && !field.isFlag( i, j ) && !field.isBomb( i, j ) )
-                        {
-                            field.setOpened( i, j );
+        const auto bombsAround = field.getValue( x, y );
 
-                            if( field.getValue( i, j ) == 0 )
+        if( bombsAround == 0 )
+        {
+            for( int j = ( y - 1 ); j <= ( y + 1 ); ++j )
+            {
+                for( int i = ( x - 1 ); i <= ( x + 1 ); ++i )
+                {
+                    if( ( i >= 0 ) && ( i < sizeX ) && ( j >= 0 ) && ( j < sizeY ) )
+                    {
+                        if( !( ( i == x ) && ( j == y ) ) )
+                        {
+                            if( !field.isOpened( i, j ) && !field.isFlag( i, j ) && !field.isBomb( i, j ) )
                             {
-                                openCells( i, j );
+                                field.setOpened( i, j );
+
+                                if( field.getValue( i, j ) == 0 )
+                                {
+                                    openCells( i, j );
+                                }
                             }
                         }
                     }
                 }
             }
         }
-         
-       /*if( field.getValue( x, y ) != 0 )
-       {
-          if( !field.isOpened( x, y ) )
-          {
-             field.setOpened( x, y );
-          }
-       }
-       else
-       {
-          for( int j = ( y - 1 ); j <= ( y + 1 ); ++j )
-          {
-             for( int i = ( x - 1 ); i <= ( x + 1 ); ++i )
-             {
-                if( ( i >= 0 ) && ( i < sizeX ) && ( j >= 0 ) && ( j < sizeY ) )
+        else
+        {
+            int flagsCount = 0;
+
+            for( int j = ( y - 1 ); j <= ( y + 1 ); ++j )
+            {
+                for( int i = ( x - 1 ); i <= ( x + 1 ); ++i )
                 {
-                   if( !( ( i == x ) && ( j == y ) ) )
-                   {
-                      if( !field.isOpened( i, j ) && !field.isFlag( i, j ))
-                      {
-                         field.setOpened( i, j );
-                         openCells( i, j );
-                      }
-                   }
+                    if( ( i >= 0 ) && ( i < sizeX ) && ( j >= 0 ) && ( j < sizeY ) )
+                    {
+                        if ( field.isFlag( i, j) )
+                        ++flagsCount;
+                    }
                 }
-             }
-          }
-       }*/
+            }
+
+            if ( bombsAround == flagsCount )
+            {
+                for( int j = ( y - 1 ); j <= ( y + 1 ); ++j )
+                {
+                    for( int i = ( x - 1 ); i <= ( x + 1 ); ++i )
+                    {
+                        if( ( i >= 0 ) && ( i < sizeX ) && ( j >= 0 ) && ( j < sizeY ) )
+                        {
+                            if( !( ( i == x ) && ( j == y ) ) )
+                            {
+                                if( !field.isOpened( i, j ) && !field.isFlag( i, j ) )
+                                {
+                                    field.setOpened( i, j );
+
+                                    if( field.getValue( i, j ) == 0 )
+                                    {
+                                        openCells( i, j );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     };
 
     TStepAction::TStepAction( Field& fieldArg ) : field( fieldArg )

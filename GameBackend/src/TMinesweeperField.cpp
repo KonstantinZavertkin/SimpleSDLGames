@@ -73,6 +73,14 @@ namespace game_backend
     vector<vector<TMinesweeperCell>>& Field::getField()
     {
         return field;
+    }
+
+    void Field::openAllBombs()
+    {
+        for ( auto& line : field )
+           for ( auto& cellRef : line )
+               if ( cellRef.isBomb() )
+                  cellRef.setOpened();
     };
 }
 

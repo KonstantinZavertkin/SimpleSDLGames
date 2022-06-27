@@ -22,6 +22,7 @@ namespace game_backend
             bool isBombOpened() const;
             bool isWholeFieldOpened();
             vector<vector<TMinesweeperCell>>& getField();
+            void openAllBombs();
 
         private:
             vector<vector<TMinesweeperCell>> field;
