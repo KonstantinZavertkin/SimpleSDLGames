@@ -57,7 +57,7 @@ void TSnakeGameRunner::run()
     pauseMenu.background = background;
     pauseMenu.fontSize = fontSize + 10;
     pauseMenu.fontFile = fontFile;
-    pauseMenu.initGridParams( 200, 0, 30 );
+    pauseMenu.initGridParams( 200, 30 );
     pauseMenu.addLabelUnderItems( "Pause" );
     pauseMenu.addItem( "Resume" );
     pauseMenu.addItem( "Exit" );
@@ -72,7 +72,7 @@ void TSnakeGameRunner::run()
     gameOverMenu.background = background;
     gameOverMenu.fontSize = fontSize + 10;
     gameOverMenu.fontFile = fontFile;
-    gameOverMenu.initGridParams( 200, 0, 30 );
+    gameOverMenu.initGridParams( 200, 30 );
     gameOverMenu.addItem( "Retry" );
     gameOverMenu.addItem( "Exit" );
     gameOverMenu.addLabel( std::move( gameOver ) );

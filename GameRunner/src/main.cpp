@@ -17,7 +17,7 @@ using namespace game_backend;
 
 int main( int argc, char **argv )
 {
-    //std::srand( time( 0 ) );
+    std::srand( time( 0 ) );
     TSdlWrapper initSDL2;
 
     //! Main window params
@@ -54,13 +54,8 @@ int main( int argc, char **argv )
     menu.fontSize = fontSize + 10;
     menu.fontFile = fontFile;
 
-    TFontDrawer title( renderer, fontFile, fontSize + 10 );
-    title.setText( "Select game:" );
-    title.setColor( { 0xFF, 0xFF, 00, 0xFF } );
-    title.setPoint( { 140, 200 }, TTextAlignment::leftAlignment );
-
-    menu.initGridParams( 200 , 0, 30 );
-    menu.addLabel( std::move( title ) );
+    menu.initGridParams( 200, 30 );
+    menu.addExtendedCursor( "Select game:  " );
     menu.addItem( "Minesweeper" );
     menu.addItem( "Tetris" );
     menu.addItem( "Snake" );

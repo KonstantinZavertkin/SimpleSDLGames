@@ -31,10 +31,16 @@ size_t TMainMenu::show()
     for ( auto& ptrToDrawer: cursorDrawers )
         ptrToDrawer.isVisible = false;
 
+    for ( auto& ptrToDrawer: extendedCursorDrawers )
+        ptrToDrawer.isVisible = false;
+
     currentSelectedItem %= itemsCount;
     textDrawers[currentSelectedItem].isVisible = false;
     focusedTextDrawers[currentSelectedItem].isVisible = true;
     cursorDrawers[currentSelectedItem].isVisible = true;
+
+    if ( extendedCursor )
+        extendedCursorDrawers[currentSelectedItem].isVisible = true;
 
     SDL_Event ioEvent;
     bool quitLocal = false;
@@ -67,11 +73,17 @@ size_t TMainMenu::show()
                     for ( auto& ptrToDrawer: cursorDrawers )
                         ptrToDrawer.isVisible = false;
 
+                    for ( auto& ptrToDrawer: extendedCursorDrawers )
+                        ptrToDrawer.isVisible = false;
+
                     currentSelectedItem = lineId;
                     currentSelectedItem %= itemsCount;
                     textDrawers[currentSelectedItem].isVisible = false;
                     focusedTextDrawers[currentSelectedItem].isVisible = true;
                     cursorDrawers[currentSelectedItem].isVisible = true;
+
+                    if ( extendedCursor )
+                        extendedCursorDrawers[currentSelectedItem].isVisible = true;
                 }
             }
 
@@ -120,10 +132,16 @@ size_t TMainMenu::show()
                 for ( auto& ptrToDrawer: cursorDrawers )
                     ptrToDrawer.isVisible = false;
 
+                for ( auto& ptrToDrawer: extendedCursorDrawers )
+                    ptrToDrawer.isVisible = false;
+
                 currentSelectedItem %= itemsCount;
                 textDrawers[currentSelectedItem].isVisible = false;
                 focusedTextDrawers[currentSelectedItem].isVisible = true;
                 cursorDrawers[currentSelectedItem].isVisible = true;
+
+                if ( extendedCursor )
+                    extendedCursorDrawers[currentSelectedItem].isVisible = true;
             }
         }
 
@@ -146,10 +164,9 @@ bool TMainMenu::exitEvent() const
     return exitFlag;
 }
 
-void TMainMenu::initGridParams( size_t startY, size_t startX, size_t height )
+void TMainMenu::initGridParams( size_t startY, size_t height )
 {
     itemsGridStartY = startY;
-    itemsGridStartX = startX;
     itemsLineHeight = height;
 }
 
@@ -157,7 +174,7 @@ void TMainMenu::addLabelUnderItems( const string& text )
 {
     TFontDrawer label( renderer, fontFile, fontSize );
     label.setText( text );
-    label.setColor( { 0xFF, 0xFF, 00, 0xFF } );
+    label.setColor( labelsColor );
     label.setPoint( { background.width / 2 - 50, itemsGridStartY - itemsLineHeight - 10 }, TTextAlignment::leftAlignment );
 
     labelsDrawers.push_back( std::move( label ) );
@@ -165,6 +182,7 @@ void TMainMenu::addLabelUnderItems( const string& text )
 
 void TMainMenu::addLabel( TFontDrawer&& fontDrawer )
 {
+    fontDrawer.setColor( labelsColor );
     labelsDrawers.push_back( std::move( fontDrawer ) );
 }
 
@@ -190,6 +208,15 @@ void TMainMenu::addItem( const string& text )
     cursorDrawers[id].setColor( colorSelected );
     cursorDrawers[id].isVisible = false;
 
+    if ( extendedCursor )
+    {
+        extendedCursorDrawers.emplace_back( renderer, fontFile, fontSize );
+        extendedCursorDrawers[id].setText( extendedCursorLabel );
+        extendedCursorDrawers[id].setPoint( { background.width / 2 - cursorBias, gridVal }, TTextAlignment::rightAlignment );
+        extendedCursorDrawers[id].setColor( labelsColor );
+        extendedCursorDrawers[id].isVisible = false;
+    }
+
     ++itemsCount;
 }
 
@@ -209,4 +236,13 @@ void TMainMenu::setUp()
 
     for ( auto& ref : cursorDrawers )
         mainDrawer.addText( &ref );
+
+    for ( auto& ref : extendedCursorDrawers )
+        mainDrawer.addText( &ref );
+}
+
+void TMainMenu::addExtendedCursor( const string& str )
+{
+    extendedCursor = true;
+    extendedCursorLabel = str;
 }

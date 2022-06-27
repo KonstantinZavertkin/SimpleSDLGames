@@ -135,7 +135,7 @@ void TMinesweeperGameRunner::run()
     pauseMenu.background = background;
     pauseMenu.fontSize = fontSize + 10;
     pauseMenu.fontFile = fontFile;
-    pauseMenu.initGridParams( 200 , 0, 30 );
+    pauseMenu.initGridParams( 200, 30 );
     pauseMenu.addLabelUnderItems( "Pause" );
     pauseMenu.addItem( "Resume" );
     pauseMenu.addItem( "Exit" );
@@ -150,7 +150,7 @@ void TMinesweeperGameRunner::run()
     gameOverMenu.background = background;
     gameOverMenu.fontSize = fontSize + 10;
     gameOverMenu.fontFile = fontFile;
-    gameOverMenu.initGridParams( 200 , 0, 30 );
+    gameOverMenu.initGridParams( 200, 30 );
     gameOverMenu.addItem( "Retry" );
     gameOverMenu.addItem( "Exit" );
     gameOverMenu.addLabel( std::move( gameOver ) );
@@ -167,7 +167,7 @@ void TMinesweeperGameRunner::run()
     startMenu.background = background;
     startMenu.fontSize = fontSize + 10;
     startMenu.fontFile = fontFile;
-    startMenu.initGridParams( 200, 0 , 30 );
+    startMenu.initGridParams( 200, 30 );
 
     for ( const auto& item : items )
        startMenu.addItem( item );
