@@ -1,7 +1,12 @@
 #include "TStepAction.h"
 #include "TMinesweeperField.h"
+
 namespace game_backend
 {
+    TStepAction::TStepAction( Field& fieldArg ) : field( fieldArg )
+    {
+    };
+
     void TStepAction::initialStepAction( int sizeX, int sizeY )
     {
         this->sizeX = sizeX;
@@ -66,18 +71,19 @@ namespace game_backend
         field.setOpened( x, y );
 
         const auto bombsAround = field.getValue( x, y );
+        const int flagsCount = getAmountOfFlagsInSquare( x, y );
 
-        if( bombsAround == 0 )
+        for( int j = ( y - 1 ); j <= ( y + 1 ); ++j )
         {
-            for( int j = ( y - 1 ); j <= ( y + 1 ); ++j )
+            for( int i = ( x - 1 ); i <= ( x + 1 ); ++i )
             {
-                for( int i = ( x - 1 ); i <= ( x + 1 ); ++i )
+                if( ( i >= 0 ) && ( i < sizeX ) && ( j >= 0 ) && ( j < sizeY ) )
                 {
-                    if( ( i >= 0 ) && ( i < sizeX ) && ( j >= 0 ) && ( j < sizeY ) )
+                    if( !( ( i == x ) && ( j == y ) ) )
                     {
-                        if( !( ( i == x ) && ( j == y ) ) )
+                        if ( bombsAround == 0 || bombsAround == flagsCount )
                         {
-                            if( !field.isOpened( i, j ) && !field.isFlag( i, j ) && !field.isBomb( i, j ) )
+                            if( !field.isOpened( i, j ) && !field.isFlag( i, j ) )
                             {
                                 field.setOpened( i, j );
 
@@ -91,40 +97,7 @@ namespace game_backend
                 }
             }
         }
-        else
-        {
-            const int flagsCount = getAmountOfFlagsInSquare( x, y );
-
-            if ( bombsAround == flagsCount )
-            {
-                for( int j = ( y - 1 ); j <= ( y + 1 ); ++j )
-                {
-                    for( int i = ( x - 1 ); i <= ( x + 1 ); ++i )
-                    {
-                        if( ( i >= 0 ) && ( i < sizeX ) && ( j >= 0 ) && ( j < sizeY ) )
-                        {
-                            if( !( ( i == x ) && ( j == y ) ) )
-                            {
-                                if( !field.isOpened( i, j ) && !field.isFlag( i, j ) )
-                                {
-                                    field.setOpened( i, j );
-
-                                    if( field.getValue( i, j ) == 0 )
-                                    {
-                                        openCells( i, j );
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
     };
-
-    TStepAction::TStepAction( Field& fieldArg ) : field( fieldArg )
-    {
-    }
 
     void TStepAction::performAction( int x, int y, char currentAction )
     {
