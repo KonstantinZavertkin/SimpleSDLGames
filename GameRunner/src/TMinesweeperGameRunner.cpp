@@ -14,6 +14,7 @@ TMinesweeperGameRunner::TMinesweeperGameRunner( TRenderer& rendererRef )
 
 void TMinesweeperGameRunner::init()
 {
+    activeGameField.xStart = 75;
     cellsFieldParams.xCellsCount = 20;
     cellsFieldParams.yCellsCount = 15;
     cellsFieldParams.cellHeight = 32;
@@ -28,18 +29,18 @@ void TMinesweeperGameRunner::run()
 
     TMinesweeperGame gameObject( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount  } );
 
-    //gameObject.minesweeper.initializeField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount, 40 );
-
     vector<TSurface> surfaces;
     vector<TTexture> textures;
 
-    for ( size_t i = 0; i < 16; ++i )
+    const size_t texturesCount = 16;
+
+    for ( size_t i = 0; i < texturesCount; ++i )
     {
         surfaces.emplace_back( "./resources/minesweeper_sprites.bmp" );
         textures.emplace_back( rendererRef );
     }
 
-    for ( size_t i = 0; i < 16; ++i )
+    for ( size_t i = 0; i < texturesCount; ++i )
     {
         textures[i].updateSurface( surfaces[i] );
         textures[i].setTexturePart( { i * 32, 0 }, { 32, 32 } );
@@ -49,6 +50,7 @@ void TMinesweeperGameRunner::run()
     TTexturesFieldDrawer fieldDrawer( gameObject.gameField, rendererRef, mainFieldCellsGrid );
     fieldDrawer.textures = &textures;
     fieldDrawer.textureSliceSize = { 32, 32 };
+
     fieldDrawer.cellsMapper = []( const TCell& cell )
     {
         constexpr int biasIndex = 7;
@@ -194,25 +196,14 @@ void TMinesweeperGameRunner::run()
         if ( itemValue < items.size() )
         {
             const auto bombsCount = std::stoi( items[itemValue] );
-            gameObject.minesweeper.initializeField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount, bombsCount );
-
-            thread mainThr( &TMinesweeperGame::gameThread, &gameObject );
-
-            gameObject.ioThread();
-            mainThr.join();
+            gameObject.gameBackend.initializeField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount, bombsCount );
+            gameObject.runGame();
 
             runGame = false;
 
-            if ( gameObject.minesweeper.isGameOver() )
-            {
-                const auto ans = gameOverMenu.show();
-
-                if ( ans == 0 )
-                {
-                    gameObject.minesweeper.initializeField( cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount, 40 );
+            if ( gameObject.gameBackend.isGameOver() )
+                if ( gameOverMenu.show() == 0 )
                     runGame = true;
-                }
-            }
         }
         else
            runGame = false;

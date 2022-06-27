@@ -26,11 +26,12 @@ class TTetrisGame
         ~TTetrisGame();
 
         void initGame();
+        void runGame();
 
         void gameThread();
         void ioThread();
 
-        TTetrisBackend tetrisBackend;
+        TTetrisBackend gameBackend;
 
         TDrawer* mainDrawer = nullptr;
         TFontDrawer* scorePrinter = nullptr;

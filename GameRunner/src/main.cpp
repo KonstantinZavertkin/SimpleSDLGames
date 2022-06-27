@@ -29,8 +29,6 @@ int main( int argc, char **argv )
     string fontFile = "./resources/font/Samson.ttf";
     int fontSize = 22;
     
-    //! Main window params
-
     TRectangleDescription background;
     background.xStart = 0;
     background.yStart = 0;
@@ -68,22 +66,13 @@ int main( int argc, char **argv )
         unique_ptr<IAbstractRunner> gameRunner = nullptr;
 
         if ( selectedItem == 0 )
-        {
-            activeGameField.xStart = 75;
             gameRunner = make_unique<TMinesweeperGameRunner>( renderer );
-        }
 
         if ( selectedItem == 1 )
-        {
-            activeGameField.xStart = 200;
             gameRunner = make_unique<TTetrisGameRunner>( renderer );
-        }
 
         if ( selectedItem == 2 )
-        {
-            activeGameField.xStart = xStartBias;
             gameRunner = make_unique<TSnakeGameRunner>( renderer );
-        }
 
         if ( gameRunner )
         {

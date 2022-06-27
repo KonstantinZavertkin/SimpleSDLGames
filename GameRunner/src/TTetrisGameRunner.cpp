@@ -8,6 +8,8 @@ TTetrisGameRunner::TTetrisGameRunner( TRenderer& rendererArg )
 
 void TTetrisGameRunner::init()
 {
+    activeGameField.xStart = 200;
+
     cellsFieldParams.xCellsCount = 10;
     cellsFieldParams.yCellsCount = 20;
     cellsFieldParams.cellHeight = 25;
@@ -50,10 +52,10 @@ void TTetrisGameRunner::run()
 
     TTetrisGame gameObject( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount } );
 
-    TPrimitivesFieldDrawer tetrisDrawer( gameObject.tetrisBackend.gameField, rendererRef, mainFieldCellsGrid );
+    TPrimitivesFieldDrawer tetrisDrawer( gameObject.gameBackend.gameField, rendererRef, mainFieldCellsGrid );
     tetrisDrawer.cellsMapper = tetrisCellsMapper;
 
-    TPrimitivesFieldDrawer infoFieldDrawer( gameObject.tetrisBackend.nextFigureField, rendererRef, infoFieldCellsGrid );
+    TPrimitivesFieldDrawer infoFieldDrawer( gameObject.gameBackend.nextFigureField, rendererRef, infoFieldCellsGrid );
     infoFieldDrawer.cellsMapper = tetrisCellsMapper;
 
     auto point = make_pair( infoFieldBound.xStart, gameFieldBound.yStart );
@@ -119,20 +121,15 @@ void TTetrisGameRunner::run()
 
     while ( runGame )
     {
-        thread mainThr( &TTetrisGame::gameThread, &gameObject );
-
-        gameObject.ioThread();
-        mainThr.join();
+        gameObject.runGame();
 
         runGame = false;
 
-        if ( gameObject.tetrisBackend.gameOver )
+        if ( gameObject.gameBackend.gameOver )
         {
-            const auto ans = gameOverMenu.show();
-
-            if ( ans == 0 )
+            if ( gameOverMenu.show() == 0 )
             {
-                gameObject.tetrisBackend.reset();
+                gameObject.gameBackend.reset();
                 runGame = true;
             }
         }

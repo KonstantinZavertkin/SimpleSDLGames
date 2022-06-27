@@ -42,7 +42,7 @@ void TMinesweeperGame::ioThread()
 
                 if ( keyValue == SDLK_ESCAPE )
                 {
-                    if ( minesweeper.isGameOver() )
+                    if ( gameBackend.isGameOver() )
                     {
                         quitLocal = true;
                         continue;
@@ -65,7 +65,7 @@ void TMinesweeperGame::ioThread()
 
             if ( event.type == SDL_MOUSEBUTTONDOWN )
             {
-                if ( minesweeper.isGameOver() || minesweeper.isWin() )
+                if ( gameBackend.isGameOver() || gameBackend.isWin() )
                    continue;
 
                 const auto x = event.button.x;
@@ -84,10 +84,10 @@ void TMinesweeperGame::ioThread()
                     const auto [cx, cy] = *cellCoords;
 
                     if ( event.button.button == SDL_BUTTON_LEFT )
-                        minesweeper.performStep( cy, cx, 'a' );
+                        gameBackend.performStep( cy, cx, 'a' );
 
                     if ( event.button.button == SDL_BUTTON_RIGHT )
-                        minesweeper.performStep( cy, cx, 'f' );
+                        gameBackend.performStep( cy, cx, 'f' );
                 }
 
                 syncPoint.unlock();
@@ -96,7 +96,7 @@ void TMinesweeperGame::ioThread()
 
         syncPoint.lock();
 
-        Field& mField = minesweeper.getField();
+        Field& mField = gameBackend.getField();
 
         for ( int i = 0; i < fieldSize.first; ++i )
         {
@@ -106,7 +106,7 @@ void TMinesweeperGame::ioThread()
                 {
                     if ( mField.isBomb( i, j ) )
                     {
-                        if ( minesweeper.isGameOver() )
+                        if ( gameBackend.isGameOver() )
                             gameField.field[i][j].currentState = "b";
                         else
                            gameField.field[i][j].currentState = "h";
@@ -126,14 +126,14 @@ void TMinesweeperGame::ioThread()
 
         quit = quitLocal;
 
-        if ( minesweeper.isGameOver() )
+        if ( gameBackend.isGameOver() )
         {
             gameStatus->isVisible = true;
             gameStatus->setText( "Game over" );
             flagsCountDrawer->isVisible = false;
         }
 
-        if ( minesweeper.isWin() )
+        if ( gameBackend.isWin() )
         {
             gameStatus->isVisible = true;
             gameStatus->setText( "You win!" );
@@ -142,7 +142,7 @@ void TMinesweeperGame::ioThread()
 
         if ( startTimeFlag )
         {
-            if ( !minesweeper.isGameOver() && !minesweeper.isWin() )
+            if ( !gameBackend.isGameOver() && !gameBackend.isWin() )
             {
                 const time_t currentTime = time( nullptr );
                 seconds = difftime( currentTime, startTime ) - secondsPause;
@@ -161,7 +161,7 @@ void TMinesweeperGame::ioThread()
         else
             bestTimeDrawer->setText( bestTimePrefix + "----" );
         
-        flagsCountDrawer->setText( "Flags: " +  to_string( minesweeper.getFlagsCount() ) );
+        flagsCountDrawer->setText( "Flags: " +  to_string( gameBackend.getFlagsCount() ) );
 
         if ( !quitLocal )
             mainDrawer->draw();
@@ -171,7 +171,14 @@ void TMinesweeperGame::ioThread()
         SDL_Delay( 1 );
     }
 
-    if ( minesweeper.isWin() )
+    if ( gameBackend.isWin() )
         if ( currentScore < bestScore )
             bestScoreStorage.setScore( currentScore );
+}
+
+void TMinesweeperGame::runGame()
+{
+    thread mainThr( &TMinesweeperGame::gameThread, this );
+    ioThread();
+    mainThr.join();
 }

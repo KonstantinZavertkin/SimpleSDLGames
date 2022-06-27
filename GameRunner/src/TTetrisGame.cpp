@@ -3,7 +3,7 @@
 #include "TTetrisGame.h"
 
 TTetrisGame::TTetrisGame( TCoords fieldSize )
-    : tetrisBackend( fieldSize ), bestScoreStorage( pathToBestScoreFile )
+    : gameBackend( fieldSize ), bestScoreStorage( pathToBestScoreFile )
 {
 };
 
@@ -15,15 +15,22 @@ void TTetrisGame::initGame()
 {
 }
 
+void TTetrisGame::runGame()
+{
+    thread mainThr( &TTetrisGame::gameThread, this );
+    ioThread();
+    mainThr.join();
+}
+
 void TTetrisGame::gameThread()
 {
-    while ( !tetrisBackend.quit )
+    while ( !gameBackend.quit )
     {
         syncPoint.lock();
-        tetrisBackend.gameStep();
+        gameBackend.gameStep();
         syncPoint.unlock();
 
-        SDL_Delay( tetrisBackend.getTimeToSleep() );
+        SDL_Delay( gameBackend.getTimeToSleep() );
     }
 };
 
@@ -49,7 +56,7 @@ void TTetrisGame::ioThread()
             {
                 quitLocal = true;
                 syncPoint.lock();
-                tetrisBackend.quit = quitLocal;
+                gameBackend.quit = quitLocal;
                 syncPoint.unlock();
             }
 
@@ -81,7 +88,7 @@ void TTetrisGame::ioThread()
                     if ( pauseMenu->show() != 0 )
                     {
                         quitLocal = true;
-                        tetrisBackend.quit = quitLocal;
+                        gameBackend.quit = quitLocal;
                     }
 
                     syncPoint.unlock();
@@ -89,27 +96,27 @@ void TTetrisGame::ioThread()
 
                 syncPoint.lock();
 
-                tetrisBackend.pauseGame = pauseLocal;
+                gameBackend.pauseGame = pauseLocal;
 
                 if ( !pauseLocal )
                 {
                     if ( vectorNext != vectorDefault )
                     {
-                        if ( !tetrisBackend.allBlocks.empty() )
+                        if ( !gameBackend.allBlocks.empty() )
                         {
-                            tetrisBackend.createFigureIfRequired();
+                            gameBackend.createFigureIfRequired();
 
                             if ( vectorNext == vectorUp )
                             {
-                                tetrisBackend.allBlocks.back().turn( { 0, 0 } );
+                                gameBackend.allBlocks.back().turn( { 0, 0 } );
                             }
                             else
                             {
-                                tetrisBackend.allBlocks.back().moveDirection = vectorNext;
-                                tetrisBackend.allBlocks.back().step();
+                                gameBackend.allBlocks.back().moveDirection = vectorNext;
+                                gameBackend.allBlocks.back().step();
                             }
 
-                            tetrisBackend.showBlockShadow();
+                            gameBackend.showBlockShadow();
                         }
 
                         vectorNext = vectorDefault;
@@ -119,10 +126,10 @@ void TTetrisGame::ioThread()
                     {
                         figureFallSignal = false;
 
-                        while ( tetrisBackend.allBlocks.back().canMove )
-                            tetrisBackend.allBlocks.back().step();
+                        while ( gameBackend.allBlocks.back().canMove )
+                            gameBackend.allBlocks.back().step();
 
-                        tetrisBackend.createFigureIfRequired();
+                        gameBackend.createFigureIfRequired();
                     }
                 }
 
@@ -132,8 +139,8 @@ void TTetrisGame::ioThread()
 
         syncPoint.lock();
 
-        quitLocal = tetrisBackend.quit;
-        currentScore = tetrisBackend.gameScore;
+        quitLocal = gameBackend.quit;
+        currentScore = gameBackend.gameScore;
         scorePrinter->setText( "Score: " + to_string( currentScore ) );
         bestScorePrinter->setText( "Best: " + to_string( bestScore ) );
 

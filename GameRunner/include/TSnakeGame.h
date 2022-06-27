@@ -21,10 +21,12 @@ class TSnakeGame
         TSnakeGame( TCoords fieldSize, size_t snakeLength );
         ~TSnakeGame();
 
+        void runGame();
+
         void gameThread();
         void ioThread();
 
-        TSnakeBackend snakeBackend;
+        TSnakeBackend gameBackend;
 
         TDrawer* mainDrawer = nullptr;
         TFontDrawer* scorePrinter = nullptr;

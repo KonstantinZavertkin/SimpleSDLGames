@@ -15,10 +15,9 @@ class TMinesweeperGame
     public:
         TMinesweeperGame( TCoords fieldSize );
 
-        void gameThread();
-        void ioThread();
+        void runGame();
 
-        TMinesweeperBackend minesweeper;
+        TMinesweeperBackend gameBackend;
         TGameField gameField;
 
         TDrawer* mainDrawer = nullptr;
@@ -35,6 +34,9 @@ class TMinesweeperGame
         TCoords fieldSize;
 
     private:
+        void gameThread();
+        void ioThread();
+
         mutex syncPoint;
         bool quit = false;
         time_t startTime = 0;

@@ -9,6 +9,8 @@ TSnakeGameRunner::TSnakeGameRunner( TRenderer& rendererVar )
 
 void TSnakeGameRunner::init()
 {
+    activeGameField.xStart = 50;
+
     cellsFieldParams.xCellsCount = 20;
     cellsFieldParams.yCellsCount = 20;
     cellsFieldParams.cellHeight = 25;
@@ -30,7 +32,7 @@ void TSnakeGameRunner::run()
 
     TSnakeGame gameObject( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount }, 5 );
 
-    TPrimitivesFieldDrawer snakeDrawer( gameObject.snakeBackend.gameField, rendererRef, mainFieldCellsGrid );
+    TPrimitivesFieldDrawer snakeDrawer( gameObject.gameBackend.gameField, rendererRef, mainFieldCellsGrid );
     snakeDrawer.cellsMapper = snakeCellsMapper;
 
     TFontDrawer titleTextDrawer( rendererRef, fontFile, fontSize + 6 );
@@ -87,20 +89,15 @@ void TSnakeGameRunner::run()
 
     while ( runGame )
     {
-        thread mainThr( &TSnakeGame::gameThread, &gameObject );
-
-        gameObject.ioThread();
-        mainThr.join();
+        gameObject.runGame();
 
         runGame = false;
 
-        if ( gameObject.snakeBackend.gameOver )
+        if ( gameObject.gameBackend.gameOver )
         {
-            const auto ans = gameOverMenu.show();
-
-            if ( ans == 0 )
+            if ( gameOverMenu.show() == 0 )
             {
-                gameObject.snakeBackend.reset();
+                gameObject.gameBackend.reset();
                 runGame = true;
             }
         }
