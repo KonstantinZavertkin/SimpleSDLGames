@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cmath>
+#include <thread>
 
 #include "sdl2_include.h"
 #include "TSnakeGame.h"

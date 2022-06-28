@@ -1,6 +1,7 @@
 #ifndef _TTEXTURE_H_
 #define _TTEXTURE_H_
 
+#include <memory>
 #include "sdl2_include.h"
 #include "CommonTypes.hpp"
 #include "TSurface.h"

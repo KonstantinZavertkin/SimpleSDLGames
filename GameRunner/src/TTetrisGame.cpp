@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <thread>
 #include "TTetrisGame.h"
 
 TTetrisGame::TTetrisGame( TCoords fieldSize )

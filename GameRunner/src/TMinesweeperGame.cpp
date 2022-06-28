@@ -1,3 +1,5 @@
+#include <climits>
+#include <thread>
 #include "TMinesweeperGame.h"
 
 TMinesweeperGame::TMinesweeperGame( TCoords fieldSize ) :

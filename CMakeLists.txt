@@ -22,6 +22,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     
 else()
     find_package(SDL2 REQUIRED)
+    set(SDL2_TTF_LIBRARIES libSDL2_ttf-2.0.so)
     set(THREADS_PREFER_PTHREAD_FLAG ON)
     find_package(Threads REQUIRED)
 endif()
@@ -43,6 +44,8 @@ include_directories(GUI ${SDL2_INCLUDE_DIRS})
 include_directories(GUI ${SDL2_TTF_INCLUDE_DIRS})
 target_include_directories(GUI PUBLIC Common/include)
 target_include_directories(GUI PUBLIC GUI/include)
+target_link_libraries(GUI ${SDL2_TTF_LIBRARIES})
+target_link_libraries(GUI ${FT_LIBRARIES})
 
 file(GLOB SRCS_GameRunner ./GameRunner/src/*.cpp)
 file(GLOB HEADERS_GameRunner ./GameRunner/include/*.h)
@@ -89,4 +92,8 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     # set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT GameRunner)
 else()
     target_link_libraries(GameRunner Threads::Threads)
+    
+    add_custom_command(TARGET GameRunner POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:GameRunner>/resources/)
 endif()

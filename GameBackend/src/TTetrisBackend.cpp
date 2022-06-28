@@ -209,7 +209,7 @@ namespace game_backend
 
     void TTetrisBackend::reset()
     {
-        allBlocks = {};
+        allBlocks.clear();
         virtualBlock = {};
         figureId = 0;
         currentFigureId = 0;
