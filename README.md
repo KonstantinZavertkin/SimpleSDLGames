@@ -19,8 +19,8 @@ On Debian-based systems (including Ubuntu) can simply do:
 
 On Windows you need to download and install these libraries:  
 
-        https://www.libsdl.org/download-2.0.php  
-        https://github.com/libsdl-org/SDL_ttf/releases  
+* https://www.libsdl.org/download-2.0.php  
+* https://github.com/libsdl-org/SDL_ttf/releases  
 
 Building the executable file on Linux-based OS can be done using the following commands:  
 
