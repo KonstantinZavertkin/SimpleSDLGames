@@ -11,7 +11,7 @@ Requirements:
  - SDL2  
  - SDL2_ttf  
  
-On Debian-based systems (including Ubuntu) can simply do:  
+On Debian-based systems (including Ubuntu) SDL2 and SDL2_ttf libraries can be installed using the following commands:  
 
         sudo apt-get install libsdl2-2.0  
         sudo apt-get install libsdl2-dev  
