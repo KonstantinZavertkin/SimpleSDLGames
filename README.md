@@ -1,4 +1,4 @@
-The purpose of this project is learning C++ and SDL2 library. Tetris and Snake is currently available.
+The purpose of this project is learning C++ and SDL2 library. Minesweeper, Tetris and Snake is currently available.
 
 ==================================
 ## Installation instructions
@@ -39,3 +39,6 @@ Tested on Debian 10 and Windows 10.
 
 ## Screenshots
 ![Alt text](/screenshots/0.png?raw=true "Optional Title")
+![Alt text](/screenshots/1.png?raw=true "Optional Title")
+![Alt text](/screenshots/2.png?raw=true "Optional Title")
+![Alt text](/screenshots/3.png?raw=true "Optional Title")
