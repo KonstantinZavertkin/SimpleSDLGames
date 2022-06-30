@@ -21,10 +21,12 @@ On Windows you need to download and install these libraries:
 &emsp; https://github.com/libsdl-org/SDL_ttf/releases  
 
 Building the executable file on Linux-based OS can be done using the following commands:  
-&emsp;mkdir build  
-&emsp;cd build  
-&emsp;cmake ..  
-&emsp;make all    
+
+        mkdir build  
+        cd build  
+        cmake ..  
+        make all    
+
 Run:  
 &emsp;./GameRunner  
 
