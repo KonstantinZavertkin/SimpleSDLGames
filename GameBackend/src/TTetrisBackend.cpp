@@ -1,20 +1,20 @@
 #include "TTetrisBackend.h"
 
 #include <algorithm>
+#include <iostream>
 
 namespace game_backend
 {
     TTetrisBackend::TTetrisBackend( TCoords fieldSize )
-        : gameField( fieldSize.first, fieldSize.second ), nextFigureField( 4, 4 )
+        : gameField( fieldSize.first, fieldSize.second ), nextFigureField( 4, 4 ), fieldSize( fieldSize )
     {
     }
-
 
     TTetrisBackend::~TTetrisBackend()
     {
     }
 
-    std::optional<size_t> TTetrisBackend::checkFullLines()
+    std::optional<size_t> TTetrisBackend::checkFullLines() const
     {
         optional<size_t> maybeLineIndex;
 
@@ -115,7 +115,10 @@ namespace game_backend
         allBlocks.push_back( block );
 
         if ( block.isGameOver() )
+        {
             quit = true;
+            gameOver = true;
+        }
     }
 
     void TTetrisBackend::createFigureIfRequired()
@@ -158,33 +161,72 @@ namespace game_backend
 
             if ( maybeFullLines )
             {
-                gameField.scrollField( { 1, 0 }, maybeFullLines );
-                timeToSleep = 100;
+                gameField.scrollField( {1, 0}, maybeFullLines );
+                
+                currentTimeToSleep = scrollTimeToSleep;
                 ++gameScoreDelta;
             }
             else
             {
-                timeToSleep = 500;
+                currentTimeToSleep = realTimeToSleep;
 
                 if ( !allBlocks.empty() )
                 {
                     allBlocks.back().step();
 
-                    if ( checkFullLines() )
+                    if ( gameScoreDelta )
                     {
-                        timeToSleep = 100;
-                        ++gameScoreDelta;
-                    }
-                    else
-                    {
-                        if ( gameScoreDelta )
-                        {
-                            gameScore += (1 << (gameScoreDelta - 1));
-                            gameScoreDelta = 0;
-                        }
+                        if ( gameScoreDelta > 1 )
+                            gameScoreDelta = 1 << gameScoreDelta;
+
+                        gameScore += gameScoreDelta;
+                        gameScoreDelta = 0;
+                        ++figuresCounter;
                     }
                 }
             }
         }
+    }
+
+    size_t TTetrisBackend::getTimeToSleep()
+    {
+        size_t valToReturn = currentTimeToSleep;
+
+        if ( isAccelerate )
+        {
+            if ( prevFiguresCounter != figuresCounter )
+            {
+                realTimeToSleep -= 10;
+                realTimeToSleep = max( 0, static_cast<int>( realTimeToSleep ) );
+                prevFiguresCounter = figuresCounter;
+            }
+
+            currentTimeToSleep = realTimeToSleep;
+        }
+
+        return valToReturn;
+    }
+
+    void TTetrisBackend::reset()
+    {
+        allBlocks.clear();
+        virtualBlock = {};
+        figureId = 0;
+        currentFigureId = 0;
+        nextFigureId = 0;
+        pauseGame = false;
+        quit = false;
+        gameOver = false;
+
+        gameScore = 0;
+        isAccelerate = true;
+        gameScoreDelta = 0;
+        realTimeToSleep = mainTimeToSleep;
+        currentTimeToSleep = mainTimeToSleep;
+        figuresCounter = 0;
+        prevFiguresCounter = 0;
+
+        gameField = TGameField( fieldSize.first, fieldSize.second );
+        nextFigureField = TGameField( 4, 4 );
     }
 }

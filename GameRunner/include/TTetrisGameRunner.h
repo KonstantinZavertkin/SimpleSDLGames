@@ -2,29 +2,22 @@
 #define _TTETRISGAMERUNNER_H_
 
 #include "TTetrisGame.h"
+#include "IAbstractRunner.h"
 
-class TTetrisGameRunner
+class TTetrisGameRunner : public IAbstractRunner
 {
     public:
 
         TTetrisGameRunner( TRenderer& renderer );
 
-        void init();
-        void run();
-
-        TRectangleDescription background;
+        void init() override;
+        void run() override;
 
         TCellsFieldParams cellsFieldParams;
-        TRectangleDescription activeGameField;
         TRectangleDescription gameFieldBound;
         TCellsFieldParams cellsInfoFieldParams;
         TRectangleDescription gameInfoField;
         TRectangleDescription infoFieldBound;
-
-        string fontFile;
-        size_t fontSize = 0;
-        
-        TRenderer& renderer;
 };
 
 #endif

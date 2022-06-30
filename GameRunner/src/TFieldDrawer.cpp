@@ -71,13 +71,12 @@ TFieldDrawer::~TFieldDrawer()
 {
 }
 
-void TFieldDrawer::drawFirst()
+TPrimitivesFieldDrawer::TPrimitivesFieldDrawer( TGameField& gameField, TRenderer& drawer, TCellRectangles& cellRectangles ) :
+    TFieldDrawer( gameField, drawer, cellRectangles )
 {
-    for ( const auto& val : staticPrimitivesFirst )
-        renderer.draw( val );
 }
 
-void TFieldDrawer::drawField()
+void TPrimitivesFieldDrawer::drawField()
 {
     auto& field = gameField.field;
 
@@ -102,18 +101,33 @@ void TFieldDrawer::drawField()
     }
 }
 
-void TFieldDrawer::drawLast()
+TPrimitivesFieldDrawer::~TPrimitivesFieldDrawer()
 {
-    for ( const auto& val : staticPrimitivesLast )
-        renderer.draw( val );
 }
 
-void TFieldDrawer::addStaticPrimitiveFirst( TRectangleDescription figureDescription )
+TTexturesFieldDrawer::TTexturesFieldDrawer( TGameField& gameField, TRenderer& drawer, TCellRectangles& cellRectangles ):
+    TFieldDrawer( gameField, drawer, cellRectangles )
 {
-    staticPrimitivesFirst.push_back( figureDescription );
 }
 
-void TFieldDrawer::addStaticPrimitiveLast( TRectangleDescription figureDescription )
+void TTexturesFieldDrawer::drawField()
 {
-    staticPrimitivesLast.push_back( figureDescription );
+    auto& field = gameField.field;
+
+    for ( size_t i = 0; i < field.size(); ++i )
+    {
+        for ( size_t j = 0; j < field[i].size(); ++j )
+        {
+            auto cr = cellRectangles.getCellRectangle( i, j );
+
+            const auto textureId = cellsMapper( field[i][j] );
+
+            TCoords coords = { cr.xStart, cr.yStart };
+            renderer.draw( ( *textures )[textureId], coords );
+        }
+    }
+}
+
+TTexturesFieldDrawer::~TTexturesFieldDrawer()
+{
 }

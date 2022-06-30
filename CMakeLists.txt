@@ -5,31 +5,24 @@ project(SimpleSDL2Games VERSION 0.1 LANGUAGES C CXX)
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     # The SDL2 library is distributed without configuration file for cmake on Windows
     # For this reason find_package command is not used. 
-    # You must specify SDL2_DIR manually. SDL2_INCLUDE_DIRS and SDL2_LIBRARIES are set automatically 
+    # You must specify SDL2_INCLUDE_DIRS and SDL2_LIBRARIES, SDL2_TTF_INCLUDE_DIRS and SDL2_TTF_LIBRARIES_DIRS manually
     # https://stackoverflow.com/questions/28395833/using-sdl2-with-cmake
-    set(SDL2_DIR "" CACHE PATH "The directory containing the SDL2 library")
-    set(SDL2_INCLUDE_DIRS "${SDL2_DIR}/include")
-    
-    set(SDL2_TTF_DIR "" CACHE PATH "The directory containing the SDL_ttf library")
-    set(SDL2_TTF_INCLUDE_DIRS "${SDL2_TTF_DIR}/include")
+    set(SDL2_INCLUDE_DIRS "" CACHE PATH "The directory containing the SDL2 headers (include directory)")
+    set(SDL2_LIBRARIES_DIRS "" CACHE PATH "The directory containing the SDL2 libraries (.lib and .dll files)")
 
-    # Support both 32 and 64 bit builds
-    if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
-      set(SDL2_LIBRARIES "${SDL2_DIR}/lib/x64/SDL2.lib;${SDL2_DIR}/lib/x64/SDL2main.lib")
-      set(SDL2_LIBRARIES_DLL ${SDL2_DIR}/lib/x64/)
-      set(SDL2_TTF_LIBRARIES "${SDL2_TTF_DIR}/lib/x64/SDL2_ttf.lib")
-      set(SDL2_TTF_LIBRARIES_DLL ${SDL2_TTF_DIR}/lib/x64/)
-    else ()
-      set(SDL2_LIBRARIES "${SDL2_DIR}/lib/x86/SDL2.lib;${SDL2_DIR}/lib/x86/SDL2main.lib")
-      set(SDL2_LIBRARIES_DLL ${SDL2_DIR}/lib/x86/)
-      set(SDL2_TTF_LIBRARIES "${SDL2_TTF_DIR}/lib/x86/SDL2_ttf.lib")
-      set(SDL2_TTF_LIBRARIES_DLL ${SDL2_TTF_DIR}/lib/x86/)
-    endif ()
+    set(SDL2_TTF_INCLUDE_DIRS "" CACHE PATH "The directory containing the SDL_ttf headers (include directory)")
+    set(SDL2_TTF_LIBRARIES_DIRS "" CACHE PATH "The directory containing the SDL_ttf libraries (.lib and .dll files)")
+
+    set(SDL2_LIBRARIES "${SDL2_LIBRARIES_DIRS}/SDL2.lib;${SDL2_LIBRARIES_DIRS}/SDL2main.lib")
+    set(SDL2_LIBRARIES_DLL ${SDL2_LIBRARIES_DIRS}/)
+    set(SDL2_TTF_LIBRARIES "${SDL2_TTF_LIBRARIES_DIRS}/SDL2_ttf.lib")
+    set(SDL2_TTF_LIBRARIES_DLL ${SDL2_TTF_LIBRARIES_DIRS}/)
 
     string(STRIP "${SDL2_LIBRARIES}" SDL2_LIBRARIES)
     
 else()
     find_package(SDL2 REQUIRED)
+    set(SDL2_TTF_LIBRARIES libSDL2_ttf-2.0.so)
     set(THREADS_PREFER_PTHREAD_FLAG ON)
     find_package(Threads REQUIRED)
 endif()
@@ -51,6 +44,8 @@ include_directories(GUI ${SDL2_INCLUDE_DIRS})
 include_directories(GUI ${SDL2_TTF_INCLUDE_DIRS})
 target_include_directories(GUI PUBLIC Common/include)
 target_include_directories(GUI PUBLIC GUI/include)
+target_link_libraries(GUI ${SDL2_TTF_LIBRARIES})
+target_link_libraries(GUI ${FT_LIBRARIES})
 
 file(GLOB SRCS_GameRunner ./GameRunner/src/*.cpp)
 file(GLOB HEADERS_GameRunner ./GameRunner/include/*.h)
@@ -78,6 +73,9 @@ target_include_directories(GameRunner PUBLIC GameRunner/include)
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     file(TO_NATIVE_PATH ${SDL2_LIBRARIES_DLL} SOURCE_PATH_)
     file(TO_NATIVE_PATH ${SDL2_TTF_LIBRARIES_DLL} SOURCE_PATH_TTF_)
+	
+	set_property(TARGET GameRunner PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$(ProjectDir)$(Configuration)")
+	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT GameRunner)
     
     # Post-build event for msvs to copy SDL2.dll
     add_custom_command(TARGET GameRunner POST_BUILD 
@@ -91,10 +89,14 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
 	
 	# Post-build event for msvs to copy resources
     add_custom_command(TARGET GameRunner POST_BUILD 
-        COMMAND xcopy /y /e "$(SolutionDir)\\..\\resources\\font\\" "$(SolutionDir)$(Configuration)\\*.*"
+        COMMAND xcopy /y /e "$(SolutionDir)\\..\\resources\\" "$(SolutionDir)$(Configuration)\\resources\\*.*"
     )
     
     # set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT GameRunner)
 else()
     target_link_libraries(GameRunner Threads::Threads)
+    
+    add_custom_command(TARGET GameRunner POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                       ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:GameRunner>/resources/)
 endif()

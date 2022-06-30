@@ -1,12 +1,15 @@
 #include "TTetrisGameRunner.h"
+#include "TMainMenu.h"
 
 TTetrisGameRunner::TTetrisGameRunner( TRenderer& rendererArg )
-    : renderer( rendererArg )
+    : IAbstractRunner( rendererArg )
 {
 }
 
 void TTetrisGameRunner::init()
 {
+    activeGameField.xStart = 200;
+
     cellsFieldParams.xCellsCount = 10;
     cellsFieldParams.yCellsCount = 20;
     cellsFieldParams.cellHeight = 25;
@@ -24,7 +27,7 @@ void TTetrisGameRunner::init()
     gameFieldBound.isFilled = false;
     gameFieldBound.color = { 0xFF, 0xFF, 0xFF, 0xFF };
 
-    gameInfoField.xStart = activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth + 20;
+    gameInfoField.xStart = activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth + 60;
     gameInfoField.yStart = 120;
     gameInfoField.width = cellsInfoFieldParams.xCellsCount * cellsInfoFieldParams.cellWidth;
     gameInfoField.height = cellsInfoFieldParams.yCellsCount * cellsInfoFieldParams.cellHeight;
@@ -47,25 +50,33 @@ void TTetrisGameRunner::run()
     infoFieldCellsGrid.setCellsFieldParams( gameInfoField, cellsInfoFieldParams );
     infoFieldCellsGrid.calcGrid();
 
-    TTetrisGame tetris( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount } );
+    TTetrisGame gameObject( { cellsFieldParams.yCellsCount, cellsFieldParams.xCellsCount } );
 
-    TFieldDrawer tetrisDrawer( tetris.tetrisBackend.gameField, renderer, mainFieldCellsGrid );
+    TPrimitivesFieldDrawer tetrisDrawer( gameObject.gameBackend.gameField, rendererRef, mainFieldCellsGrid );
     tetrisDrawer.cellsMapper = tetrisCellsMapper;
-    tetrisDrawer.addStaticPrimitiveLast( gameFieldBound );
 
-    TFieldDrawer infoFieldDrawer( tetris.tetrisBackend.nextFigureField, renderer, infoFieldCellsGrid );
+    TPrimitivesFieldDrawer infoFieldDrawer( gameObject.gameBackend.nextFigureField, rendererRef, infoFieldCellsGrid );
     infoFieldDrawer.cellsMapper = tetrisCellsMapper;
-    infoFieldDrawer.addStaticPrimitiveLast( infoFieldBound );
 
-    auto point = make_pair( activeGameField.xStart + ( cellsFieldParams.xCellsCount + 1 ) * cellsFieldParams.cellWidth + 20, gameFieldBound.yStart );
-    TFontDrawer scoreTextDrawer( renderer, fontFile, fontSize );
-    scoreTextDrawer.getFontDrawerRef().setPoint( point, TTextAlignment::leftAlignment );
+    auto point = make_pair( infoFieldBound.xStart, gameFieldBound.yStart );
 
-    TFontDrawer titleTextDrawer( renderer, fontFile, fontSize + 6 );
-    titleTextDrawer.getFontDrawerRef().setPoint( { background.width / 2, 10 }, TTextAlignment::centerAlignment );
+    TFontDrawer nextFigureTextDrawer( rendererRef, fontFile, fontSize );
+    nextFigureTextDrawer.setPoint( point, TTextAlignment::leftAlignment );
+    nextFigureTextDrawer.setText( "Next figure:" );
+
+    point.second += 180;
+    TFontDrawer scoreTextDrawer( rendererRef, fontFile, fontSize );
+    scoreTextDrawer.setPoint( point, TTextAlignment::leftAlignment );
+
+    point.second += 50;
+    TFontDrawer bestScoreTextDrawer( rendererRef, fontFile, fontSize );
+    bestScoreTextDrawer.setPoint( point, TTextAlignment::leftAlignment );
+
+    TFontDrawer titleTextDrawer( rendererRef, fontFile, fontSize + 6 );
+    titleTextDrawer.setPoint( { background.width / 2, 10 }, TTextAlignment::centerAlignment );
     titleTextDrawer.setText( "Tetris" ); 
     
-    TDrawer mainDrawer( renderer );
+    TDrawer mainDrawer( rendererRef );
     mainDrawer.addPrimitive( background );
     mainDrawer.addPrimitive( gameFieldBound );
     mainDrawer.addPrimitive( infoFieldBound );
@@ -73,13 +84,54 @@ void TTetrisGameRunner::run()
     mainDrawer.addField( &infoFieldDrawer );
     mainDrawer.addText( &scoreTextDrawer );
     mainDrawer.addText( &titleTextDrawer );
+    mainDrawer.addText( &bestScoreTextDrawer );
+    mainDrawer.addText( &nextFigureTextDrawer );
 
-    tetris.mainDrawer = &mainDrawer;
-    tetris.scorePrinter = &scoreTextDrawer;
+    TMainMenu pauseMenu( rendererRef );
+    pauseMenu.background = background;
+    pauseMenu.fontSize = fontSize + 10;
+    pauseMenu.fontFile = fontFile;
+    pauseMenu.initGridParams( 200, 30 );
+    pauseMenu.addLabelUnderItems( "Pause" );
+    pauseMenu.addItem( "Resume" );
+    pauseMenu.addItem( "Exit" );
+    pauseMenu.setUp();
 
-    thread mainThr2( &TTetrisGame::gameThread, &tetris );
+    TFontDrawer gameOver( rendererRef, fontFile, fontSize + 10 );
+    gameOver.setText( "Game over " );
+    gameOver.setColor( { 0xFF, 0xFF, 00, 0xFF } );
+    gameOver.setPoint( { background.width / 2 - 70, 160 }, TTextAlignment::leftAlignment );
 
-    tetris.ioThread();
+    TMainMenu gameOverMenu( rendererRef );
+    gameOverMenu.background = background;
+    gameOverMenu.fontSize = fontSize + 10;
+    gameOverMenu.fontFile = fontFile;
+    gameOverMenu.initGridParams( 200, 30 );
+    gameOverMenu.addItem( "Retry" );
+    gameOverMenu.addItem( "Exit" );
+    gameOverMenu.addLabel( std::move( gameOver ) );
+    gameOverMenu.setUp();
 
-    mainThr2.join();
+    gameObject.mainDrawer = &mainDrawer;
+    gameObject.scorePrinter = &scoreTextDrawer;
+    gameObject.bestScorePrinter = &bestScoreTextDrawer;
+    gameObject.pauseMenu = &pauseMenu;
+
+    bool runGame = true;
+
+    while ( runGame )
+    {
+        gameObject.runGame();
+
+        runGame = false;
+
+        if ( gameObject.gameBackend.gameOver )
+        {
+            if ( gameOverMenu.show() == 0 )
+            {
+                gameObject.gameBackend.reset();
+                runGame = true;
+            }
+        }
+    }
 }

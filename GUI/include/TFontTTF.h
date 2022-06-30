@@ -22,7 +22,11 @@ namespace io_submodule
             TFontTTF( TRenderer& renderer, const string pathToTtf, const size_t fontSize );
             ~TFontTTF();
 
+            TFontTTF( TFontTTF&& oldObj ) noexcept;
+            TFontTTF& operator=( TFontTTF&& oldObj ) noexcept;
+
             void setPoint( TCoords point, TTextAlignment alignment );
+            void setAlignment( TTextAlignment alignment );
             void setColor( TColorRGB rgba );
             TCoords getPoint() const;
             void setText( const string& strToPrint );
@@ -35,10 +39,13 @@ namespace io_submodule
         private:
 
             TTF_Font* font = nullptr;
-            TCoords point;
+            TCoords point = { 0, 0 };
+            TCoords alignmentPoint = { 0, 0 };
             string strToPrint;
             SDL_Color color = { 0, 255, 255, 255 };
+            SDL_Color colorPrev = { 0, 255, 255, 255 };
             bool flagToUpdateTexture = false;
+            TTextAlignment currentAlignment = TTextAlignment::leftAlignment;
 
             TSurface surface;
             TRenderer& renderer;

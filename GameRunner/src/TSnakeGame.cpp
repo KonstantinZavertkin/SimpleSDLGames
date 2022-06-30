@@ -1,102 +1,53 @@
 #include <algorithm>
 #include <iostream>
 #include <cmath>
+#include <thread>
 
 #include "sdl2_include.h"
 #include "TSnakeGame.h"
 #include "CommonTypes.hpp"
 
 TSnakeGame::TSnakeGame( TCoords fieldSize, size_t snakeLength )
-    : gameField(fieldSize.first, fieldSize.second), snake(gameField )
+    : gameBackend( fieldSize, snakeLength )
 {
-    initSnakeLength = snakeLength;
-    snake.initCellsChain({1, 1}, initSnakeLength);
 };
 
 TSnakeGame::~TSnakeGame()
 {
-};
+}
 
-bool TSnakeGame::step()
+void TSnakeGame::runGame()
 {
-    snake.step();
-    checkFood();
-    return snake.isGameOver();
-};
-
-void TSnakeGame::turn( TCoords rotateVector )
-{
-    snake.turn( rotateVector );
-};
-
-void TSnakeGame::checkFood()
-{
-    // Is required?
-    bool isRequiredFood = true;
-
-    for ( auto line : gameField.field )
-    {
-        for ( auto cell : line )
-            if ( cell.currentState == TCellStates::eatStateKey )
-                isRequiredFood = false;
-    }
-
-    if ( isRequiredFood )
-    {
-        auto x = rand() % gameField.field.size();
-        auto y = rand() % gameField.field[0].size();
-        gameField.field[x][y].currentState = TCellStates::eatStateKey;
-    }
+    thread mainThr( &TSnakeGame::gameThread, this );
+    ioThread();
+    mainThr.join();
 };
 
 void TSnakeGame::gameThread()
 {
     bool quitLocal = false;
-    performStep = true;
+    gameBackend.performStep = true;
 
     while ( !quitLocal )
     {
-        syncPoint.lock();
-
-        if ( ( clockCounter % 4 ) == 0 )
-            performStep = true;
-
-        if ( performStep )
+        if ( !gameBackend.quitEvent )
         {
-            if ( !rotationsQueue.empty() )
-            {
-                turn( rotationsQueue.front() );
-                rotationsQueue.pop_front();
-            }
+            syncPoint.lock();
+            quitLocal = gameBackend.stepGame();
+            syncPoint.unlock();
 
-            if ( !pauseGame )
-                quitLocal = step();
-
-            performStep = false;
+            SDL_Delay( gameBackend.timeDelay );
         }
-
-        if ( quitLocal )
-            quit = quitLocal;
-        
-        if ( quit )
-        {
-            quitLocal = quit;
-            cout << "Game over, score: " << snake.snakeCells.size() << endl;
-        }
-
-        syncPoint.unlock();
-
-        SDL_Delay( max( 0, 50 - static_cast<int>( snake.snakeCells.size() * 2 ) ) );
-
-        clockCounter++;
+        else
+            quitLocal = true;
     }
-
-    cout << "gameThread done" << endl;
 };
 
 void TSnakeGame::ioThread()
 {
-    SDL_Event exitEvent;
+    gameBackend.bestScore = gameBackend.bestScoreStorage.getScore();
+    gameBackend.currentScore = 0;
+    SDL_Event ioEvent;
     bool pauseLocal = false;
     bool quitLocal = false;
 
@@ -105,21 +56,22 @@ void TSnakeGame::ioThread()
 
     while ( !quitLocal )
     {
-        while ( SDL_PollEvent( &exitEvent ) != 0 )
+        while ( SDL_PollEvent( &ioEvent ) != 0 )
         {
-            if ( exitEvent.type == SDL_QUIT )
+            if ( ioEvent.type == SDL_QUIT )
             {
                 quitLocal = true;
                 syncPoint.lock();
-                quit = quitLocal;
+                gameBackend.quitEvent = quitLocal;
+                gameBackend.timeDelay = 0;
                 syncPoint.unlock();
             }
 
-            if ( exitEvent.type == SDL_KEYDOWN )
+            if ( ioEvent.type == SDL_KEYDOWN )
             {
-                auto keyValue = exitEvent.key.keysym.sym;
+                auto keyValue = ioEvent.key.keysym.sym;
 
-                if ( keyValue != SDLK_SPACE )
+                if ( keyValue != SDLK_ESCAPE )
                 {
                     if ( keyValue == SDLK_UP || keyValue == SDLK_w )
                         vectorNext = vectorUp;
@@ -134,22 +86,33 @@ void TSnakeGame::ioThread()
                         vectorNext = vectorRight;
                 }
                 else
-                    pauseLocal = !pauseLocal;
+                {
+                    syncPoint.lock();
+
+                    if ( pauseMenu->show() != 0 )
+                    {
+                        quitLocal = true;
+                        gameBackend.quitEvent = quitLocal;
+                    }
+
+                    syncPoint.unlock();
+                }
+                    
 
                 syncPoint.lock();
 
-                pauseGame = pauseLocal;
+                gameBackend.pauseGame = pauseLocal;
 
                 if ( !pauseLocal )
                 {
                     if ( vectorNext == vectorLast )
-                        performStep = true;
+                        gameBackend.performStep = true;
                     else
                     {
-                        rotationsQueue.push_back( vectorNext );
+                        gameBackend.rotationsQueue.push_back( vectorNext );
 
-                        while ( rotationsQueue.size() > 2 )
-                            rotationsQueue.pop_front();
+                        while ( gameBackend.rotationsQueue.size() > 2 )
+                            gameBackend.rotationsQueue.pop_front();
 
                         vectorLast = vectorNext;
                     }
@@ -161,19 +124,21 @@ void TSnakeGame::ioThread()
 
         syncPoint.lock();
 
-        scorePrinter->setText( "Score: " + to_string( snake.snakeCells.size() - initSnakeLength ) );
+        gameBackend.currentScore = gameBackend.snake.snakeCells.size() - gameBackend.initSnakeLength;
+        scorePrinter->setText( "Score: " + to_string( gameBackend.currentScore ) );
+        bestScorePrinter->setText( "Best: " + to_string( gameBackend.bestScore ) );
 
-        mainDrawer->getRendererRef().resetScreen();
-        mainDrawer->draw();
-        mainDrawer->getRendererRef().updateScreen();
+        if ( !quitLocal )
+            mainDrawer->draw();
 
-        if ( quit )
-            quitLocal = quit;
+        if ( gameBackend.quitEvent )
+            quitLocal = true;
 
         syncPoint.unlock();
         
         SDL_Delay( 1 );
     }
 
-    cout << "ioThread done" << endl;
+    if ( gameBackend.currentScore > gameBackend.bestScore )
+       gameBackend.bestScoreStorage.setScore( gameBackend.currentScore );
 };

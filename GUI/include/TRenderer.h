@@ -20,6 +20,7 @@ namespace io_submodule
 
             SDL_Renderer* getRenderer();
 
+            void draw( TTexture& texture );
             void draw( TTexture& texture, TCoords point );
             void draw( TRectangleDescription rectangleParams );
 

@@ -14,6 +14,9 @@ namespace game_backend
 
     void TCellsChain::initCellsChain( TCoords startPosition, size_t snakeLength )
     {
+        gameOverFlag = false;
+        snakeCells = {};
+
         for ( size_t i = 0; i < snakeLength; ++i )
         {
             auto x = startPosition.first;

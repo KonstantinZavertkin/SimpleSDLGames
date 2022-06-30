@@ -1,4 +1,5 @@
 #include "TFontTTF.h"
+#include <memory>
 
 namespace io_submodule
 {
@@ -6,14 +7,6 @@ namespace io_submodule
         : renderer( rendererRef ), texture( rendererRef )
     {
         point = {};
-
-        int ttfInitCode = TTF_Init();
-
-        if ( ttfInitCode != 0 )
-        {
-            const string errorMsg = string( "TTF_OpenFont: " + string( TTF_GetError() ) );
-            throw std::runtime_error( errorMsg );
-        }
 
         font = TTF_OpenFont( pathToTtf.c_str(), fontSize );
 
@@ -31,21 +24,60 @@ namespace io_submodule
             TTF_CloseFont( font );
             font = nullptr;
         }
-
-        TTF_Quit();
     }
 
-    void TFontTTF::setPoint( TCoords pointArg, TTextAlignment alignment  )
+    TFontTTF::TFontTTF( TFontTTF&& oldObj ) noexcept :
+        surface( std::move( oldObj.surface ) ),
+        renderer( oldObj.renderer ),
+        texture( std::move( oldObj.texture ) )
     {
-        auto [x, y] = pointArg;
+        font = oldObj.font;
+        oldObj.font = nullptr;
+
+        point = oldObj.point;
+        alignmentPoint = oldObj.alignmentPoint;
+        strToPrint = std::move( oldObj.strToPrint );
+        color = oldObj.color;
+        flagToUpdateTexture = oldObj.flagToUpdateTexture;
+        currentAlignment = oldObj.currentAlignment;
+    }
+
+    TFontTTF& TFontTTF::operator=( TFontTTF&& oldObj ) noexcept
+    {
+        surface = std::move( oldObj.surface );
+        texture = std::move( oldObj.texture );
+        font = oldObj.font;
+        oldObj.font = nullptr;
+
+        point = oldObj.point;
+        alignmentPoint = oldObj.alignmentPoint;
+        strToPrint = std::move( oldObj.strToPrint );
+        color = oldObj.color;
+        flagToUpdateTexture = oldObj.flagToUpdateTexture;
+        currentAlignment = oldObj.currentAlignment;
+        return *this;
+    }
+
+    void TFontTTF::setPoint( TCoords pointArg, TTextAlignment alignment )
+    {
+        this->point = pointArg;
+        this->alignmentPoint = pointArg;
         
+        setAlignment( alignment );
+    }
+
+    void TFontTTF::setAlignment( TTextAlignment alignment )
+    {
+        auto [x, y] = point;
+
         if ( alignment == TTextAlignment::centerAlignment )
             x -= texture.getSurface().getSurfaceWidth() / 2;
 
         if ( alignment == TTextAlignment::rightAlignment )
             x -= texture.getSurface().getSurfaceWidth();
 
-        this->point = { x, y };
+        currentAlignment = alignment;
+        alignmentPoint = { x, y };
     }
 
     void TFontTTF::setColor( TColorRGB rgba )
@@ -54,7 +86,6 @@ namespace io_submodule
         color.g = rgba.g;
         color.b = rgba.b;
         color.a = rgba.alpha;
-        flagToUpdateTexture = true;
     }
 
     TCoords TFontTTF::getPoint() const
@@ -69,15 +100,26 @@ namespace io_submodule
             flagToUpdateTexture = false;
             this->strToPrint = strToPrintVar;
 
-            surface = TSurface( TTF_RenderText_Blended( font, this->strToPrint.c_str(), color ) );
+            SDL_Surface* surf = TTF_RenderText_Blended( font, this->strToPrint.c_str(), color );
+            surface = TSurface( surf );
             texture.updateSurface( surface );
+            setAlignment( currentAlignment );
         }
     }
 
     void TFontTTF::drawText()
     {
+        if ( color.r != colorPrev.r ||
+             color.g != colorPrev.g ||
+             color.b != colorPrev.b ||
+             color.a != colorPrev.a)
+        {
+            colorPrev = color;
+            flagToUpdateTexture = true;
+        }
+
         setText( strToPrint );
-        renderer.draw( texture, point );
+        renderer.draw( texture, alignmentPoint );
     }
 
     TSurface& TFontTTF::getTextSurface()

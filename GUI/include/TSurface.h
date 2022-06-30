@@ -17,6 +17,8 @@ namespace io_submodule
 
             TSurface( TSurface&& ) noexcept;
             TSurface& operator=( TSurface&& ) noexcept;
+            TSurface( const TSurface& ) = delete;
+            TSurface& operator=( const TSurface& ) = delete;
 
             ~TSurface();
 
@@ -26,9 +28,6 @@ namespace io_submodule
 
         private:
             SDL_Surface* surfacePtr = nullptr;
-
-            TSurface( const TSurface& ) = delete;
-            TSurface& operator=( const TSurface& ) = delete;
 
     };
 };

@@ -21,6 +21,11 @@ namespace io_submodule
         fieldDrawers.push_back( fieldDrawerPtr );
     }
 
+    void TDrawer::addTexture(TTexture* texturePtr)
+    {
+        textures.push_back( texturePtr );
+    }
+
     void TDrawer::addText( TFontDrawer* textPrinterPtr )
     {
         textPrinters.push_back( textPrinterPtr );
@@ -40,6 +45,9 @@ namespace io_submodule
 
         for ( auto& field : fieldDrawers )
            field->drawField();
+
+        for ( auto& texturePtr : textures )
+           renderer.draw( *texturePtr );
 
         for ( auto& textPrinter : textPrinters )
            textPrinter->drawText();

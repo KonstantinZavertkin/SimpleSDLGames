@@ -50,6 +50,26 @@ namespace game_backend
             TCoords moveDirectionDelta;     //!< dx, dy for next step
             TCoords thisCoordinates;        //!< { lineIndex; columnIndex }
     };
+
+    class TMinesweeperCell : public TCell
+    {
+        public:
+            TMinesweeperCell();
+            bool isBomb();
+            bool isOpened();
+            bool isFlag();
+            int getNumOfBombsAround();
+            void putBomb();
+            void changeFlag();
+            void setOpened();
+            void setNumOfBombsAround( int amount );
+
+        private:
+            bool opened = false;
+            bool bomb = false;
+            bool flag = false;
+            int amountOfBombsAround = 0;
+    };
 };
 
  #endif
