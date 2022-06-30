@@ -26,7 +26,7 @@ int main( int argc, char **argv )
     size_t xStartBias = 50;
     size_t yStartBias = 50;
 
-    string fontFile = "./resources/font/Samson.ttf";
+    string fontFile = "./resources/font/font.ttf";
     int fontSize = 22;
     
     TRectangleDescription background;

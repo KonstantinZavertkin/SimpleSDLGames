@@ -73,6 +73,9 @@ target_include_directories(GameRunner PUBLIC GameRunner/include)
 if(${CMAKE_SYSTEM_NAME} STREQUAL Windows)
     file(TO_NATIVE_PATH ${SDL2_LIBRARIES_DLL} SOURCE_PATH_)
     file(TO_NATIVE_PATH ${SDL2_TTF_LIBRARIES_DLL} SOURCE_PATH_TTF_)
+	
+	set_property(TARGET GameRunner PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "$(ProjectDir)$(Configuration)")
+	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT GameRunner)
     
     # Post-build event for msvs to copy SDL2.dll
     add_custom_command(TARGET GameRunner POST_BUILD 
