@@ -47,7 +47,5 @@ To run game after building, go to the directory with binaries (For example, C:/S
 Tested on Debian 10 and Windows 10.    
   
 ## Screenshots  
-![Main menu](/screenshots/0.png?raw=true "Main menu")
-![Minesweeper](/screenshots/1.png?raw=true "Minesweeper")
-![Tetris](/screenshots/2.png?raw=true "Tetris")
-![Snake](/screenshots/3.png?raw=true "Snake")
+| ![Main menu](/screenshots/0.png?raw=true "Main menu") | ![Minesweeper](/screenshots/1.png?raw=true "Minesweeper") |
+| ![Tetris](/screenshots/2.png?raw=true "Tetris") | ![Snake](/screenshots/3.png?raw=true "Snake") |
