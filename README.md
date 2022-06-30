@@ -12,10 +12,11 @@ Requirements:
  - SDL2_ttf  
  
 On Debian-based systems (including Ubuntu) can simply do:  
-&emsp;sudo apt-get install libsdl2-2.0  
-&emsp;sudo apt-get install libsdl2-dev  
-&emsp;sudo apt-get install libsdl2-ttf-dev  
-  
+
+        sudo apt-get install libsdl2-2.0  
+        sudo apt-get install libsdl2-dev  
+        sudo apt-get install libsdl2-ttf-dev  
+
 On Windows you need to download and install these libraries:  
 &emsp; https://www.libsdl.org/download-2.0.php  
 &emsp; https://github.com/libsdl-org/SDL_ttf/releases  
@@ -28,7 +29,8 @@ Building the executable file on Linux-based OS can be done using the following c
         make all    
 
 Run:  
-&emsp;./GameRunner  
+
+        ./GameRunner  
 
 Use cmake-gui to create solution for Visual Studio on Windows. Set 'Where is the source code' to root of this repository (For example, C:/SimpleSDLGames/). Set 'Where to build the binaries' to some new directory in root of repository (For example, C:/SimpleSDLGames/build)  
 After 'Configure' stage cmake will requests for paths to header files and to compiled libraries (SDL2 and SDL2_ttf).  
