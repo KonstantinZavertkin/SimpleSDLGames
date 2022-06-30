@@ -1,6 +1,9 @@
-The purpose of this project is learning C++ and SDL2 library. Minesweeper, Tetris and Snake is currently available.
 
+SimpleSDLGames
 ==================================
+
+The purpose of this project is learning C++ and SDL2 library. Minesweeper, Tetris and Snake are currently available.
+
 ## Installation instructions
 Requirements:
  - CMake 3.8 or newer
