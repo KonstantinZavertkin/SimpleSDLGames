@@ -8,14 +8,14 @@ Requirements:
  - SDL2  
  - SDL2_ttf  
  
-On Debian-based systems (including Ubuntu) can simply do:
-&emsp;sudo apt-get install libsdl2-2.0
-&emsp;sudo apt-get install libsdl2-dev
-&emsp;sudo apt-get install libsdl2-ttf-dev
-
-On Windows you need to download and install these libraries:
-&emsp; https://www.libsdl.org/download-2.0.php
-&emsp; https://github.com/libsdl-org/SDL_ttf/releases
+On Debian-based systems (including Ubuntu) can simply do:  
+&emsp;sudo apt-get install libsdl2-2.0  
+&emsp;sudo apt-get install libsdl2-dev  
+&emsp;sudo apt-get install libsdl2-ttf-dev  
+  
+On Windows you need to download and install these libraries:  
+&emsp; https://www.libsdl.org/download-2.0.php  
+&emsp; https://github.com/libsdl-org/SDL_ttf/releases  
 
 Building the executable file on Linux-based OS can be done using the following commands:  
 &emsp;mkdir build  
@@ -25,19 +25,19 @@ Building the executable file on Linux-based OS can be done using the following c
 Run:  
 &emsp;./GameRunner  
 
-Use cmake-gui to create solution for Visual Studio on Windows. Set 'Where is the source code' to root of this repository (For example, C:/SimpleSDLGames/). Set 'Where to build the binaries' to some new directory in root of repository (For example, C:/SimpleSDLGames/build) 
-After 'Configure' stage cmake will requests for paths to header files and to compiled libraries (SDL2 and SDL2_ttf). 
-You need to set up these variables:
-&emsp;SDL2_INCLUDE_DIRS
-&emsp;SDL2_LIBRARIES_DIRS
-&emsp;SDL2_TTF_INCLUDE_DIRS
-&emsp;SDL2_TTF_LIBRARIES_DIRS
-
-To run game after building, go to the directory with binaries (For example, C:/SimpleSDLGames/build/Debug) and run GameRunner.exe
+Use cmake-gui to create solution for Visual Studio on Windows. Set 'Where is the source code' to root of this repository (For example, C:/SimpleSDLGames/). Set 'Where to build the binaries' to some new directory in root of repository (For example, C:/SimpleSDLGames/build)  
+After 'Configure' stage cmake will requests for paths to header files and to compiled libraries (SDL2 and SDL2_ttf).  
+You need to set up these variables:  
+&emsp;SDL2_INCLUDE_DIRS  
+&emsp;SDL2_LIBRARIES_DIRS  
+&emsp;SDL2_TTF_INCLUDE_DIRS  
+&emsp;SDL2_TTF_LIBRARIES_DIRS  
   
-Tested on Debian 10 and Windows 10.  
-
-## Screenshots
+To run game after building, go to the directory with binaries (For example, C:/SimpleSDLGames/build/Debug) and run GameRunner.exe  
+  
+Tested on Debian 10 and Windows 10.    
+  
+## Screenshots  
 ![Main menu](/screenshots/0.png?raw=true "Main menu")
 ![Minesweeper](/screenshots/1.png?raw=true "Minesweeper")
 ![Tetris](/screenshots/2.png?raw=true "Tetris")
